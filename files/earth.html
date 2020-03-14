@@ -38,7 +38,8 @@
 				<td id="stat-uranium">0</td>
 			</tr>
 		</table>
-		<table class="stats right" id="tileinfos"></table>
+		<table class="stats right" id="players"></table>
+		<table class="stats right bottom" id="tileinfos"></table>
 		<table id="map" style="border-color:#3a9900"></table>
 		<script>
 const earthSize = 32;
@@ -78,7 +79,7 @@ for (let i = 0; i < earthSize; i++) {
 	}
 }
 
-// load deposits
+// load deposits & load players
 xhr = new XMLHttpRequest();
 xhr.onload = function() {
 	var json = JSON.parse(xhr.responseText);
@@ -88,6 +89,17 @@ xhr.onload = function() {
 			var cell = document.getElementById("tile-" + i);
 			cell.classList.add("deposit-" + json.deposits[i]);
 		}
+	}
+
+	var playersElem = document.getElementById("players");
+	for (var i = 0; i < json.players.length; i++) {
+		let row = players.insertRow();
+		row.insertCell().innerHTML = json.players[i];
+		row.setAttribute("data-territory", i);
+		if (i == userIndex) {
+			row.style.fontWeight = "bold";
+		}
+		row.id = "player-" + i;
 	}
 };
 xhr.open("GET", "/api/" + roomId + "/data.json");
@@ -124,12 +136,14 @@ setInterval(function(){
 		statIron.innerHTML = json.stats[userIndex].materials.iron | 0;
 		statGold.innerHTML = json.stats[userIndex].materials.gold | 0;
 		statUranium.innerHTML = json.stats[userIndex].materials.uranium | 0;
+
+		for (let loser in json.losers) {
+			document.getElementById("player-" + loser).style.textDecoration = "strikethrough";
+		}
 	};
 	xhr.open("GET", "/api/" + roomId + "/data.json");
 	xhr.send();
 }, 500);
-
-// TODO: Add panel for players
 
 function addNotification(text) {
 	// TODO:

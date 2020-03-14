@@ -146,6 +146,7 @@ type Game struct {
 
 	Players []string
 	Stats   []PlayerStat
+	Losers  []int
 
 	Turn uint
 
@@ -159,6 +160,7 @@ func (g *Game) MarshalJSON() ([]byte, error) {
 		"tiletypes": g.TileTypes,
 		"deposits":  g.Deposits,
 		"players":   g.Players,
+		"losers":    g.Losers,
 		"stats":     g.Stats,
 		"turn":      g.Turn,
 		"pollution": g.Pollution,
@@ -222,6 +224,21 @@ func (g *Game) NextTurn() {
 	if g.Pollution >= cleaning {
 		g.Pollution -= cleaning
 	}
+
+	// death from pollution
+	if g.Pollution >= 1000*1000 {
+	outer:
+		for player, _ := range g.Players {
+			for _, loser := range g.Losers {
+				if player == loser {
+					continue outer
+				}
+			}
+
+			g.Losers = append(g.Losers, player)
+		}
+	}
+
 	g.Turn++
 }
 
@@ -342,11 +359,25 @@ func (g *Game) Move(player int, from int, to int) error {
 		g.Armies[to] += fromArmies
 	} else {
 		if fromArmies > toArmies {
+			toType := g.TileTypes[to]
+			toPlayer := g.Territory[to]
+
 			g.Armies[to] = fromArmies - toArmies
 			g.Territory[to] = player
 			g.TileTypes[to] = ""
 
-			// TODO: Lose if no cores left
+			// Lose if no cores left
+			if toType == Core {
+				hasCore := false
+				for tile, tileType := range g.TileTypes {
+					if tileType == Core && g.Territory[tile] == toPlayer {
+						hasCore = true
+					}
+				}
+				if !hasCore {
+					g.Losers = append(g.Losers, player)
+				}
+			}
 		} else {
 			g.Armies[to] -= fromArmies
 		}

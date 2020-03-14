@@ -23,7 +23,7 @@ var objects sync.Map
 
 func gameThread() {
 	for {
-		turnTimer := time.After(500 * time.Millisecond)
+		turnTimer := time.After(1000 * time.Millisecond)
 		objects.Range(func(key, value interface{}) bool {
 			obj := value.(*Object)
 			obj.Lock()
