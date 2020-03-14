@@ -17,24 +17,24 @@
 			</tr>
 		</table>
 		<table class="stats" style="top:92px">
-			<tr>
-				<td>Brick</td>
+			<tr class="text-brick">
+				<td>Brk</td>
 				<td id="stat-brick">0</td>
 			</tr>
-			<tr>
-				<td>Copper</td>
+			<tr class="text-copper">
+				<td>Cu</td>
 				<td id="stat-copper">0</td>
 			</tr>
-			<tr>
-				<td>Iron</td>
+			<tr class="text-iron">
+				<td>Fe</td>
 				<td id="stat-iron">0</td>
 			</tr>
-			<tr>
-				<td>Gold</td>
+			<tr class="text-gold">
+				<td>Au</td>
 				<td id="stat-gold">0</td>
 			</tr>
-			<tr>
-				<td>Uranium</td>
+			<tr class="text-uranium">
+				<td>U</td>
 				<td id="stat-uranium">0</td>
 			</tr>
 		</table>
@@ -168,11 +168,11 @@ const tileTypes = {
 };
 
 const materialInfos = {
-	copper: ["Cu", "#b87333"],
-	uranium: ["U", "#8239cc"],
-	brick: ["Brk", "#b74933"],
-	iron: ["Fe", "#666"],
-	gold: ["Au", "#b7b033"],
+	copper: "Cu",
+	uranium: "U",
+	brick: "Brk",
+	iron: "Fe",
+	gold: "Au",
 };
 
 const tileInfoElem = document.getElementById("tileinfos")
@@ -187,7 +187,7 @@ for (let key of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-"]) {
 
 		var str = "";
 		for (var material in json.cost) {
-			str += '<span style="color:' + materialInfos[material][1] + '">' + json.cost[material] + " " + materialInfos[material][0] + "</span> ";
+			str += '<span class="text-' + material + '">' + json.cost[material] + " " + materialInfos[material] + "</span> ";
 		}
 		row.insertCell().innerHTML = str;
 	};

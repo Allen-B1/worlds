@@ -110,3 +110,23 @@ kbd {
 	display: inline-block;
 	padding: 0 4px;
 }
+
+.text-copper {
+	color: #b87333;
+}
+
+.text-brick {
+	color: #b74933;
+}
+
+.text-iron {
+	color: #666;
+}
+
+.text-gold {
+	color: #b7b033;
+}
+
+.text-uranium {
+	color: #8239cc;
+}
