@@ -11,8 +11,12 @@
 				<td>Turn</td>
 				<td id="stat-turn">0</td>
 			</tr>
+			<tr>
+				<td>Pollution</td>
+				<td id="stat-pollution">0</td>
+			</tr>
 		</table>
-		<table class="stats" style="top:64px">
+		<table class="stats" style="top:92px">
 			<tr>
 				<td>Brick</td>
 				<td id="stat-brick">0</td>
@@ -64,6 +68,11 @@ for (let i = 0; i < earthSize; i++) {
 		inner.classList.add("inner");
 		cell.appendChild(inner);
 		cell.addEventListener("click", function() {
+			var tiles = document.querySelectorAll(".tile-selected");
+			for (var tile of tiles) {
+				tile.classList.remove("tile-selected");
+			}
+
 			cell.classList.toggle("tile-selected");
 		});
 	}
@@ -85,6 +94,7 @@ xhr.open("GET", "/api/" + roomId + "/data.json");
 xhr.send();
 
 const statTurn = document.getElementById("stat-turn");
+const statPollution = document.getElementById("stat-pollution");
 const statBrick = document.getElementById("stat-brick");
 const statCopper = document.getElementById("stat-copper");
 const statIron = document.getElementById("stat-iron");
@@ -108,6 +118,7 @@ setInterval(function(){
 		}
 
 		statTurn.innerHTML = json.turn;
+		statPollution.innerHTML = json.pollution;
 		statBrick.innerHTML = json.stats[userIndex].materials.brick | 0;
 		statCopper.innerHTML = json.stats[userIndex].materials.copper | 0;
 		statIron.innerHTML = json.stats[userIndex].materials.iron | 0;
@@ -118,8 +129,10 @@ setInterval(function(){
 	xhr.send();
 }, 500);
 
-function addNotification(text) {
+// TODO: Add panel for players
 
+function addNotification(text) {
+	// TODO:
 }
 
 function move(from, to) {
@@ -148,27 +161,27 @@ const tileTypes = {
 	"5": "mine2",
 	"6": "mine3",
 	"7": "brick-wall",
-	"8": "iron-wall",
-	"9": "copper-wall",
+	"8": "copper-wall",
+	"9": "iron-wall",
 	"0": "launcher",
-	"p": "cleaner"
+	"-": "cleaner"
 };
 
 const materialInfos = {
 	copper: ["Cu", "#b87333"],
-	uranium: ["U", "purple"],
+	uranium: ["U", "#8239cc"],
 	brick: ["Brk", "#b74933"],
 	iron: ["Fe", "#666"],
 	gold: ["Au", "#b7b033"],
 };
 
 const tileInfoElem = document.getElementById("tileinfos")
-for (let key in tileTypes) {
+for (let key of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-"]) {
 	let tileType = tileTypes[key];
 	let xhr = new XMLHttpRequest();
+	let row = tileInfoElem.insertRow();
 	xhr.onload = function() {
 		var json = JSON.parse(xhr.responseText);
-		var row = tileInfoElem.insertRow();
 		row.insertCell().innerHTML = "<kbd>" + key + "</kbd>";
 		row.insertCell().innerHTML = json.name;
 
