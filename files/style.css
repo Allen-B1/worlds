@@ -26,7 +26,7 @@ body {
 	padding: 0; margin: 0;
 }
 
-#map {
+.map {
 	border: 4px solid;
 	background: #fafafa;
 	border-collapse: collapse;
@@ -35,7 +35,7 @@ body {
 	margin-bottom: 16px;
 }
 
-#map .tile {
+.map .tile {
 	width: 32px;
 	height: 32px;
 	padding: 0;
@@ -45,7 +45,7 @@ body {
 	background: var(--territory);
 }
 
-#map .tile .inner {
+.map .tile .inner {
 	font-size: 12px;
 
 	width: 32px;
@@ -57,14 +57,17 @@ body {
 	color: #000;
 }
 
-#map .deposit-iron {
+.map .deposit-iron {
 	background: url(/iron.svg) var(--territory);
 }
-#map .deposit-copper {
+.map .deposit-copper {
 	background: url(/copper.svg) var(--territory);
 }
-#map .deposit-gold {
+.map .deposit-gold {
 	background: url(/gold.svg) var(--territory);
+}
+.map .deposit-uranium {
+	background: url(/uranium.svg) var(--territory);
 }
 
 [data-territory="0"] {
@@ -76,38 +79,38 @@ body {
 [data-territory="2"] {
 	--territory: #ccddff;
 }
-#map .tile[data-territory="-1"] {
+.map .tile[data-territory="-1"] {
 	--territory: transparent;
 }
 
-#map .tile.tile-selected {
+.map .tile.tile-selected {
 	outline: 2px solid rgba(0,0,0,0.3);
 }
 
-#map .tile[data-tiletype="core"] .inner {
+.map .tile[data-tiletype="core"] .inner {
 	background: url(/core.svg); }
-#map .tile[data-tiletype="camp"] .inner {
+.map .tile[data-tiletype="camp"] .inner {
 	background: url(/camp.svg); }
-#map .tile[data-tiletype="kiln"] .inner {
+.map .tile[data-tiletype="kiln"] .inner {
 	background: url(/kiln.svg); }
-#map .tile[data-tiletype="mine1"] .inner {
+.map .tile[data-tiletype="mine1"] .inner {
 	background: url(/mine1.svg); }
-#map .tile[data-tiletype="mine2"] .inner {
+.map .tile[data-tiletype="mine2"] .inner {
 	background: url(/mine2.svg); }
-#map .tile[data-tiletype="mine3"] .inner {
+.map .tile[data-tiletype="mine3"] .inner {
 	background: url(/mine3.svg); }
-#map .tile[data-tiletype="brick-wall"] .inner {
+.map .tile[data-tiletype="brick-wall"] .inner {
 	background: url(/brick-wall.svg);
 	color: #fff; }
-#map .tile[data-tiletype="copper-wall"] .inner {
+.map .tile[data-tiletype="copper-wall"] .inner {
 	background: url(/copper-wall.svg);
 	color: #fff; }
-#map .tile[data-tiletype="iron-wall"] .inner {
+.map .tile[data-tiletype="iron-wall"] .inner {
 	background: url(/iron-wall.svg);
 	color: #fff; }
-#map .tile[data-tiletype="launcher"] .inner {
+.map .tile[data-tiletype="launcher"] .inner {
 	background: url(/launcher.svg); }
-#map .tile[data-tiletype="cleaner"] .inner {
+.map .tile[data-tiletype="cleaner"] .inner {
 	background: url(/cleaner.svg); }
 
 kbd {
@@ -140,4 +143,19 @@ kbd {
 #players tr {
 	background: var(--territory);
 	color: rgba(0,0,0,0.65);
+}
+
+#launcher {
+	position: fixed;
+	left: 16px;
+	bottom: 16px;
+}
+
+button {
+	border: 2px solid #999;
+	background: #ddd;
+	cursor: pointer;
+    font-family: 'VT323', monospace;
+	font-size: 16px;
+	padding: 4px 8px;
 }

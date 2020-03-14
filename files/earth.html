@@ -40,8 +40,14 @@
 		</table>
 		<table class="stats right" id="players"></table>
 		<table class="stats right bottom" id="tileinfos"></table>
-		<table id="map" style="border-color:#3a9900"></table>
+		<table class="map" id="earth-map" style="border-color:#3a9900"></table>
+		<table class="map" style="display:none;border-color:#7f0059" id="mars-map"></table>
+
+		<button id="launcher" style="display:none">To Mars</button>
+
 		<script>
+Notification.requestPermission();
+
 const earthSize = 32;
 const marsSize = 16;
 
@@ -57,25 +63,43 @@ xhr.onload = function() {
 xhr.open("GET", "/api/" + roomId + "/join?key=" + userKey);
 xhr.send();
 
-// create map
-var map = document.getElementById("map");
-for (let i = 0; i < earthSize; i++) {
-	let row = map.insertRow();
-	for (let j = 0; j < earthSize; j++) {
-		let cell = row.insertCell();
-		cell.id = "tile-" + (i*earthSize+j);
-		cell.classList.add("tile");
-		let inner = document.createElement("div");
-		inner.classList.add("inner");
-		cell.appendChild(inner);
-		cell.addEventListener("click", function() {
-			var tiles = document.querySelectorAll(".tile-selected");
-			for (var tile of tiles) {
-				tile.classList.remove("tile-selected");
-			}
+// create maps
+function tileify(cell) {
+	cell.classList.add("tile");
+	let inner = document.createElement("div");
+	inner.classList.add("inner");
+	cell.appendChild(inner);
+	cell.addEventListener("click", function() {
+		var tiles = document.querySelectorAll(".tile-selected");
+		for (var tile of tiles) {
+			tile.classList.remove("tile-selected");
+		}
 
-			cell.classList.toggle("tile-selected");
-		});
+		cell.classList.toggle("tile-selected");
+	});
+}
+
+{
+	let map = document.getElementById("earth-map");
+	for (let i = 0; i < earthSize; i++) {
+		let row = map.insertRow();
+		for (let j = 0; j < earthSize; j++) {
+			let cell = row.insertCell();
+			cell.id = "tile-" + (i*earthSize+j);
+			tileify(cell);
+		}
+	}
+}
+
+{
+	let map = document.getElementById("mars-map");
+	for (let i = 0; i < marsSize; i++) {
+		let row = map.insertRow();
+		for (let j = 0; j < marsSize; j++) {
+			let cell = row.insertCell();
+			cell.id = "tile-" + (earthSize*earthSize+i*marsSize+j);
+			tileify(cell);
+		}
 	}
 }
 
@@ -84,7 +108,7 @@ xhr = new XMLHttpRequest();
 xhr.onload = function() {
 	var json = JSON.parse(xhr.responseText);
 
-	for (var i = 0; i < earthSize*earthSize; i++) {
+	for (var i = 0; i < json.deposits.length; i++) {
 		if (json.deposits[i] != "") {
 			var cell = document.getElementById("tile-" + i);
 			cell.classList.add("deposit-" + json.deposits[i]);
@@ -118,7 +142,7 @@ setInterval(function(){
 	xhr.onload = function() {
 		var json = JSON.parse(xhr.responseText);
 
-		for (var i = 0; i < earthSize*earthSize; i++) {
+		for (var i = 0; i < json.territory.length; i++) {
 			var cell = document.getElementById("tile-" + i);
 			cell.setAttribute("data-territory", json.territory[i]);
 			cell.setAttribute("data-tiletype", json.tiletypes[i]);
@@ -138,21 +162,24 @@ setInterval(function(){
 		statUranium.innerHTML = json.stats[userIndex].materials.uranium | 0;
 
 		for (let loser in json.losers) {
-			document.getElementById("player-" + loser).style.textDecoration = "strikethrough";
+			if (loser == userIndex && document.getElementById("player-" + loser).style.textDecoration != "strikethrough") {
+				sendNotification("You Lose :)");
+			}
+ 			document.getElementById("player-" + loser).style.textDecoration = "strikethrough";
 		}
 	};
 	xhr.open("GET", "/api/" + roomId + "/data.json");
 	xhr.send();
 }, 500);
 
-function addNotification(text) {
-	// TODO:
+function sendNotification(text) {
+	new Notification(text);
 }
 
 function move(from, to) {
 	var xhr = new XMLHttpRequest();
 	xhr.onerror = function() {
-		addNotification(xhr.responseText);
+		sendNotification(xhr.responseText);
 	};
 	xhr.open("POST", "/api/" + roomId + "/move?from=" + from + "&to=" + to + "&key=" + userKey);
 	xhr.send();
@@ -161,11 +188,53 @@ function move(from, to) {
 function make(tile, tiletype) {
 	var xhr = new XMLHttpRequest();
 	xhr.onerror = function() {
-		addNotification(xhr.responseText);
+		sendNotification(xhr.responseText);
 	};
 	xhr.open("POST", "/api/" + roomId + "/make?tile=" + tile + "&type=" + tiletype + "&key=" + userKey);
 	xhr.send();
 }
+
+function launch(tile) {
+	var xhr = new XMLHttpRequest();
+	xhr.onerror = function() {
+		sendNotification(xhr.responseText);
+	};
+	xhr.onload = function() {
+		if (xhr.responseText != "") {
+			document.getElementById("launcher").style.display = "block";
+			toMars();
+		}
+	};
+	xhr.open("POST", "/api/" + roomId + "/launch?tile=" + tile + "&key=" + userKey);
+	xhr.send();
+}
+
+function toMars() {
+	var launchElem = document.getElementById("launcher");
+	launchElem.innerHTML = "To Earth";
+
+	document.getElementById("earth-map").style.display = "none";
+	document.getElementById("mars-map").style.display = "table";
+	document.body.style.background = "#b2007c";
+}
+
+function toEarth() {
+	var launchElem = document.getElementById("launcher");
+	launchElem.innerHTML = "To Mars";
+
+	document.getElementById("earth-map").style.display = "table";
+	document.getElementById("mars-map").style.display = "none";
+
+	document.body.style.background = "#44b200";
+}
+
+document.getElementById("launcher").addEventListener("click", function() {
+	if (this.innerHTML == "To Mars") {
+		toMars();
+	} else {
+		toEarth();
+	}
+});
 
 const tileTypes = {
 	"1": "core",
@@ -211,12 +280,15 @@ for (let key of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-"]) {
 
 document.addEventListener("keydown", function(e) {
 	if (e.key == "a" || e.key == "s" || e.key == "w" || e.key == "d") {
+		var isEarth = document.getElementById("mars-map").style.display == "none";
+		var planetSize = isEarth ? earthSize : marsSize;
+
 		var fromElem = document.querySelector(".tile-selected");
 		var from = fromElem.id.slice(5) |0;
 		var to = from;
-		if (e.key == "w") to = from - earthSize;
+		if (e.key == "w") to = from - planetSize;
 		else if (e.key == "a") to = from - 1;
-		else if (e.key == "s") to = from + earthSize;
+		else if (e.key == "s") to = from + planetSize;
 		else if (e.key == "d") to = from + 1;
 
 		for (var elem of document.querySelectorAll(".tile-selected")) {
@@ -232,6 +304,12 @@ document.addEventListener("keydown", function(e) {
 		var tileElem = document.querySelector(".tile-selected");
 		var tile = tileElem.id.slice(5);
 		make(tile, tileTypes[e.key]);
+	}
+
+	if (e.key == "l") {
+		var tileElem = document.querySelector(".tile-selected");
+		var tile = tileElem.id.slice(5);
+		launch(tile);
 	}
 });
 		</script>

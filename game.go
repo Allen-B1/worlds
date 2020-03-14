@@ -46,7 +46,7 @@ var TileInfos = map[TileType]TileInfo{
 	Core: TileInfo{
 		Name: "Core",
 		Cost: map[Material]uint{
-			Brick:  200,
+			Brick:  500,
 			Copper: 100,
 			Iron:   50,
 			Gold:   10,
@@ -61,7 +61,7 @@ var TileInfos = map[TileType]TileInfo{
 	Kiln: TileInfo{
 		Name: "Kiln",
 		Cost: map[Material]uint{
-			Brick: 50,
+			Brick: 20,
 		},
 		Pollution: 1,
 	},
@@ -490,13 +490,47 @@ func NewGame(players []string) *Game {
 			g.Territory[tile] = i
 			g.Armies[tile] = 1
 		}
-		g.Armies[tile] = 42
+		g.Armies[tile] = 15
 		g.TileTypes[tile] = Core
 
 		g.TileTypes[kilnTile] = Kiln
 	}
 
 	return g
+}
+
+func (g *Game) Launch(player int, tile int) error {
+	if g.TileTypes[tile] != Launcher || g.Territory[tile] != player {
+		return errors.New("launcher required to launch")
+	}
+
+	for i := EarthSize * EarthSize; i < len(g.TileTypes); i++ {
+		if g.TileTypes[i] == Core && g.Territory[i] == player {
+			return nil
+		}
+	}
+
+	x := uint(rand.Intn(MarsSize-2) + 1)
+	y := uint(rand.Intn(MarsSize-2) + 1)
+
+	tiles := []int{
+		g.tileFromCoord(Mars, x, y),
+		g.tileFromCoord(Mars, x+1, y),
+		g.tileFromCoord(Mars, x, y+1),
+		g.tileFromCoord(Mars, x+1, y+1),
+		g.tileFromCoord(Mars, x-1, y),
+		g.tileFromCoord(Mars, x, y-1),
+		g.tileFromCoord(Mars, x-1, y-1),
+		g.tileFromCoord(Mars, x-1, y+1),
+		g.tileFromCoord(Mars, x+1, y-1),
+	}
+
+	for _, tile := range tiles {
+		g.Territory[tile] = player
+		g.Armies[tile] = 1
+	}
+	g.TileTypes[tiles[0]] = Core
+	return nil
 }
 
 func (g *Game) Nuke(player int) error {

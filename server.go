@@ -214,6 +214,43 @@ func main() {
 		}
 	}).Methods("POST")
 
+	m.HandleFunc("/api/{game}/launch", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		raw, _ := objects.Load(vars["game"])
+		if raw == nil {
+			w.WriteHeader(404)
+			return
+		}
+
+		obj := raw.(*Object)
+		obj.Lock()
+		defer obj.Unlock()
+		game, ok := obj.Data.(*Game)
+		if !ok {
+			w.WriteHeader(404)
+			return
+		}
+
+		key := r.FormValue("key")
+		tile, err := strconv.Atoi(r.FormValue("tile"))
+		if err != nil {
+			w.WriteHeader(400)
+			return
+		}
+
+		index, ok := obj.Transition[key]
+		if !ok {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "invalid key")
+		}
+
+		err = game.Launch(index, tile)
+		if err != nil {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, err)
+		}
+	}).Methods("POST")
+
 	m.HandleFunc("/api/tileinfo", func(w http.ResponseWriter, r *http.Request) {
 		tileType := TileType(r.FormValue("type"))
 		body, err := json.Marshal(TileInfos[tileType])
@@ -239,7 +276,7 @@ func main() {
 		http.ServeFile(w, r, "files/index.html")
 	}).Methods("GET")
 
-	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg"}
+	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg", "uranium.svg"}
 	for _, file := range files {
 		file2 := file
 		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {
