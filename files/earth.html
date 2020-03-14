@@ -12,7 +12,7 @@
 				<td id="stat-turn">0</td>
 			</tr>
 		</table>
-		<table class="stats right">
+		<table class="stats" style="top:64px">
 			<tr>
 				<td>Brick</td>
 				<td id="stat-brick">0</td>
@@ -130,6 +130,15 @@ function move(from, to) {
 	xhr.send();
 }
 
+function make(tile, tiletype) {
+	var xhr = new XMLHttpRequest();
+	xhr.onerror = function() {
+		addNotification(xhr.responseText);
+	};
+	xhr.open("POST", "/api/" + roomId + "/make?tile=" + tile + "&type=" + tiletype + "&key=" + userKey);
+	xhr.send();
+}
+
 document.addEventListener("keydown", function(e) {
 	if (e.key == "a" || e.key == "s" || e.key == "w" || e.key == "d") {
 		var fromElem = document.querySelector(".tile-selected");
@@ -143,11 +152,28 @@ document.addEventListener("keydown", function(e) {
 		for (var elem of document.querySelectorAll(".tile-selected")) {
 			elem.classList.remove("tile-selected");
 		}
-		console.log(to);
 
 		move(from, to);
 
 		document.getElementById("tile-" + to).classList.add("tile-selected");
+	}
+	var objects = {
+		"1": "core",
+		"2": "camp",
+		"3": "kiln",
+		"4": "mine1",
+		"5": "mine2",
+		"6": "mine3",
+		"7": "brick-wall",
+		"8": "iron-wall",
+		"9": "copper-wall",
+		"0": "launcher",
+		"p": "cleaner"
+	};
+	if (e.key in objects) {
+		var tileElem = document.querySelector(".tile-selected");
+		var tile = tileElem.id.slice(5);
+		make(tile, objects[e.key]);
 	}
 });
 		</script>

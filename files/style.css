@@ -79,5 +79,25 @@ body {
 }
 
 #map .tile[data-tiletype="core"] .inner {
-	background: url(/core.svg);
-}
+	background: url(/core.svg); }
+#map .tile[data-tiletype="camp"] .inner {
+	background: url(/camp.svg); }
+#map .tile[data-tiletype="kiln"] .inner {
+	background: url(/kiln.svg); }
+#map .tile[data-tiletype="mine1"] .inner {
+	background: url(/mine1.svg); }
+#map .tile[data-tiletype="mine2"] .inner {
+	background: url(/mine2.svg); }
+#map .tile[data-tiletype="mine3"] .inner {
+	background: url(/mine3.svg); }
+#map .tile[data-tiletype="brick-wall"] .inner {
+	background: url(/brick-wall.svg); }
+#map .tile[data-tiletype="copper-wall"] .inner {
+	background: url(/copper-wall.svg); }
+#map .tile[data-tiletype="iron-wall"] .inner {
+	background: url(/iron-wall.svg); }
+#map .tile[data-tiletype="launcher"] .inner {
+	background: url(/launcher.svg); }
+#map .tile[data-tiletype="cleaner"] .inner {
+	background: url(/cleaner.svg); }
+
