@@ -37,9 +37,9 @@ const (
 )
 
 type TileInfo struct {
-	Name      string
-	Pollution uint
-	Cost      map[Material]uint
+	Name      string            `json:"name"`
+	Pollution uint              `json:"pollution"`
+	Cost      map[Material]uint `json:"cost"`
 }
 
 var TileInfos = map[TileType]TileInfo{
@@ -49,6 +49,7 @@ var TileInfos = map[TileType]TileInfo{
 			Brick:  200,
 			Copper: 100,
 			Iron:   50,
+			Gold:   10,
 		},
 	},
 	Camp: TileInfo{

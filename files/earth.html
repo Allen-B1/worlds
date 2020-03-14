@@ -34,6 +34,7 @@
 				<td id="stat-uranium">0</td>
 			</tr>
 		</table>
+		<table class="stats right" id="tileinfos"></table>
 		<table id="map" style="border-color:#3a9900"></table>
 		<script>
 const earthSize = 32;
@@ -139,6 +140,48 @@ function make(tile, tiletype) {
 	xhr.send();
 }
 
+const tileTypes = {
+	"1": "core",
+	"2": "camp",
+	"3": "kiln",
+	"4": "mine1",
+	"5": "mine2",
+	"6": "mine3",
+	"7": "brick-wall",
+	"8": "iron-wall",
+	"9": "copper-wall",
+	"0": "launcher",
+	"p": "cleaner"
+};
+
+const materialInfos = {
+	copper: ["Cu", "#b87333"],
+	uranium: ["U", "purple"],
+	brick: ["Brk", "#b74933"],
+	iron: ["Fe", "#666"],
+	gold: ["Au", "#b7b033"],
+};
+
+const tileInfoElem = document.getElementById("tileinfos")
+for (let key in tileTypes) {
+	let tileType = tileTypes[key];
+	let xhr = new XMLHttpRequest();
+	xhr.onload = function() {
+		var json = JSON.parse(xhr.responseText);
+		var row = tileInfoElem.insertRow();
+		row.insertCell().innerHTML = "<kbd>" + key + "</kbd>";
+		row.insertCell().innerHTML = json.name;
+
+		var str = "";
+		for (var material in json.cost) {
+			str += '<span style="color:' + materialInfos[material][1] + '">' + json.cost[material] + " " + materialInfos[material][0] + "</span> ";
+		}
+		row.insertCell().innerHTML = str;
+	};
+	xhr.open("GET", "/api/tileinfo?type=" + tileType);
+	xhr.send();
+}
+
 document.addEventListener("keydown", function(e) {
 	if (e.key == "a" || e.key == "s" || e.key == "w" || e.key == "d") {
 		var fromElem = document.querySelector(".tile-selected");
@@ -157,23 +200,11 @@ document.addEventListener("keydown", function(e) {
 
 		document.getElementById("tile-" + to).classList.add("tile-selected");
 	}
-	var objects = {
-		"1": "core",
-		"2": "camp",
-		"3": "kiln",
-		"4": "mine1",
-		"5": "mine2",
-		"6": "mine3",
-		"7": "brick-wall",
-		"8": "iron-wall",
-		"9": "copper-wall",
-		"0": "launcher",
-		"p": "cleaner"
-	};
-	if (e.key in objects) {
+
+	if (e.key in tileTypes) {
 		var tileElem = document.querySelector(".tile-selected");
 		var tile = tileElem.id.slice(5);
-		make(tile, objects[e.key]);
+		make(tile, tileTypes[e.key]);
 	}
 });
 		</script>

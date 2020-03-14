@@ -174,7 +174,7 @@ func main() {
 			w.WriteHeader(400)
 			fmt.Fprintln(w, err)
 		}
-	})
+	}).Methods("POST")
 
 	m.HandleFunc("/api/{game}/make", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -212,27 +212,39 @@ func main() {
 			w.WriteHeader(400)
 			fmt.Fprintln(w, err)
 		}
-	})
+	}).Methods("POST")
+
+	m.HandleFunc("/api/tileinfo", func(w http.ResponseWriter, r *http.Request) {
+		tileType := TileType(r.FormValue("type"))
+		body, err := json.Marshal(TileInfos[tileType])
+		if err != nil {
+			w.WriteHeader(500)
+			return
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(body)
+	}).Methods("GET")
 
 	m.HandleFunc("/{object}/earth", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "files/earth.html")
-	})
+	}).Methods("GET")
 	m.HandleFunc("/{object}/mars", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "files/mars.html")
-	})
+	}).Methods("GET")
 	m.HandleFunc("/{object}/room", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "files/room.html")
-	})
+	}).Methods("GET")
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "files/index.html")
-	})
+	}).Methods("GET")
 
 	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg"}
 	for _, file := range files {
 		file2 := file
 		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {
 			http.ServeFile(w, r, "files/"+file2)
-		})
+		}).Methods("GET")
 	}
 
 	http.ListenAndServe(":8080", nil)

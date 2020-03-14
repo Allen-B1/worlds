@@ -101,3 +101,9 @@ body {
 #map .tile[data-tiletype="cleaner"] .inner {
 	background: url(/cleaner.svg); }
 
+kbd {
+    font-family: 'VT323', monospace;
+	background: #bbb;
+	display: inline-block;
+	padding: 0 4px;
+}
