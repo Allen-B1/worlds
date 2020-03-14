@@ -21,7 +21,25 @@ type Object struct {
 // rooms and games
 var objects sync.Map
 
+func gameThread() {
+	for {
+		turnTimer := time.After(500 * time.Millisecond)
+		objects.Range(func(key, value interface{}) bool {
+			obj := value.(*Object)
+			obj.Lock()
+			if game, ok := obj.Data.(*Game); ok {
+				game.NextTurn()
+			}
+			obj.Unlock()
+			return true
+		})
+		<-turnTimer
+	}
+}
+
 func main() {
+	go gameThread()
+
 	rand.Seed(time.Now().UnixNano())
 
 	m := mux.NewRouter()
@@ -63,6 +81,28 @@ func main() {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(body)
 	}).Methods("GET")
+
+	m.HandleFunc("/api/{object}/leave", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		raw, _ := objects.Load(vars["object"])
+		if raw == nil {
+			w.WriteHeader(404)
+			return
+		}
+
+		output := ""
+		obj := raw.(*Object)
+		obj.Lock()
+		room, ok := obj.Data.(*Room)
+		if ok {
+			key := r.FormValue("key")
+			room.Leave(key)
+		}
+		obj.Unlock()
+
+		w.Header().Set("Content-Type", "text/plain")
+		io.WriteString(w, output)
+	}).Methods("POST")
 
 	m.HandleFunc("/api/{object}/join", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
@@ -123,7 +163,11 @@ func main() {
 			return
 		}
 
-		index := obj.Transition[key]
+		index, ok := obj.Transition[key]
+		if !ok {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "invalid key")
+		}
 
 		err := game.Move(index, from, to)
 		if err != nil {
@@ -156,7 +200,12 @@ func main() {
 			w.WriteHeader(400)
 			return
 		}
-		index := obj.Transition[key]
+
+		index, ok := obj.Transition[key]
+		if !ok {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "invalid key")
+		}
 
 		err = game.Make(index, tile, tileType)
 		if err != nil {
@@ -175,12 +224,16 @@ func main() {
 		http.ServeFile(w, r, "files/room.html")
 	})
 	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "files/home.html")
+		http.ServeFile(w, r, "files/index.html")
 	})
 
-	m.HandleFunc("/style.css", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "files/style.css")
-	})
+	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "mine1.svg", "mine2.svg", "mine3.svg"}
+	for _, file := range files {
+		file2 := file
+		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {
+			http.ServeFile(w, r, "files/"+file2)
+		})
+	}
 
 	http.ListenAndServe(":8080", nil)
 }

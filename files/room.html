@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>worlds</title>
+		<link rel="stylesheet" href="/style.css">
+	</head>
+	<body>
+		<main align="center">
+			<p>You are <b id="name">Anonymous</b></p>
+			<p><b id="count">0</b> of <b id="max">0</b></p>
+		</main>
+		<script>
+document.body.style.display = "none";
+
+const roomId = location.pathname.split("/")[1];
+var userId = null;
+var name = prompt("What is your name?");
+
+{
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load", function() {
+		userId = xhr.responseText;
+		document.body.style.display = "block";
+	});
+	xhr.open("POST", "/api/" + roomId + "/join?name=" + name);
+	xhr.send();
+}
+
+var countElem = document.getElementById("count");
+var maxElem = document.getElementById("max");
+var nameElem = document.getElementById("name");
+
+nameElem.innerHTML = name;
+
+setInterval(function() {
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load", function() {
+		var json = JSON.parse(xhr.responseText);
+		if (json.type != "room") {
+			location.href = "/" + roomId + "/earth#" + userId;
+		} else {
+			countElem.innerHTML = json.players.length;
+			maxElem.innerHTML = json.max;
+		}
+	});
+	xhr.open("GET", "/api/" + roomId + "/data.json");
+	xhr.send();
+}, 500);
+
+window.addEventListener("beforeunload", function() {
+	navigator.sendBeacon("/api/" + roomId + "/leave?key=" + userId, null);
+});
+		</script>
+	</body>
+</html>

@@ -17,9 +17,13 @@ func (r *Room) MarshalJSON() ([]byte, error) {
 	players, _ := r.PlayersAsArray()
 	return json.Marshal(map[string]interface{}{
 		"type":    "room",
-		"max":     5,
+		"max":     r.Max,
 		"players": players,
 	})
+}
+
+func (r *Room) Leave(key string) {
+	delete(r.Players, key)
 }
 
 func (r *Room) Join(name string) string {

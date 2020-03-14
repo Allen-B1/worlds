@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>worlds</title>
+		<link rel="stylesheet" href="/style.css">
+	</head>
+	<body>
+		<input type="number" id="max" placeholder="max players">
+		<button id="create">Create</button>
+
+		<script>
+document.getElementById("create").addEventListener("click", function() {
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load", function() {
+		var roomId = xhr.responseText;
+
+		location.href = "/" + roomId + "/room";
+	});
+	xhr.open("POST", "/api/new?max=" + document.getElementById("max").value);
+	xhr.send();
+});
+		</script>
+	</body>
+</html>

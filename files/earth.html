@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>worlds &#8226; earth</title>
+		<link rel="stylesheet" href="/style.css">
+		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+	</head>
+	<body style="background:#44b200">
+		<table class="stats">
+			<tr>
+				<td>Turn</td>
+				<td id="stat-turn">0</td>
+			</tr>
+		</table>
+		<table class="stats right">
+			<tr>
+				<td>Brick</td>
+				<td id="stat-brick">0</td>
+			</tr>
+			<tr>
+				<td>Copper</td>
+				<td id="stat-copper">0</td>
+			</tr>
+			<tr>
+				<td>Iron</td>
+				<td id="stat-iron">0</td>
+			</tr>
+			<tr>
+				<td>Gold</td>
+				<td id="stat-gold">0</td>
+			</tr>
+			<tr>
+				<td>Uranium</td>
+				<td id="stat-uranium">0</td>
+			</tr>
+		</table>
+		<table id="map" style="border-color:#3a9900"></table>
+		<script>
+const earthSize = 32;
+const marsSize = 16;
+
+const roomId = location.pathname.split("/")[1];
+const userKey = location.hash.slice(1);
+var userIndex;
+
+// join
+var xhr = new XMLHttpRequest();
+xhr.onload = function() {
+	userIndex = xhr.responseText | 0;
+};
+xhr.open("GET", "/api/" + roomId + "/join?key=" + userKey);
+xhr.send();
+
+// create map
+var map = document.getElementById("map");
+for (let i = 0; i < earthSize; i++) {
+	let row = map.insertRow();
+	for (let j = 0; j < earthSize; j++) {
+		let cell = row.insertCell();
+		cell.id = "tile-" + (i*earthSize+j);
+		cell.classList.add("tile");
+		let inner = document.createElement("div");
+		inner.classList.add("inner");
+		cell.appendChild(inner);
+		cell.addEventListener("click", function() {
+			cell.classList.toggle("tile-selected");
+		});
+	}
+}
+
+// load deposits
+xhr = new XMLHttpRequest();
+xhr.onload = function() {
+	var json = JSON.parse(xhr.responseText);
+
+	for (var i = 0; i < earthSize*earthSize; i++) {
+		if (json.deposits[i] != "") {
+			var cell = document.getElementById("tile-" + i);
+			cell.classList.add("deposit-" + json.deposits[i]);
+		}
+	}
+};
+xhr.open("GET", "/api/" + roomId + "/data.json");
+xhr.send();
+
+const statTurn = document.getElementById("stat-turn");
+const statBrick = document.getElementById("stat-brick");
+const statCopper = document.getElementById("stat-copper");
+const statIron = document.getElementById("stat-iron");
+const statGold = document.getElementById("stat-gold");
+const statUranium = document.getElementById("stat-uranium");
+
+setInterval(function(){
+	var xhr = new XMLHttpRequest();
+	xhr.onload = function() {
+		var json = JSON.parse(xhr.responseText);
+
+		for (var i = 0; i < earthSize*earthSize; i++) {
+			var cell = document.getElementById("tile-" + i);
+			cell.setAttribute("data-territory", json.territory[i]);
+			cell.setAttribute("data-tiletype", json.tiletypes[i]);
+			if (json.territory[i] >= 0 || json.armies[i] > 0) {
+				cell.querySelector(".inner").innerHTML = json.armies[i];
+			} else {
+				cell.querySelector(".inner").innerHTML = "";
+			}
+		}
+
+		statTurn.innerHTML = json.turn;
+		statBrick.innerHTML = json.stats[userIndex].materials.brick | 0;
+		statCopper.innerHTML = json.stats[userIndex].materials.copper | 0;
+		statIron.innerHTML = json.stats[userIndex].materials.iron | 0;
+		statGold.innerHTML = json.stats[userIndex].materials.gold | 0;
+		statUranium.innerHTML = json.stats[userIndex].materials.uranium | 0;
+	};
+	xhr.open("GET", "/api/" + roomId + "/data.json");
+	xhr.send();
+}, 500);
+
+function addNotification(text) {
+
+}
+
+function move(from, to) {
+	var xhr = new XMLHttpRequest();
+	xhr.onerror = function() {
+		addNotification(xhr.responseText);
+	};
+	xhr.open("POST", "/api/" + roomId + "/move?from=" + from + "&to=" + to + "&key=" + userKey);
+	xhr.send();
+}
+
+document.addEventListener("keydown", function(e) {
+	if (e.key == "a" || e.key == "s" || e.key == "w" || e.key == "d") {
+		var fromElem = document.querySelector(".tile-selected");
+		var from = fromElem.id.slice(5) |0;
+		var to = from;
+		if (e.key == "w") to = from - earthSize;
+		else if (e.key == "a") to = from - 1;
+		else if (e.key == "s") to = from + earthSize;
+		else if (e.key == "d") to = from + 1;
+
+		for (var elem of document.querySelectorAll(".tile-selected")) {
+			elem.classList.remove("tile-selected");
+		}
+		console.log(to);
+
+		move(from, to);
+
+		document.getElementById("tile-" + to).classList.add("tile-selected");
+	}
+});
+		</script>
+	</body>
+</html>

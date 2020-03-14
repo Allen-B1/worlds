@@ -1,0 +1,83 @@
+.stats {
+	position: fixed;
+	left: 16px; top: 16px;
+	background: #ddd;
+	border: 2px solid #999;
+    font-family: 'VT323', monospace;
+	font-size: 16px;
+}
+
+.stats td {
+	padding: 4px 8px;
+}
+
+.stats.right {
+	left: auto;
+	right: 16px;
+}
+
+body {
+	padding: 0; margin: 0;
+}
+
+#map {
+	border: 4px solid;
+	background: #fafafa;
+	border-collapse: collapse;
+	margin: auto;
+	margin-top: 16px;
+	margin-bottom: 16px;
+}
+
+#map .tile {
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	text-align: center;
+    font-family: 'VT323', monospace;
+	color: rgba(0,0,0,0.5);
+	background: var(--territory);
+}
+
+#map .tile .inner {
+	font-size: 12px;
+
+	width: 32px;
+	height: 24px;
+	padding-top: 8px;
+
+	position: relative;
+	z-index: 3;
+	color: #000;
+}
+
+#map .deposit-iron {
+	background: url(/iron.svg) var(--territory);
+}
+#map .deposit-copper {
+	background: url(/copper.svg) var(--territory);
+}
+#map .deposit-gold {
+	background: url(/gold.svg) var(--territory);
+}
+
+#map .tile[data-territory="0"] {
+	--territory: #ffd4cc;
+}
+#map .tile[data-territory="1"] {
+	--territory: #ddffcc;
+}
+#map .tile[data-territory="2"] {
+	--territory: #ccddff;
+}
+#map .tile[data-territory="-1"] {
+	--territory: transparent;
+}
+
+#map .tile.tile-selected {
+	outline: 2px solid rgba(0,0,0,0.3);
+}
+
+#map .tile[data-tiletype="core"] .inner {
+	background: url(/core.svg);
+}

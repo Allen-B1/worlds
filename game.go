@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -13,7 +14,7 @@ const (
 	Earth Planet = "earth"
 
 	MarsSize  = 16 // 16*16
-	EarthSize = 24 // 24*24
+	EarthSize = 32 // 32*32
 )
 
 type TileType string
@@ -137,17 +138,32 @@ type PlayerStat struct {
 }
 
 type Game struct {
-	Armies    []uint32   `json:"armies"`
-	Territory []int      `json:"territory"`
-	TileTypes []TileType `json:"tiletypes"`
-	Deposits  []Material `json:"deposits"`
+	Armies    []uint32
+	Territory []int
+	TileTypes []TileType
+	Deposits  []Material
 
-	Players []string     `json:"players"`
-	Stats   []PlayerStat `json:"stats"`
+	Players []string
+	Stats   []PlayerStat
 
-	Turn uint `json:"turn"`
+	Turn uint
 
-	Pollution uint `json:"pollution"`
+	Pollution uint
+}
+
+func (g *Game) MarshalJSON() ([]byte, error) {
+	return json.Marshal(map[string]interface{}{
+		"armies":    g.Armies,
+		"territory": g.Territory,
+		"tiletypes": g.TileTypes,
+		"deposits":  g.Deposits,
+		"players":   g.Players,
+		"stats":     g.Stats,
+		"turn":      g.Turn,
+		"pollution": g.Pollution,
+
+		"type": "game",
+	})
 }
 
 func (g *Game) tileToCoord(id int) (planet Planet, x uint, y uint) {
@@ -266,23 +282,27 @@ func (g *Game) Move(player int, from int, to int) error {
 		return errors.New("can't teleport to different planet")
 	}
 
-	if !((fromX == fromY && (toX-toY == 1 || toY-toX == 1)) ||
-		(toX == toY && (fromX-fromY == 1 || fromY-fromX == 1))) {
-		return errors.New("can't teleport")
+	if !((fromX == toX && (fromY-toY == 1 || toY-fromY == 1)) ||
+		(fromY == toY && (fromX-toX == 1 || toX-fromX == 1))) {
+		return fmt.Errorf("can't teleport from (%v, %v) to (%v, %v)", fromX, fromY, toX, toY)
 	}
 
 	fromArmies := g.Armies[from] - 1
 	toArmies := g.Armies[to]
 
 	g.Armies[from] -= fromArmies
-	if fromArmies > toArmies {
-		g.Armies[to] = fromArmies - toArmies
-		g.Territory[to] = player
-		g.TileTypes[to] = ""
-
-		// TODO: Lose if no cores left
+	if player == g.Territory[to] {
+		g.Armies[to] += fromArmies
 	} else {
-		g.Armies[to] -= fromArmies
+		if fromArmies > toArmies {
+			g.Armies[to] = fromArmies - toArmies
+			g.Territory[to] = player
+			g.TileTypes[to] = ""
+
+			// TODO: Lose if no cores left
+		} else {
+			g.Armies[to] -= fromArmies
+		}
 	}
 
 	return nil
@@ -305,70 +325,80 @@ func NewGame(players []string) *Game {
 		g.Territory[tile] = -1
 	}
 
-	for i := 0; i < 16; i++ {
-		x := uint(rand.Intn(EarthSize-12)) + 6
-		y := uint(rand.Intn(EarthSize-12)) + 6
-		tile1 := g.tileFromCoord(Earth, x, y)
-		tile2 := g.tileFromCoord(Earth, x+1, y)
-		tile3 := g.tileFromCoord(Earth, x, y+1)
-		tile4 := g.tileFromCoord(Earth, x+1, y+1)
-
-		g.Deposits[tile1] = Copper
-		g.Deposits[tile2] = Copper
-		g.Deposits[tile3] = Copper
-		g.Deposits[tile4] = Copper
-	}
-
 	for i := 0; i < 8; i++ {
-		x := uint(rand.Intn(EarthSize-12)) + 6
-		y := uint(rand.Intn(EarthSize-12)) + 6
-		tile1 := g.tileFromCoord(Earth, x, y)
-		tile2 := g.tileFromCoord(Earth, x+1, y)
-		tile3 := g.tileFromCoord(Earth, x, y+1)
-		tile4 := g.tileFromCoord(Earth, x+1, y+1)
+		x := uint(rand.Intn(EarthSize-2)) + 1
+		y := uint(rand.Intn(EarthSize-2)) + 1
+		tiles := []int{
+			g.tileFromCoord(Earth, x, y),
+			g.tileFromCoord(Earth, x+1, y),
+			g.tileFromCoord(Earth, x, y+1),
+			g.tileFromCoord(Earth, x+1, y+1),
+			g.tileFromCoord(Earth, x-1, y),
+			g.tileFromCoord(Earth, x, y-1),
+			g.tileFromCoord(Earth, x-1, y-1),
+			g.tileFromCoord(Earth, x-1, y+1),
+			g.tileFromCoord(Earth, x+1, y-1),
+		}
 
-		g.Deposits[tile1] = Iron
-		g.Deposits[tile2] = Iron
-		g.Deposits[tile3] = Iron
-		g.Deposits[tile4] = Iron
-	}
-
-	for i := 0; i < 3; i++ {
-		x := uint(rand.Intn(EarthSize-12)) + 6
-		y := uint(rand.Intn(EarthSize-12)) + 6
-		tile1 := g.tileFromCoord(Earth, x, y)
-		tile2 := g.tileFromCoord(Earth, x+1, y)
-		tile3 := g.tileFromCoord(Earth, x, y+1)
-		tile4 := g.tileFromCoord(Earth, x+1, y+1)
-
-		g.Deposits[tile1] = Gold
-		g.Deposits[tile2] = Gold
-		g.Deposits[tile3] = Gold
-		g.Deposits[tile4] = Gold
+		for _, tile := range tiles {
+			g.Deposits[tile] = Copper
+		}
 	}
 
 	for i := 0; i < 6; i++ {
-		x := uint(rand.Intn(MarsSize-12)) + 6
-		y := uint(rand.Intn(MarsSize-12)) + 6
-		tile1 := g.tileFromCoord(Mars, x, y)
-		tile2 := g.tileFromCoord(Mars, x+1, y)
-		tile3 := g.tileFromCoord(Mars, x, y+1)
-		tile4 := g.tileFromCoord(Mars, x+1, y+1)
+		x := uint(rand.Intn(EarthSize - 1))
+		y := uint(rand.Intn(EarthSize - 1))
+		tiles := []int{
+			g.tileFromCoord(Earth, x, y),
+			g.tileFromCoord(Earth, x+1, y),
+			g.tileFromCoord(Earth, x, y+1),
+			g.tileFromCoord(Earth, x+1, y+1),
+		}
 
-		g.Deposits[tile1] = Uranium
-		g.Deposits[tile2] = Uranium
-		g.Deposits[tile3] = Uranium
-		g.Deposits[tile4] = Uranium
+		for _, tile := range tiles {
+			g.Deposits[tile] = Iron
+		}
+	}
+
+	for i := 0; i < 2; i++ {
+		x := uint(rand.Intn(EarthSize - 1))
+		y := uint(rand.Intn(EarthSize - 1))
+		tiles := []int{
+			g.tileFromCoord(Earth, x, y),
+			g.tileFromCoord(Earth, x+1, y),
+			g.tileFromCoord(Earth, x, y+1),
+			g.tileFromCoord(Earth, x+1, y+1),
+		}
+
+		for _, tile := range tiles {
+			g.Deposits[tile] = Gold
+		}
+	}
+
+	for i := 0; i < 6; i++ {
+		x := uint(rand.Intn(MarsSize - 1))
+		y := uint(rand.Intn(MarsSize - 1))
+		tiles := []int{
+			g.tileFromCoord(Mars, x, y),
+			g.tileFromCoord(Mars, x+1, y),
+			g.tileFromCoord(Mars, x, y+1),
+			g.tileFromCoord(Mars, x+1, y+1),
+		}
+
+		for _, tile := range tiles {
+			g.Deposits[tile] = Uranium
+		}
 	}
 
 	for i := 0; i < len(players); i++ {
-		x := uint(rand.Intn(EarthSize-12)) + 6
-		y := uint(rand.Intn(EarthSize-12)) + 6
+		x := uint(rand.Intn(EarthSize-4)) + 2
+		y := uint(rand.Intn(EarthSize-4)) + 2
 		tile := g.tileFromCoord(Earth, x, y)
+		kilnTile := g.tileFromCoord(Earth, x+1, y)
 
 		tiles := []int{
 			tile,
-			g.tileFromCoord(Earth, x+1, y),
+			kilnTile,
 			g.tileFromCoord(Earth, x, y+1),
 			g.tileFromCoord(Earth, x+1, y+1),
 			g.tileFromCoord(Earth, x-1, y),
@@ -384,6 +414,8 @@ func NewGame(players []string) *Game {
 		}
 		g.Armies[tile] = 42
 		g.TileTypes[tile] = Core
+
+		g.TileTypes[kilnTile] = Kiln
 	}
 
 	return g
