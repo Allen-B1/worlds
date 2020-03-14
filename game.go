@@ -199,7 +199,9 @@ func (g *Game) NextTurn() {
 
 		switch tileType {
 		case Camp:
-			g.Armies[tile] += 1
+			if g.Turn%5 == 0 {
+				g.Armies[tile] += 1
+			}
 		case Kiln:
 			player := g.Territory[tile]
 			if player < 0 {
@@ -242,6 +244,50 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 	}
 	if tileType == MineV3 && g.Deposits[tile] != Gold {
 		return errors.New("mine v3 can only mine gold")
+	}
+
+	if tileType == Camp || tileType == Kiln {
+		planet, x, y := g.tileToCoord(tile)
+		tiles := []int{
+			g.tileFromCoord(planet, x-1, y+1),
+			g.tileFromCoord(planet, x-1, y),
+			g.tileFromCoord(planet, x-1, y-1),
+			g.tileFromCoord(planet, x, y+1),
+			g.tileFromCoord(planet, x, y-1),
+			g.tileFromCoord(planet, x+1, y+1),
+			g.tileFromCoord(planet, x+1, y),
+			g.tileFromCoord(planet, x+1, y-1),
+		}
+
+		adj := false
+		for _, tile := range tiles {
+			if tile > 0 && g.TileTypes[tile] == Core {
+				adj = true
+			}
+		}
+		if !adj {
+			return errors.New("camp and kiln must be inside village")
+		}
+	}
+
+	if tileType == Core {
+		planet, x, y := g.tileToCoord(tile)
+		tiles := []int{
+			g.tileFromCoord(planet, x-1, y+1),
+			g.tileFromCoord(planet, x-1, y),
+			g.tileFromCoord(planet, x-1, y-1),
+			g.tileFromCoord(planet, x, y+1),
+			g.tileFromCoord(planet, x, y-1),
+			g.tileFromCoord(planet, x+1, y+1),
+			g.tileFromCoord(planet, x+1, y),
+			g.tileFromCoord(planet, x+1, y-1),
+		}
+
+		for _, tile := range tiles {
+			if g.Territory[tile] == -1 && g.Armies[tile] == 0 {
+				g.Territory[tile] = player
+			}
+		}
 	}
 
 	if tileType == BrickWall {
@@ -422,6 +468,6 @@ func NewGame(players []string) *Game {
 	return g
 }
 
-func (g *Game) DropNuclear(player int) error {
+func (g *Game) Nuke(player int) error {
 	return errors.New("insufficient implementation")
 }
