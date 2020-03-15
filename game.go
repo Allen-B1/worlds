@@ -47,9 +47,9 @@ var TileInfos = map[TileType]TileInfo{
 		Name: "Core",
 		Cost: map[Material]uint{
 			Brick:  500,
-			Copper: 100,
-			Iron:   50,
-			Gold:   10,
+			Copper: 400,
+			Iron:   300,
+			Gold:   50,
 		},
 	},
 	Camp: TileInfo{
@@ -68,58 +68,57 @@ var TileInfos = map[TileType]TileInfo{
 	MineV1: TileInfo{
 		Name: "Mine v1",
 		Cost: map[Material]uint{
-			Brick: 50,
+			Brick: 100,
 		},
 		Pollution: 1,
 	},
 	MineV2: TileInfo{
 		Name: "Mine v2",
 		Cost: map[Material]uint{
-			Brick:  50,
-			Copper: 50,
+			Brick:  200,
+			Copper: 100,
 		},
 	},
 	MineV3: TileInfo{
 		Name: "Mine v3",
 		Cost: map[Material]uint{
-			Brick:  50,
-			Copper: 50,
-			Iron:   20,
+			Brick:  200,
+			Copper: 200,
+			Iron:   200,
 		},
 	},
 	BrickWall: TileInfo{
 		Name: "Brick Wall",
 		Cost: map[Material]uint{
-			Brick: 1,
+			Brick: 10,
 		},
 	},
 	CopperWall: TileInfo{
 		Name: "Copper Wall",
 		Cost: map[Material]uint{
-			Copper: 1,
+			Copper: 10,
 		},
 	},
 	IronWall: TileInfo{
 		Name: "Iron Wall",
 		Cost: map[Material]uint{
-			Iron: 1,
+			Iron: 10,
 		},
 	},
 	Launcher: TileInfo{
 		Name: "Launcher",
 		Cost: map[Material]uint{
-			Brick:  500,
-			Copper: 200,
-			Iron:   10,
-			Gold:   50,
+			Brick:  2000,
+			Copper: 1000,
+			Iron:   500,
+			Gold:   200,
 		},
 	},
 	Cleaner: TileInfo{
 		Name: "Cleaner",
 		Cost: map[Material]uint{
-			Copper:  500,
-			Iron:    500,
-			Uranium: 20,
+			Iron:    50,
+			Uranium: 50,
 		},
 	},
 }
@@ -243,6 +242,28 @@ func (g *Game) NextTurn() {
 }
 
 func (g *Game) Make(player int, tile int, tileType TileType) error {
+	if g.Territory[tile] != player {
+		return errors.New("you must own a territory to build on it")
+	}
+
+	if tileType == "" {
+		oldType := g.TileTypes[tile]
+		g.TileTypes[tile] = ""
+
+		if oldType == Core {
+			hasCore := false
+			for tile, tileType := range g.TileTypes {
+				if tileType == Core && g.Territory[tile] == player {
+					hasCore = true
+				}
+			}
+			if !hasCore {
+				g.Losers = append(g.Losers, player)
+			}
+		}
+		return nil
+	}
+
 	if g.TileTypes[tile] != "" {
 		return errors.New("tile " + fmt.Sprint(tile) + " is not empty")
 	}
@@ -375,7 +396,7 @@ func (g *Game) Move(player int, from int, to int) error {
 					}
 				}
 				if !hasCore {
-					g.Losers = append(g.Losers, player)
+					g.Losers = append(g.Losers, toPlayer)
 				}
 			}
 		} else {

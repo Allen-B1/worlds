@@ -56,12 +56,14 @@ const userKey = location.hash.slice(1);
 var userIndex;
 
 // join
-var xhr = new XMLHttpRequest();
-xhr.onload = function() {
-	userIndex = xhr.responseText | 0;
-};
-xhr.open("GET", "/api/" + roomId + "/join?key=" + userKey);
-xhr.send();
+{
+	let xhr = new XMLHttpRequest();
+	xhr.onload = function() {
+		userIndex = xhr.responseText | 0;
+	};
+	xhr.open("POST", "/api/" + roomId + "/join?key=" + userKey);
+	xhr.send();
+}
 
 // create maps
 function tileify(cell) {
@@ -103,31 +105,33 @@ function tileify(cell) {
 	}
 }
 
-// load deposits & load players
-xhr = new XMLHttpRequest();
-xhr.onload = function() {
-	var json = JSON.parse(xhr.responseText);
+{
+	// load deposits & load players
+	let xhr = new XMLHttpRequest();
+	xhr.onload = function() {
+		var json = JSON.parse(xhr.responseText);
 
-	for (var i = 0; i < json.deposits.length; i++) {
-		if (json.deposits[i] != "") {
-			var cell = document.getElementById("tile-" + i);
-			cell.classList.add("deposit-" + json.deposits[i]);
+		for (var i = 0; i < json.deposits.length; i++) {
+			if (json.deposits[i] != "") {
+				var cell = document.getElementById("tile-" + i);
+				cell.classList.add("deposit-" + json.deposits[i]);
+			}
 		}
-	}
 
-	var playersElem = document.getElementById("players");
-	for (var i = 0; i < json.players.length; i++) {
-		let row = players.insertRow();
-		row.insertCell().innerHTML = json.players[i];
-		row.setAttribute("data-territory", i);
-		if (i == userIndex) {
-			row.style.fontWeight = "bold";
+		var playersElem = document.getElementById("players");
+		for (var i = 0; i < json.players.length; i++) {
+			let row = players.insertRow();
+			row.insertCell().innerHTML = json.players[i];
+			row.setAttribute("data-territory", i);
+			if (i == userIndex) {
+				row.style.fontWeight = "bold";
+			}
+			row.id = "player-" + i;
 		}
-		row.id = "player-" + i;
-	}
-};
-xhr.open("GET", "/api/" + roomId + "/data.json");
-xhr.send();
+	};
+	xhr.open("GET", "/api/" + roomId + "/data.json");
+	xhr.send();
+}
 
 const statTurn = document.getElementById("stat-turn");
 const statPollution = document.getElementById("stat-pollution");
@@ -324,6 +328,12 @@ document.addEventListener("keydown", function(e) {
 		var tileElem = document.querySelector(".tile-selected");
 		var tile = tileElem.id.slice(5);
 		launch(tile);
+	}
+
+	if (e.code == "Backspace") {
+		var tileElem = document.querySelector(".tile-selected");
+		var tile = tileElem.id.slice(5);
+		make(tile, "");
 	}
 });
 
