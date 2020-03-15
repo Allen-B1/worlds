@@ -166,7 +166,7 @@ kbd {
 #launcher {
 	position: fixed;
 	left: 16px;
-	bottom: 16px;
+	top: 128px;
 }
 
 button, .button {
@@ -178,4 +178,48 @@ button, .button {
     font-family: 'VT323', monospace;
 	font-size: 16px;
 	padding: 4px 8px;
+}
+
+#notification-box {
+	position: fixed;
+	bottom: 16px;
+	right: 16px;
+}
+
+.notification {
+	display: block;
+	min-width: 200px;
+	padding: 8px 16px;
+	background: #444;
+	border: 2px solid #111;
+	color: #ddd;
+	margin-top: 16px;
+}
+
+.notification.big {
+	position: fixed;
+	font-size: 24px;
+
+	height: 32px;
+	width: 400px;
+	z-index: 5;
+	text-align: center;
+	top:0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+
+	margin: auto;
+}
+
+.notification .close {
+	display: inline-block;
+	cursor: pointer;
+	border-radius: 2px;
+	padding: 0 4px;
+	float: right;
+}
+
+.notification .close:active {
+	background: #aaa;
 }

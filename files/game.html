@@ -39,15 +39,15 @@
 			</tr>
 		</table>
 		<table class="stats right" id="players"></table>
-		<table class="stats right bottom" id="tileinfos"></table>
+		<table class="stats bottom" id="tileinfos"></table>
 		<table class="map" id="earth-map" style="border-color:#3a9900"></table>
 		<table class="map" style="display:none;border-color:#7f0059" id="mars-map"></table>
 
 		<button id="launcher" style="display:none">To Mars</button>
 
-		<script>
-Notification.requestPermission();
+		<div id="notification-box"></div>
 
+		<script>
 const earthSize = 32;
 const marsSize = 16;
 
@@ -166,24 +166,20 @@ setInterval(function(){
 		statUranium.innerHTML = json.stats[userIndex].materials.uranium | 0;
 
 		for (let loser in json.losers) {
-			if (loser == userIndex && document.getElementById("player-" + loser).style.textDecoration != "strikethrough") {
-				sendNotification("You Lose :)");
+			if (loser == userIndex && document.getElementById("player-" + loser).style.textDecoration != "line-through") {
+				showNotification("You Lose", true, true);
 			}
- 			document.getElementById("player-" + loser).style.textDecoration = "strikethrough";
+ 			document.getElementById("player-" + loser).style.textDecoration = "line-through";
 		}
 	};
 	xhr.open("GET", "/api/" + roomId + "/data.json");
 	xhr.send();
 }, 500);
 
-function sendNotification(text) {
-	new Notification(text);
-}
-
 function move(from, to) {
 	var xhr = new XMLHttpRequest();
 	xhr.onerror = function() {
-		sendNotification(xhr.responseText);
+		showNotification(xhr.responseText, false);
 	};
 	xhr.open("POST", "/api/" + roomId + "/move?from=" + from + "&to=" + to + "&key=" + userKey);
 	xhr.send();
@@ -192,7 +188,7 @@ function move(from, to) {
 function make(tile, tiletype) {
 	var xhr = new XMLHttpRequest();
 	xhr.onerror = function() {
-		sendNotification(xhr.responseText);
+		showNotification("Failed to make " + tiletype + ": " + tilexhr.responseText, false);
 	};
 	xhr.open("POST", "/api/" + roomId + "/make?tile=" + tile + "&type=" + tiletype + "&key=" + userKey);
 	xhr.send();
@@ -200,13 +196,13 @@ function make(tile, tiletype) {
 
 function launch(tile) {
 	var xhr = new XMLHttpRequest();
-	xhr.onerror = function() {
-		sendNotification(xhr.responseText);
-	};
 	xhr.onload = function() {
-		if (xhr.responseText == "") {
+		if (xhr.status == 200) {
+			showNotification("Launched!");
 			document.getElementById("launcher").style.display = "block";
 			toMars();
+		} else if (xhr.responseText != "") {
+			showNotification("Failed to launch: " + xhr.responseText, false);
 		}
 	};
 	xhr.open("POST", "/api/" + roomId + "/launch?tile=" + tile + "&key=" + userKey);
@@ -356,6 +352,32 @@ marsAudio.addEventListener("ended", function() {
 		marsAudio.play();
 	}, 1000);
 });
+
+function showNotification(text, big, persistent) {
+	var notification = document.createElement("div");
+	notification.className = "notification";
+	if (big) {
+		notification.classList.add("big");
+
+		if (!persistent)
+			setTimeout(function() {
+			notification.remove();
+		}, 2000);
+	}
+	notification.innerHTML = text;
+
+	if (!big) {
+		var closeButton = document.createElement("div");
+		closeButton.classList.add("close");
+		closeButton.innerHTML = "&times;";
+		closeButton.addEventListener("click", function() {
+			this.parentNode.remove();
+		});
+		notification.appendChild(closeButton);
+	}
+
+	document.getElementById("notification-box").appendChild(notification);
+}
 	</script>
 	</body>
 </html>
