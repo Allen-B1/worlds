@@ -200,7 +200,8 @@ function launch(tile) {
 		sendNotification(xhr.responseText);
 	};
 	xhr.onload = function() {
-		if (xhr.responseText != "") {
+		console.log(xhr.responseText);
+		if (xhr.responseText == "") {
 			document.getElementById("launcher").style.display = "block";
 			toMars();
 		}
