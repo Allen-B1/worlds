@@ -281,5 +281,9 @@ func main() {
 		}).Methods("GET")
 	}
 
-	http.ListenAndServe(":8080", nil)
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	http.ListenAndServe(":"+port, nil)
 }
