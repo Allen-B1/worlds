@@ -2,8 +2,8 @@
 <html lang="en">
 	<head>
 		<title>worlds &#8226; earth</title>
-		<link rel="stylesheet" href="/style.css">
 		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body style="background:#44b200">
 		<table class="stats">
@@ -216,6 +216,13 @@ function toMars() {
 	document.getElementById("earth-map").style.display = "none";
 	document.getElementById("mars-map").style.display = "table";
 	document.body.style.background = "#b2007c";
+	document.title = "worlds • mars";
+
+	earthAudio.pause();
+	setTimeout(function() {
+		marsAudio.currentTime = 0;
+		marsAudio.play();
+	}, 2000);
 }
 
 function toEarth() {
@@ -226,6 +233,13 @@ function toEarth() {
 	document.getElementById("mars-map").style.display = "none";
 
 	document.body.style.background = "#44b200";
+	document.title = "worlds • earth";
+
+	marsAudio.pause();
+	setTimeout(function() {
+		earthAudio.currentTime = 0;
+		earthAudio.play();
+	}, 500);
 }
 
 document.getElementById("launcher").addEventListener("click", function() {
@@ -312,6 +326,26 @@ document.addEventListener("keydown", function(e) {
 		launch(tile);
 	}
 });
-		</script>
+
+// Audio
+var earthAudio = new Audio("/earth.ogg");
+earthAudio.addEventListener("ended", function() {
+	setTimeout(function() {
+		earthAudio.currentTime = 0;
+		earthAudio.play();
+	}, 200);
+});
+setTimeout(function() {
+	earthAudio.play();
+}, 1000);
+
+var marsAudio = new Audio("/mars.ogg");
+marsAudio.addEventListener("ended", function() {
+	setTimeout(function() {
+		marsAudio.currentTime = 0;
+		marsAudio.play();
+	}, 1000);
+});
+	</script>
 	</body>
 </html>

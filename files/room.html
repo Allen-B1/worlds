@@ -2,12 +2,14 @@
 <html lang="en">
 	<head>
 		<title>worlds</title>
+		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body>
-		<main align="center">
+		<main>
 			<p>You are <b id="name">Anonymous</b></p>
 			<p><b id="count">0</b> of <b id="max">0</b></p>
+			<a class="button" href="/">Back</a>
 		</main>
 		<script>
 document.body.style.display = "none";
@@ -37,7 +39,7 @@ setInterval(function() {
 	xhr.addEventListener("load", function() {
 		var json = JSON.parse(xhr.responseText);
 		if (json.type != "room") {
-			location.href = "/" + roomId + "/earth#" + userId;
+			location.href = "/" + roomId + "/game#" + userId;
 		} else {
 			countElem.innerHTML = json.players.length;
 			maxElem.innerHTML = json.max;

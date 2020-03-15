@@ -263,11 +263,8 @@ func main() {
 		w.Write(body)
 	}).Methods("GET")
 
-	m.HandleFunc("/{object}/earth", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "files/earth.html")
-	}).Methods("GET")
-	m.HandleFunc("/{object}/mars", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "files/mars.html")
+	m.HandleFunc("/{object}/game", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "files/game.html")
 	}).Methods("GET")
 	m.HandleFunc("/{object}/room", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "files/room.html")
@@ -276,7 +273,7 @@ func main() {
 		http.ServeFile(w, r, "files/index.html")
 	}).Methods("GET")
 
-	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg", "uranium.svg"}
+	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg", "uranium.svg", "earth.ogg", "mars.ogg"}
 	for _, file := range files {
 		file2 := file
 		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {
