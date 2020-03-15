@@ -46,10 +46,10 @@ var TileInfos = map[TileType]TileInfo{
 	Core: TileInfo{
 		Name: "Core",
 		Cost: map[Material]uint{
-			Brick:  500,
-			Copper: 400,
+			Brick:  200,
+			Copper: 500,
 			Iron:   300,
-			Gold:   50,
+			Gold:   100,
 		},
 	},
 	Camp: TileInfo{
@@ -75,16 +75,16 @@ var TileInfos = map[TileType]TileInfo{
 	MineV2: TileInfo{
 		Name: "Mine v2",
 		Cost: map[Material]uint{
-			Brick:  200,
-			Copper: 100,
+			Brick:  100,
+			Copper: 150,
 		},
 	},
 	MineV3: TileInfo{
 		Name: "Mine v3",
 		Cost: map[Material]uint{
-			Brick:  200,
+			Brick:  100,
 			Copper: 200,
-			Iron:   200,
+			Iron:   150,
 		},
 	},
 	BrickWall: TileInfo{
@@ -108,7 +108,7 @@ var TileInfos = map[TileType]TileInfo{
 	Launcher: TileInfo{
 		Name: "Launcher",
 		Cost: map[Material]uint{
-			Brick:  2000,
+			Brick:  500,
 			Copper: 1000,
 			Iron:   500,
 			Gold:   200,
