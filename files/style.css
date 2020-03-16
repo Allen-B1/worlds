@@ -71,7 +71,7 @@ body {
 	padding-top: 8px;
 
 	position: relative;
-	z-index: 3;
+	z-index: 2;
 	color: #000;
 }
 
@@ -184,6 +184,7 @@ button, .button {
 	position: fixed;
 	bottom: 16px;
 	right: 16px;
+	z-index: 3;
 }
 
 .notification {
@@ -202,7 +203,7 @@ button, .button {
 
 	height: 32px;
 	width: 400px;
-	z-index: 5;
+	z-index: 3;
 	text-align: center;
 	top:0;
 	bottom: 0;

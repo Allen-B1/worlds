@@ -217,7 +217,9 @@ func (g *Game) NextTurn() {
 			material := g.Deposits[tile]
 			g.Stats[player].Materials[material] += 1
 		case Cleaner:
-			cleaning += 1
+			if planet, _, _ := g.tileToCoord(tile); planet == Earth {
+				cleaning += 1
+			}
 		}
 	}
 	if g.Pollution >= cleaning {
@@ -228,19 +230,28 @@ func (g *Game) NextTurn() {
 
 	// death from pollution
 	if g.Pollution >= 10*1000 {
-	outer:
-		for player, _ := range g.Players {
-			for _, loser := range g.Losers {
-				if player == loser {
-					continue outer
-				}
+		for i := 0; i < EarthSize*EarthSize; i++ {
+			if g.Territory[i] >= 0 {
+				g.TileTypes[i] = ""
+				g.Armies[i] = 0
 			}
-
-			g.Losers = append(g.Losers, player)
 		}
 	}
 
 	g.Turn++
+}
+
+// Checks whether this player should lose
+func (g *Game) checkLoser(player int) {
+	hasCore := false
+	for tile, tileType := range g.TileTypes {
+		if tileType == Core && g.Territory[tile] == player {
+			hasCore = true
+		}
+	}
+	if !hasCore {
+		g.Losers = append(g.Losers, player)
+	}
 }
 
 func (g *Game) Make(player int, tile int, tileType TileType) error {
@@ -253,15 +264,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		g.TileTypes[tile] = ""
 
 		if oldType == Core {
-			hasCore := false
-			for tile, tileType := range g.TileTypes {
-				if tileType == Core && g.Territory[tile] == player {
-					hasCore = true
-				}
-			}
-			if !hasCore {
-				g.Losers = append(g.Losers, player)
-			}
+			g.checkLoser(player)
 		}
 		return nil
 	}
@@ -391,15 +394,7 @@ func (g *Game) Move(player int, from int, to int) error {
 
 			// Lose if no cores left
 			if toType == Core {
-				hasCore := false
-				for tile, tileType := range g.TileTypes {
-					if tileType == Core && g.Territory[tile] == toPlayer {
-						hasCore = true
-					}
-				}
-				if !hasCore {
-					g.Losers = append(g.Losers, toPlayer)
-				}
+				g.checkLoser(toPlayer)
 			}
 		} else {
 			g.Armies[to] -= fromArmies
