@@ -335,11 +335,10 @@ document.addEventListener("keydown", function(e) {
 
 // Audio
 var earthAudio = new Audio("/earth.ogg");
-earthAudio.addEventListener("ended", function() {
-	setTimeout(function() {
+earthAudio.addEventListener("timeupdate", function() {
+	if (earthAudio.currentTime >= 27.2) {
 		earthAudio.currentTime = 0;
-		earthAudio.play();
-	}, 200);
+	}
 });
 setTimeout(function() {
 	earthAudio.play();

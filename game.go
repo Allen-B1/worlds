@@ -222,10 +222,12 @@ func (g *Game) NextTurn() {
 	}
 	if g.Pollution >= cleaning {
 		g.Pollution -= cleaning
+	} else {
+		g.Pollution = 0
 	}
 
 	// death from pollution
-	if g.Pollution >= 1000*1000 {
+	if g.Pollution >= 10*1000 {
 	outer:
 		for player, _ := range g.Players {
 			for _, loser := range g.Losers {
