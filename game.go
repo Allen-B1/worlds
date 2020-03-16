@@ -234,6 +234,7 @@ func (g *Game) NextTurn() {
 			if g.Territory[i] >= 0 {
 				g.TileTypes[i] = ""
 				g.Armies[i] = 0
+				g.Territory[i] = -1
 			}
 		}
 	}
@@ -551,6 +552,44 @@ func (g *Game) Launch(player int, tile int) error {
 	return nil
 }
 
-func (g *Game) Nuke(player int) error {
-	return errors.New("insufficient implementation")
+func (g *Game) Nuke(player int, tile int) error {
+	cost := map[Material]uint{
+		Uranium: 50,
+		Iron:    100,
+	}
+
+	for material, amt := range cost {
+		if g.Stats[player].Materials[material] < amt {
+			return errors.New("not enough " + string(material))
+		}
+	}
+
+	for material, amt := range cost {
+		g.Stats[player].Materials[material] -= amt
+	}
+
+	planet, x, y := g.tileToCoord(tile)
+
+	for nX := x - 2; nX <= x+2; nX++ {
+		for nY := y - 2; nY <= y+2; nY++ {
+			nTile := g.tileFromCoord(planet, nX, nY)
+			if nTile >= 0 {
+				if g.Armies[nTile] > 30 {
+					g.Armies[nTile] /= 2
+				} else if g.Armies[nTile] > 15 {
+					g.Armies[nTile] -= 15
+				} else {
+					g.Armies[nTile] = 0
+					g.TileTypes[nTile] = ""
+					g.Territory[nTile] = -1
+				}
+			}
+		}
+	}
+
+	if planet == Earth {
+		g.Pollution += 500
+	}
+
+	return nil
 }

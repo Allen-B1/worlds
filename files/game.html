@@ -167,7 +167,7 @@ setInterval(function(){
 
 		for (let loser in json.losers) {
 			if (loser == userIndex && document.getElementById("player-" + loser).style.textDecoration != "line-through") {
-				showNotification("You Lose", true, true);
+				showNotification("You Lost :)", true, true);
 			}
  			document.getElementById("player-" + loser).style.textDecoration = "line-through";
 		}
@@ -206,6 +206,17 @@ function launch(tile) {
 		}
 	};
 	xhr.open("POST", "/api/" + roomId + "/launch?tile=" + tile + "&key=" + userKey);
+	xhr.send();
+}
+
+function nuke(tile) {
+	var xhr = new XMLHttpRequest();
+	xhr.onload = function() {
+		if (xhr.status != 200 && xhr.responseText != "") {
+			showNotification("Failed to nuke: " + xhr.responseText, false);
+		}
+	};
+	xhr.open("POST", "/api/" + roomId + "/nuke?tile=" + tile + "&key=" + userKey);
 	xhr.send();
 }
 
@@ -324,6 +335,12 @@ document.addEventListener("keydown", function(e) {
 		var tileElem = document.querySelector(".tile-selected");
 		var tile = tileElem.id.slice(5);
 		launch(tile);
+	}
+
+	if (e.key == "n") {
+		var tileElem = document.querySelector(".tile-selected");
+		var tile = tileElem.id.slice(5);
+		nuke(tile);
 	}
 
 	if (e.code == "Backspace") {

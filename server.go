@@ -30,6 +30,10 @@ func gameThread() {
 			obj.Lock()
 			if game, ok := obj.Data.(*Game); ok {
 				game.NextTurn()
+
+				if len(game.Losers) == len(game.Players) {
+					objects.Delete(key)
+				}
 			}
 			obj.Unlock()
 			return true
@@ -246,6 +250,43 @@ func main() {
 		}
 
 		err = game.Launch(index, tile)
+		if err != nil {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, err)
+		}
+	}).Methods("POST")
+
+	m.HandleFunc("/api/{game}/nuke", func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		raw, _ := objects.Load(vars["game"])
+		if raw == nil {
+			w.WriteHeader(404)
+			return
+		}
+
+		obj := raw.(*Object)
+		obj.Lock()
+		defer obj.Unlock()
+		game, ok := obj.Data.(*Game)
+		if !ok {
+			w.WriteHeader(404)
+			return
+		}
+
+		key := r.FormValue("key")
+		tile, err := strconv.Atoi(r.FormValue("tile"))
+		if err != nil {
+			w.WriteHeader(400)
+			return
+		}
+
+		index, ok := obj.Transition[key]
+		if !ok {
+			w.WriteHeader(400)
+			fmt.Fprintln(w, "invalid key")
+		}
+
+		err = game.Nuke(index, tile)
 		if err != nil {
 			w.WriteHeader(400)
 			fmt.Fprintln(w, err)
