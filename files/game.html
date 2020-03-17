@@ -6,7 +6,7 @@
 		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body style="background:#44b200">
-		<table class="stats">
+		<table class="stats" id="stats-game">
 			<tr>
 				<td>Turn</td>
 				<td id="stat-turn">0</td>
@@ -16,7 +16,7 @@
 				<td id="stat-pollution">0</td>
 			</tr>
 		</table>
-		<table class="stats" style="top:92px">
+		<table class="stats" style="top:92px" id="stats-materials">
 			<tr class="text-brick">
 				<td>Brk</td>
 				<td id="stat-brick">0</td>
@@ -347,6 +347,15 @@ document.addEventListener("keydown", function(e) {
 		var tileElem = document.querySelector(".tile-selected");
 		var tile = tileElem.id.slice(5);
 		make(tile, "");
+	}
+
+	if (e.key == "h") {
+		var elems = ["stats-game", "stats-materials", "players", "tileinfos"];
+		var style = document.getElementById(elems[0]).style.display == "none" ? "table" : "none";
+		for (var id of elems) {
+			var elem = document.getElementById(id);
+			elem.style.display = style;
+		}
 	}
 });
 

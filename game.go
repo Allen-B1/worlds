@@ -75,16 +75,14 @@ var TileInfos = map[TileType]TileInfo{
 	MineV2: TileInfo{
 		Name: "Mine v2",
 		Cost: map[Material]uint{
-			Brick:  100,
-			Copper: 150,
+			Copper: 200,
 		},
 	},
 	MineV3: TileInfo{
 		Name: "Mine v3",
 		Cost: map[Material]uint{
-			Brick:  100,
 			Copper: 200,
-			Iron:   150,
+			Iron:   200,
 		},
 	},
 	BrickWall: TileInfo{
@@ -339,15 +337,15 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 
 	if tileType == BrickWall {
 		g.Territory[tile] = -1
-		g.Armies[tile] = 500
+		g.Armies[tile] = 50
 	}
 	if tileType == CopperWall {
 		g.Territory[tile] = -1
-		g.Armies[tile] = 2000
+		g.Armies[tile] = 200
 	}
 	if tileType == IronWall {
 		g.Territory[tile] = -1
-		g.Armies[tile] = 10000
+		g.Armies[tile] = 500
 	}
 
 	for material, cost := range TileInfos[tileType].Cost {
@@ -460,14 +458,12 @@ func NewGame(players []string) *Game {
 		}
 	}
 
-	for i := 0; i < 2; i++ {
-		x := uint(rand.Intn(EarthSize - 1))
-		y := uint(rand.Intn(EarthSize - 1))
+	{
 		tiles := []int{
-			g.tileFromCoord(Earth, x, y),
-			g.tileFromCoord(Earth, x+1, y),
-			g.tileFromCoord(Earth, x, y+1),
-			g.tileFromCoord(Earth, x+1, y+1),
+			g.tileFromCoord(Earth, 0, 0),
+			g.tileFromCoord(Earth, EarthSize-1, 0),
+			g.tileFromCoord(Earth, 0, EarthSize-1),
+			g.tileFromCoord(Earth, EarthSize-1, EarthSize-1),
 		}
 
 		for _, tile := range tiles {
