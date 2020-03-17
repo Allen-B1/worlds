@@ -507,10 +507,10 @@ func NewGame(players []string) *Game {
 		for _, tile := range tiles {
 			g.Territory[tile] = i
 			g.Armies[tile] = 1
+			g.TileTypes[tile] = ""
 		}
 		g.Armies[tile] = 15
 		g.TileTypes[tile] = Core
-
 		g.TileTypes[kilnTile] = Kiln
 	}
 
@@ -546,6 +546,7 @@ func (g *Game) Launch(player int, tile int) error {
 	for _, tile := range tiles {
 		g.Territory[tile] = player
 		g.Armies[tile] = 1
+		g.TileTypes[tile] = ""
 	}
 	g.TileTypes[tiles[0]] = Core
 	return nil
