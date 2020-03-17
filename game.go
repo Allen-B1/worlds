@@ -229,13 +229,16 @@ func (g *Game) NextTurn() {
 	}
 
 	// death from pollution
-	if g.Pollution >= 10*1000 {
+	if g.Pollution >= 1000*1000 {
 		for i := 0; i < EarthSize*EarthSize; i++ {
 			if g.Territory[i] >= 0 {
 				g.TileTypes[i] = ""
 				g.Armies[i] = 0
 				g.Territory[i] = -1
 			}
+		}
+		for player, _ := range g.Players {
+			g.checkLoser(player)
 		}
 	}
 
