@@ -42,6 +42,7 @@ main input, main button {
 
 body {
 	padding: 0; margin: 0;
+	padding: 32px;
 }
 
 .map {
@@ -49,8 +50,6 @@ body {
 	background: #fafafa;
 	border-collapse: collapse;
 	margin: auto;
-	margin-top: 16px;
-	margin-bottom: 16px;
 }
 
 .map .tile {

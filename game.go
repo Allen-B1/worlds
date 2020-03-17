@@ -13,8 +13,8 @@ const (
 	Mars  Planet = "mars"
 	Earth Planet = "earth"
 
-	MarsSize  = 16 // 16*16
-	EarthSize = 32 // 32*32
+	MarsSize  = 24 // 24*24
+	EarthSize = 48 // 64*64
 )
 
 type TileType string
@@ -48,8 +48,8 @@ var TileInfos = map[TileType]TileInfo{
 		Cost: map[Material]uint{
 			Brick:  200,
 			Copper: 500,
-			Iron:   300,
-			Gold:   100,
+			Iron:   500,
+			Gold:   20,
 		},
 	},
 	Camp: TileInfo{
@@ -108,7 +108,7 @@ var TileInfos = map[TileType]TileInfo{
 		Cost: map[Material]uint{
 			Brick:  500,
 			Copper: 1000,
-			Iron:   500,
+			Iron:   800,
 			Gold:   200,
 		},
 	},
@@ -423,7 +423,7 @@ func NewGame(players []string) *Game {
 		g.Territory[tile] = -1
 	}
 
-	for i := 0; i < 8; i++ {
+	for i := 0; i < 24; i++ {
 		x := uint(rand.Intn(EarthSize-2)) + 1
 		y := uint(rand.Intn(EarthSize-2)) + 1
 		tiles := []int{
@@ -443,7 +443,7 @@ func NewGame(players []string) *Game {
 		}
 	}
 
-	for i := 0; i < 6; i++ {
+	for i := 0; i < 12; i++ {
 		x := uint(rand.Intn(EarthSize - 1))
 		y := uint(rand.Intn(EarthSize - 1))
 		tiles := []int{
@@ -471,7 +471,7 @@ func NewGame(players []string) *Game {
 		}
 	}
 
-	for i := 0; i < 6; i++ {
+	for i := 0; i < 8; i++ {
 		x := uint(rand.Intn(MarsSize - 1))
 		y := uint(rand.Intn(MarsSize - 1))
 		tiles := []int{
@@ -553,8 +553,8 @@ func (g *Game) Launch(player int, tile int) error {
 
 func (g *Game) Nuke(player int, tile int) error {
 	cost := map[Material]uint{
-		Uranium: 50,
-		Iron:    100,
+		Uranium: 500,
+		Iron:    500,
 	}
 
 	for material, amt := range cost {
@@ -578,6 +578,8 @@ func (g *Game) Nuke(player int, tile int) error {
 				} else if g.Armies[nTile] > 15 {
 					g.Armies[nTile] -= 15
 				} else {
+					g.checkLoser(g.Territory[nTile])
+
 					g.Armies[nTile] = 0
 					g.TileTypes[nTile] = ""
 					g.Territory[nTile] = -1
