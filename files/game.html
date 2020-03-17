@@ -165,7 +165,7 @@ setInterval(function(){
 		statGold.innerHTML = json.stats[userIndex].materials.gold | 0;
 		statUranium.innerHTML = json.stats[userIndex].materials.uranium | 0;
 
-		for (let loser in json.losers) {
+		for (let loser of json.losers) {
 			if (loser == userIndex && document.getElementById("player-" + loser).style.textDecoration != "line-through") {
 				showNotification("You Lost :)", true, true);
 			}
