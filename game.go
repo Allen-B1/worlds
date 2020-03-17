@@ -423,7 +423,7 @@ func NewGame(players []string) *Game {
 		g.Territory[tile] = -1
 	}
 
-	for i := 0; i < 24; i++ {
+	for i := 0; i < 16; i++ {
 		x := uint(rand.Intn(EarthSize-2)) + 1
 		y := uint(rand.Intn(EarthSize-2)) + 1
 		tiles := []int{
