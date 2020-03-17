@@ -423,7 +423,8 @@ func NewGame(players []string) *Game {
 		g.Territory[tile] = -1
 	}
 
-	for i := 0; i < 16; i++ {
+	// Copper
+	for i := 0; i < 12; i++ {
 		x := uint(rand.Intn(EarthSize-2)) + 1
 		y := uint(rand.Intn(EarthSize-2)) + 1
 		tiles := []int{
@@ -443,7 +444,8 @@ func NewGame(players []string) *Game {
 		}
 	}
 
-	for i := 0; i < 12; i++ {
+	// Iron
+	for i := 0; i < 8; i++ {
 		x := uint(rand.Intn(EarthSize - 1))
 		y := uint(rand.Intn(EarthSize - 1))
 		tiles := []int{
@@ -458,6 +460,7 @@ func NewGame(players []string) *Game {
 		}
 	}
 
+	// Gold
 	{
 		tiles := []int{
 			g.tileFromCoord(Earth, 1, 1),
@@ -471,6 +474,7 @@ func NewGame(players []string) *Game {
 		}
 	}
 
+	// Uranium
 	for i := 0; i < 8; i++ {
 		x := uint(rand.Intn(MarsSize - 1))
 		y := uint(rand.Intn(MarsSize - 1))
