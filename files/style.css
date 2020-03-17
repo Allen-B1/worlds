@@ -24,6 +24,7 @@ main input, main button {
     font-family: 'VT323', monospace;
 	font-size: 16px;
 	border-collapse: collapse;
+	z-index: 3;
 }
 
 .stats td {
