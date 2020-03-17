@@ -460,10 +460,10 @@ func NewGame(players []string) *Game {
 
 	{
 		tiles := []int{
-			g.tileFromCoord(Earth, 0, 0),
-			g.tileFromCoord(Earth, EarthSize-1, 0),
-			g.tileFromCoord(Earth, 0, EarthSize-1),
-			g.tileFromCoord(Earth, EarthSize-1, EarthSize-1),
+			g.tileFromCoord(Earth, 1, 1),
+			g.tileFromCoord(Earth, EarthSize-2, 1),
+			g.tileFromCoord(Earth, 1, EarthSize-2),
+			g.tileFromCoord(Earth, EarthSize-2, EarthSize-2),
 		}
 
 		for _, tile := range tiles {
