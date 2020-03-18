@@ -167,6 +167,7 @@ kbd {
 	position: fixed;
 	left: 16px;
 	top: 248px;
+	z-index: 3;
 }
 
 button, .button {
