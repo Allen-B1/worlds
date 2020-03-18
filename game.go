@@ -578,8 +578,19 @@ func (g *Game) Nuke(player int, tile int) error {
 		for nY := y - 2; nY <= y+2; nY++ {
 			nTile := g.tileFromCoord(planet, nX, nY)
 			if nTile >= 0 {
-				if g.TileTypes[nTile] == CopperWall || g.TileTypes[nTile] == IronWall || g.TileTypes[nTile] == BrickWall {
-					// nothing happens
+				if g.TileTypes[nTile] == BrickWall || g.TileTypes[nTile] == CopperWall || g.TileTypes[nTile] == IronWall {
+					damage := map[TileType]uint32{
+						BrickWall:  50,
+						CopperWall: 30,
+						IronWall:   20,
+					}[g.TileTypes[nTile]]
+
+					if g.Armies[nTile] > damage {
+						g.Armies[nTile] -= damage
+					} else {
+						g.Armies[nTile] = 0
+						g.TileTypes[nTile] = ""
+					}
 				} else if g.Armies[nTile] > 30 {
 					g.Armies[nTile] /= 2
 				} else if g.Armies[nTile] > 15 {
