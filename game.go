@@ -558,13 +558,13 @@ func (g *Game) Launch(player int, tile int) error {
 
 func (g *Game) Nuke(player int, tile int) error {
 	cost := map[Material]uint{
-		Uranium: 500,
-		Iron:    500,
+		Uranium: 1000,
+		Iron:    1000,
 	}
 
 	for material, amt := range cost {
 		if g.Stats[player].Materials[material] < amt {
-			return errors.New("not enough " + string(material))
+			return errors.New("not enough " + string(material) + ": " + fmt.Sprint(amt) + " required")
 		}
 	}
 
@@ -578,16 +578,18 @@ func (g *Game) Nuke(player int, tile int) error {
 		for nY := y - 2; nY <= y+2; nY++ {
 			nTile := g.tileFromCoord(planet, nX, nY)
 			if nTile >= 0 {
-				if g.Armies[nTile] > 30 {
+				if g.TileTypes[nTile] == CopperWall || g.TileTypes[nTile] == IronWall || g.TileTypes[nTile] == BrickWall {
+					// nothing happens
+				} else if g.Armies[nTile] > 30 {
 					g.Armies[nTile] /= 2
 				} else if g.Armies[nTile] > 15 {
 					g.Armies[nTile] -= 15
 				} else {
-					g.checkLoser(g.Territory[nTile])
-
 					g.Armies[nTile] = 0
 					g.TileTypes[nTile] = ""
 					g.Territory[nTile] = -1
+
+					g.checkLoser(g.Territory[nTile])
 				}
 			}
 		}
