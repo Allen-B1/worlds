@@ -48,7 +48,7 @@ var TileInfos = map[TileType]TileInfo{
 		Cost: map[Material]uint{
 			Brick:  200,
 			Copper: 500,
-			Iron:   500,
+			Iron:   100,
 			Gold:   20,
 		},
 	},
@@ -108,7 +108,7 @@ var TileInfos = map[TileType]TileInfo{
 		Cost: map[Material]uint{
 			Brick:  500,
 			Copper: 1000,
-			Iron:   800,
+			Iron:   500,
 			Gold:   200,
 		},
 	},
