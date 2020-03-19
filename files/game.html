@@ -365,6 +365,14 @@ document.addEventListener("keydown", function(e) {
 			elem.style.display = style;
 		}
 	}
+
+	if (e.key == "m") {
+		var elems = document.querySelectorAll("#tileinfos tr > *:nth-child(3)");
+		var display = elems[0].style.display == "none" ? "block" : "none";
+		for (var elem of elems) {
+			elem.style.display = display;
+		}
+	}
 });
 
 // Audio
