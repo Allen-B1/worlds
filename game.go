@@ -199,7 +199,10 @@ func (g *Game) NextTurn() {
 		switch tileType {
 		case Camp:
 			if g.Turn%5 == 0 {
-				g.Armies[tile] += 1
+				if g.Stats[g.Territory[tile]].Materials[Brick] >= 2 {
+					g.Stats[g.Territory[tile]].Materials[Brick] -= 2
+					g.Armies[tile] += 1
+				}
 			}
 		case Kiln:
 			player := g.Territory[tile]
