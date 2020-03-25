@@ -64,6 +64,10 @@ body {
 	background: var(--territory);
 }
 
+.map .tile[data-terrain="ocean"] {
+	background: #00f;
+}
+
 .map .tile .inner {
 	font-size: 12px;
 

@@ -151,6 +151,7 @@ setInterval(function(){
 			var cell = document.getElementById("tile-" + i);
 			cell.setAttribute("data-territory", json.territory[i]);
 			cell.setAttribute("data-tiletype", json.tiletypes[i]);
+			cell.setAttribute("data-terrain", json.terrain[i]);
 			if (json.territory[i] >= 0 || json.armies[i] > 0) {
 				cell.querySelector(".inner").innerHTML = json.armies[i];
 			} else {

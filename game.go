@@ -131,6 +131,13 @@ const (
 	Uranium Material = "uranium"
 )
 
+type Terrain string
+
+const (
+	Land  Terrain = ""
+	Ocean Terrain = "ocean"
+)
+
 type PlayerStat struct {
 	Materials map[Material]uint `json:"materials"`
 }
@@ -138,6 +145,7 @@ type PlayerStat struct {
 type Game struct {
 	Armies    []uint32
 	Territory []int
+	Terrain   []Terrain
 	TileTypes []TileType
 	Deposits  []Material
 
@@ -161,6 +169,7 @@ func (g *Game) MarshalJSON() ([]byte, error) {
 		"stats":     g.Stats,
 		"turn":      g.Turn,
 		"pollution": g.Pollution,
+		"terrain":   g.Terrain,
 
 		"type": "game",
 	})
@@ -194,6 +203,13 @@ func (g *Game) NextTurn() {
 	for tile, tileType := range g.TileTypes {
 		if planet, _, _ := g.tileToCoord(tile); planet == Earth {
 			g.Pollution += TileInfos[tileType].Pollution
+		}
+
+		if g.Terrain[tile] == Ocean && g.Armies[tile] != 0 {
+			g.Armies[tile] -= 1
+			if g.Armies[tile] == 0 {
+				g.Territory[tile] = -1
+			}
 		}
 
 		switch tileType {
@@ -274,7 +290,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		return nil
 	}
 
-	if g.TileTypes[tile] != "" {
+	if g.TileTypes[tile] != "" || g.Terrain[tile] == Ocean {
 		return errors.New("tile " + fmt.Sprint(tile) + " is not empty")
 	}
 
@@ -415,6 +431,7 @@ func NewGame(players []string) *Game {
 	g.Territory = make([]int, EarthSize*EarthSize+MarsSize*MarsSize)
 	g.TileTypes = make([]TileType, EarthSize*EarthSize+MarsSize*MarsSize)
 	g.Deposits = make([]Material, EarthSize*EarthSize+MarsSize*MarsSize)
+	g.Terrain = make([]Terrain, EarthSize*EarthSize+MarsSize*MarsSize)
 
 	g.Players = players
 	g.Stats = make([]PlayerStat, len(players))
@@ -426,76 +443,140 @@ func NewGame(players []string) *Game {
 		g.Territory[tile] = -1
 	}
 
-	// Copper
-	for i := 0; i < 12; i++ {
-		x := uint(rand.Intn(EarthSize-2)) + 1
-		y := uint(rand.Intn(EarthSize-2)) + 1
-		tiles := []int{
-			g.tileFromCoord(Earth, x, y),
-			g.tileFromCoord(Earth, x+1, y),
-			g.tileFromCoord(Earth, x, y+1),
-			g.tileFromCoord(Earth, x+1, y+1),
-			g.tileFromCoord(Earth, x-1, y),
-			g.tileFromCoord(Earth, x, y-1),
-			g.tileFromCoord(Earth, x-1, y-1),
-			g.tileFromCoord(Earth, x-1, y+1),
-			g.tileFromCoord(Earth, x+1, y-1),
+	for tile := 0; tile < EarthSize*EarthSize; tile++ {
+		g.Terrain[tile] = Ocean
+	}
+
+	islandCenters := make([]int, 0)
+	// Big Islands
+	for i := 0; i < 6; i++ {
+		var x, y uint
+		var islandCenter int
+
+		// Get islandCenter
+		for {
+			x = uint(rand.Intn(EarthSize-6)) + 3
+			y = uint(rand.Intn(EarthSize-6)) + 3
+			islandCenter = g.tileFromCoord(Earth, x, y)
+
+			tooClose := false
+			for _, oldCenter := range islandCenters {
+				_, oldX, oldY := g.tileToCoord(oldCenter)
+
+				if (x-oldX < 12 || oldX-x < 12) && (y-oldY < 12 || oldY-y < 12) {
+					tooClose = true
+					break
+				}
+			}
+
+			if !tooClose {
+				break
+			}
 		}
 
+		tiles := make([]int, 0)
+		for j := x - 4; j <= x+4; j++ {
+			tile := g.tileFromCoord(Earth, j, y)
+			if tile >= 0 {
+				tiles = append(tiles, tile)
+			}
+		}
+
+		// Complete tiles
+		topY := int(y)
+		topXstart := int(x - 4)
+		topXend := int(x + 4)
+
+		bottomY := int(y)
+		bottomXstart := int(x - 4)
+		bottomXend := int(x + 4)
+		for {
+			topXstart += rand.Intn(3)
+			topXend -= rand.Intn(3)
+			topY -= 1
+
+			bottomY += 1
+			bottomXstart += rand.Intn(3)
+			bottomXend -= rand.Intn(3)
+
+			if topXstart >= topXend && bottomXstart >= bottomXend {
+				break
+			}
+
+			if topY >= 0 {
+				for j := topXstart; j <= topXend; j++ {
+					if j >= 0 {
+						tile := g.tileFromCoord(Earth, uint(j), uint(topY))
+						if tile >= 0 {
+							tiles = append(tiles, tile)
+						}
+					}
+				}
+			}
+
+			if bottomY < EarthSize {
+				for j := bottomXstart; j <= bottomXend; j++ {
+					if j >= 0 {
+						tile := g.tileFromCoord(Earth, uint(j), uint(bottomY))
+						if tile >= 0 {
+							tiles = append(tiles, tile)
+						}
+					}
+				}
+			}
+		}
+
+		islandCenters = append(islandCenters, islandCenter)
+
 		for _, tile := range tiles {
-			g.Deposits[tile] = Copper
+			if tile >= 0 {
+				g.Terrain[tile] = Land
+			}
+		}
+
+		// Copper
+		{
+			_, x, y := g.tileToCoord(tiles[rand.Intn(len(tiles))])
+			dTiles := []int{
+				g.tileFromCoord(Earth, x, y),
+				g.tileFromCoord(Earth, x+1, y),
+				g.tileFromCoord(Earth, x, y+1),
+				g.tileFromCoord(Earth, x+1, y+1),
+				g.tileFromCoord(Earth, x-1, y),
+				g.tileFromCoord(Earth, x, y-1),
+				g.tileFromCoord(Earth, x-1, y-1),
+				g.tileFromCoord(Earth, x-1, y+1),
+				g.tileFromCoord(Earth, x+1, y-1),
+			}
+
+			for _, tile := range dTiles {
+				if tile >= 0 && g.Terrain[tile] == Land {
+					g.Deposits[tile] = Copper
+				}
+			}
+		}
+
+		// Iron
+		{
+			_, x, y := g.tileToCoord(tiles[rand.Intn(len(tiles))])
+			dTiles := []int{
+				g.tileFromCoord(Earth, x, y),
+				g.tileFromCoord(Earth, x+1, y),
+				g.tileFromCoord(Earth, x, y+1),
+				g.tileFromCoord(Earth, x+1, y+1),
+			}
+
+			for _, tile := range dTiles {
+				if tile >= 0 && g.Terrain[tile] == Land {
+					g.Deposits[tile] = Iron
+				}
+			}
 		}
 	}
 
-	// Iron
-	for i := 0; i < 8; i++ {
-		x := uint(rand.Intn(EarthSize - 1))
-		y := uint(rand.Intn(EarthSize - 1))
-		tiles := []int{
-			g.tileFromCoord(Earth, x, y),
-			g.tileFromCoord(Earth, x+1, y),
-			g.tileFromCoord(Earth, x, y+1),
-			g.tileFromCoord(Earth, x+1, y+1),
-		}
-
-		for _, tile := range tiles {
-			g.Deposits[tile] = Iron
-		}
-	}
-
-	// Gold
-	{
-		tiles := []int{
-			g.tileFromCoord(Earth, 1, 1),
-			g.tileFromCoord(Earth, EarthSize-2, 1),
-			g.tileFromCoord(Earth, 1, EarthSize-2),
-			g.tileFromCoord(Earth, EarthSize-2, EarthSize-2),
-		}
-
-		for _, tile := range tiles {
-			g.Deposits[tile] = Gold
-		}
-	}
-
-	// Uranium
-	for i := 0; i < 8; i++ {
-		x := uint(rand.Intn(MarsSize - 1))
-		y := uint(rand.Intn(MarsSize - 1))
-		tiles := []int{
-			g.tileFromCoord(Mars, x, y),
-			g.tileFromCoord(Mars, x+1, y),
-			g.tileFromCoord(Mars, x, y+1),
-			g.tileFromCoord(Mars, x+1, y+1),
-		}
-
-		for _, tile := range tiles {
-			g.Deposits[tile] = Uranium
-		}
-	}
-
+	// Cores
 	for i := 0; i < len(players); i++ {
-		x := uint(rand.Intn(EarthSize-4)) + 2
-		y := uint(rand.Intn(EarthSize-4)) + 2
+		_, x, y := g.tileToCoord(islandCenters[i])
 		tile := g.tileFromCoord(Earth, x, y)
 		kilnTile := g.tileFromCoord(Earth, x+1, y)
 
@@ -519,6 +600,48 @@ func NewGame(players []string) *Game {
 		g.Armies[tile] = 15
 		g.TileTypes[tile] = Core
 		g.TileTypes[kilnTile] = Kiln
+	}
+
+	// Small Islands
+	for i := 0; i < 3; i++ {
+		x := uint(rand.Intn(EarthSize - 1))
+		y := uint(rand.Intn(EarthSize - 1))
+
+		goldTile := g.tileFromCoord(Earth, x, y)
+		if g.Terrain[goldTile] == Land {
+			i--
+			continue
+		}
+
+		tiles := []int{
+			goldTile,
+			g.tileFromCoord(Earth, x+1, y),
+			g.tileFromCoord(Earth, x, y+1),
+			g.tileFromCoord(Earth, x+1, y+1),
+		}
+
+		// these are guarenteed not to be -1
+		for _, tile := range tiles {
+			g.Terrain[tile] = Land
+		}
+
+		g.Deposits[goldTile] = Gold
+	}
+
+	// Uranium
+	for i := 0; i < 8; i++ {
+		x := uint(rand.Intn(MarsSize - 1))
+		y := uint(rand.Intn(MarsSize - 1))
+		tiles := []int{
+			g.tileFromCoord(Mars, x, y),
+			g.tileFromCoord(Mars, x+1, y),
+			g.tileFromCoord(Mars, x, y+1),
+			g.tileFromCoord(Mars, x+1, y+1),
+		}
+
+		for _, tile := range tiles {
+			g.Deposits[tile] = Uranium
+		}
 	}
 
 	return g
