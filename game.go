@@ -48,7 +48,7 @@ var TileInfos = map[TileType]TileInfo{
 		Cost: map[Material]uint{
 			Brick:  200,
 			Copper: 500,
-			Iron:   100,
+			Iron:   350,
 			Gold:   20,
 		},
 	},
@@ -108,8 +108,8 @@ var TileInfos = map[TileType]TileInfo{
 		Cost: map[Material]uint{
 			Brick:  500,
 			Copper: 1000,
-			Iron:   500,
-			Gold:   200,
+			Iron:   1000,
+			Gold:   250,
 		},
 	},
 	Cleaner: TileInfo{
@@ -550,8 +550,9 @@ func NewGame(players []string) *Game {
 			}
 
 			for _, tile := range dTiles {
-				if tile >= 0 && g.Terrain[tile] == Land {
+				if tile >= 0 {
 					g.Deposits[tile] = Copper
+					g.Terrain[tile] = Land
 				}
 			}
 		}
@@ -567,8 +568,9 @@ func NewGame(players []string) *Game {
 			}
 
 			for _, tile := range dTiles {
-				if tile >= 0 && g.Terrain[tile] == Land {
+				if tile >= 0 {
 					g.Deposits[tile] = Iron
+					g.Terrain[tile] = Land
 				}
 			}
 		}
@@ -603,15 +605,26 @@ func NewGame(players []string) *Game {
 	}
 
 	// Small Islands
-	for i := 0; i < 3; i++ {
-		x := uint(rand.Intn(EarthSize - 1))
-		y := uint(rand.Intn(EarthSize - 1))
+	for i := 0; i < 7; i++ {
+		var x, y uint
+		for {
+			x = uint(rand.Intn(EarthSize - 1))
+			y = uint(rand.Intn(EarthSize - 1))
+			tooClose := false
+			for _, oldCenter := range islandCenters {
+				_, oldX, oldY := g.tileToCoord(oldCenter)
 
-		goldTile := g.tileFromCoord(Earth, x, y)
-		if g.Terrain[goldTile] == Land {
-			i--
-			continue
+				if (x-oldX < 8 || oldX-x < 8) && (y-oldY < 8 || oldY-y < 8) {
+					tooClose = true
+					break
+				}
+			}
+			if !tooClose {
+				break
+			}
 		}
+		goldTile := g.tileFromCoord(Earth, x, y)
+		islandCenters = append(islandCenters, goldTile)
 
 		tiles := []int{
 			goldTile,
@@ -625,7 +638,13 @@ func NewGame(players []string) *Game {
 			g.Terrain[tile] = Land
 		}
 
-		g.Deposits[goldTile] = Gold
+		if i < 3 {
+			g.Deposits[goldTile] = Gold
+		} else {
+			for _, tile := range tiles {
+				g.Deposits[tile] = Iron
+			}
+		}
 	}
 
 	// Uranium
