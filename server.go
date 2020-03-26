@@ -81,9 +81,9 @@ func main() {
 
 		if err != nil {
 			return
+			w.WriteHeader(500)
 		}
 
-			w.WriteHeader(500)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(body)
 	}).Methods("GET")
