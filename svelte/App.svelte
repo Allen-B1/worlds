@@ -3,8 +3,9 @@ import Map from './Map.svelte';
 import Stats from './Stats.svelte';
 import TileInfos from './TileInfos.svelte';
 import Players from './Players.svelte';
+import Tutorial from './Tutorial.svelte';
 
-import {tileTypes} from './constants.js';
+import {tileTypes, tileKeys} from './constants.js';
 
 let armies = [];
 let terrain = [];
@@ -14,6 +15,9 @@ let tiletypes = [];
 
 let players = [];
 let losers = [];
+
+// Set: the currently selected tiles
+let selected = new Set();
 
 let launched = false;
 
@@ -41,8 +45,10 @@ $: {
 	}
 }
 
+const isTutorial = location.hash.endsWith(":tutorial");
+
 const roomId = location.pathname.split("/")[1];
-const userKey = location.hash.slice(1);
+const userKey = location.hash.slice(1).split(":")[0];
 let userIndex;
 {
 	let xhr = new XMLHttpRequest();
@@ -55,7 +61,7 @@ let userIndex;
 
 let tileInfos = [];
 {
-	for (let kbd in tileTypes) {
+	for (let kbd of tileKeys) {
 		let type = tileTypes[kbd];
 		let xhr = new XMLHttpRequest();
 		xhr.onload = function() {
@@ -72,8 +78,6 @@ let tileInfos = [];
 setInterval(function(){
 	var xhr = new XMLHttpRequest();
 	xhr.onload = function() {
-		if (planet == "") planet = "earth";
-
 		var json = JSON.parse(xhr.responseText);
 		armies = json.armies;
 		terrain = json.terrain;
@@ -119,28 +123,31 @@ function launch(evt) {
 }
 </script>
 
+{#if planet == "earth"}
 <Map planet="earth"
 	armies={armies}
 	terrain={terrain}
 	territory={territory}
 	deposits={deposits}
 	tiletypes={tiletypes}
-	show={planet == "earth"}
 	on:move={move}
 	on:make={make}
 	on:launch={launch}
+	bind:selected={selected}
  />
+{:else}
 <Map planet="mars"
 	armies={armies}
 	terrain={terrain}
 	territory={territory}
 	deposits={deposits}
 	tiletypes={tiletypes}
-	show={planet == "mars"}
 	on:move={move}
 	on:make={make}
 	on:launch={launch}
+	bind:selected={selected}
  />
+{/if}
 
 <Stats stats={stats}
 	labels={statsLabels}
@@ -153,3 +160,16 @@ function launch(evt) {
 
 <button style={"top:240px;left:16px;position:fixed;display:" + (launched?"block":"none")}
 	on:click={() => {planet=planet=="earth"?"mars":"earth"}}>To {planet == "earth" ? "Mars" : "Earth"}</button>
+
+{#if isTutorial}
+<Tutorial armies={armies}
+	terrain={terrain}
+	territory={territory}
+	deposits={deposits}
+	tiletypes={tiletypes}
+	selected={selected}
+	userIndex={userIndex}
+	planet={planet}
+/>
+{/if}
+

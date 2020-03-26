@@ -27,9 +27,7 @@
 		}
 	}
 
-	export let show;
-
-	let selected = new Set();
+	export let selected = new Set();
 	function select(evt) {
 		selected.clear();
 		selected.add(evt.detail);
@@ -80,10 +78,9 @@ div {
 	background: #fafafa;
 	margin: auto;
 }
-.hide { display: none; }
 </style>
 
-<div class={show?"":"hide"} bind:this={elem}>
+<div bind:this={elem}>
 	{#each tiles as tile} 
 		<Tile on:click={select} selected={selected.has(tile)} tile={tile} terrain={terrain[tile]} army={armies[tile]} territory={territory[tile]} deposit={deposits[tile]} tiletype={tiletypes[tile]} />
 	{/each}

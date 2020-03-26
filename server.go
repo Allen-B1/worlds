@@ -25,6 +25,7 @@ var objects sync.Map
 func gameThread() {
 	for {
 		turnTimer := time.After(1000 * time.Millisecond)
+		fmt.Println("next turn")
 		objects.Range(func(key, value interface{}) bool {
 			obj := value.(*Object)
 			obj.Lock()

@@ -3,6 +3,8 @@ export const sizes = {
 	mars: 24
 };
 
+export const tileKeys = [1,2,3,4,5,6,7,8,9,0,"-"];
+
 export const tileTypes = {
 	"1": "core",
 	"2": "camp",
