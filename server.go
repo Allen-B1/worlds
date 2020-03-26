@@ -80,10 +80,10 @@ func main() {
 		obj.Unlock()
 
 		if err != nil {
-			w.WriteHeader(500)
 			return
 		}
 
+			w.WriteHeader(500)
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(body)
 	}).Methods("GET")

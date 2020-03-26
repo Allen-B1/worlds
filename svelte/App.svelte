@@ -21,6 +21,8 @@ let selected = new Set();
 
 let launched = false;
 
+let hide = false;
+
 let materials = {};
 const materialLabels = [
 		["Brk", "brick", "text-brick"],
@@ -121,6 +123,10 @@ function launch(evt) {
 	xhr.open("POST", "/api/" + roomId + "/launch?tile=" + evt.detail.tile + "&key=" + userKey);
 	xhr.send();
 }
+
+window.addEventListener("keydown", function(e) {
+	if (e.key == "h") hide = !hide;
+});
 </script>
 
 {#if planet == "earth"}
@@ -149,6 +155,7 @@ function launch(evt) {
  />
 {/if}
 
+{#if !hide}
 <Stats stats={stats}
 	labels={statsLabels}
 	x="16" y="16" />
@@ -160,6 +167,7 @@ function launch(evt) {
 
 <button style={"top:240px;left:16px;position:fixed;display:" + (launched?"block":"none")}
 	on:click={() => {planet=planet=="earth"?"mars":"earth"}}>To {planet == "earth" ? "Mars" : "Earth"}</button>
+{/if}
 
 {#if isTutorial}
 <Tutorial armies={armies}
