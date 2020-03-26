@@ -671,33 +671,41 @@ func (g *Game) Launch(player int, tile int) error {
 		return errors.New("launcher required to launch")
 	}
 
+	core := -1
 	for i := EarthSize * EarthSize; i < len(g.TileTypes); i++ {
 		if g.TileTypes[i] == Core && g.Territory[i] == player {
-			return nil
+			core = i
 		}
 	}
 
-	x := uint(rand.Intn(MarsSize-2) + 1)
-	y := uint(rand.Intn(MarsSize-2) + 1)
+	if core == -1 {
+		x := uint(rand.Intn(MarsSize-2) + 1)
+		y := uint(rand.Intn(MarsSize-2) + 1)
 
-	tiles := []int{
-		g.tileFromCoord(Mars, x, y),
-		g.tileFromCoord(Mars, x+1, y),
-		g.tileFromCoord(Mars, x, y+1),
-		g.tileFromCoord(Mars, x+1, y+1),
-		g.tileFromCoord(Mars, x-1, y),
-		g.tileFromCoord(Mars, x, y-1),
-		g.tileFromCoord(Mars, x-1, y-1),
-		g.tileFromCoord(Mars, x-1, y+1),
-		g.tileFromCoord(Mars, x+1, y-1),
-	}
+		tiles := []int{
+			g.tileFromCoord(Mars, x, y),
+			g.tileFromCoord(Mars, x+1, y),
+			g.tileFromCoord(Mars, x, y+1),
+			g.tileFromCoord(Mars, x+1, y+1),
+			g.tileFromCoord(Mars, x-1, y),
+			g.tileFromCoord(Mars, x, y-1),
+			g.tileFromCoord(Mars, x-1, y-1),
+			g.tileFromCoord(Mars, x-1, y+1),
+			g.tileFromCoord(Mars, x+1, y-1),
+		}
 
-	for _, tile := range tiles {
-		g.Territory[tile] = player
-		g.Armies[tile] = 1
-		g.TileTypes[tile] = ""
+		for _, tile := range tiles {
+			g.Territory[tile] = player
+			g.Armies[tile] = 1
+			g.TileTypes[tile] = ""
+		}
+
+		core = tiles[0]
+		g.TileTypes[core] = Core
 	}
-	g.TileTypes[tiles[0]] = Core
+	transfer := g.Armies[tile] - 1
+	g.Armies[core] += transfer
+	g.Armies[tile] -= transfer
 	return nil
 }
 
