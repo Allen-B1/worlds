@@ -302,7 +302,7 @@ func (g *Game) NextTurn() {
 	}
 
 	// death from pollution
-	if g.Pollution >= 1000*1000 {
+	if g.Pollution >= 100*1000 {
 		for i := 0; i < EarthSize*EarthSize; i++ {
 			if g.Territory[i] >= 0 {
 				g.TileTypes[i] = ""
@@ -404,8 +404,9 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		}
 
 		for _, tile := range tiles {
-			if g.Territory[tile] == -1 && g.Armies[tile] == 0 {
+			if g.Territory[tile] == -1 && g.Armies[tile] == 0 && g.Terrain[tile] == Land {
 				g.Territory[tile] = player
+				g.Armies[tile] = 1
 			}
 		}
 	}
@@ -615,19 +616,29 @@ func NewGame(players []string) *Game {
 
 		// Iron
 		{
-			_, x, y := g.tileToCoord(tiles[rand.Intn(len(tiles))])
-			dTiles := []int{
-				g.tileFromCoord(Earth, x, y),
-				g.tileFromCoord(Earth, x+1, y),
-				g.tileFromCoord(Earth, x, y+1),
-				g.tileFromCoord(Earth, x+1, y+1),
-			}
-
-			for _, tile := range dTiles {
-				if tile >= 0 {
-					g.Deposits[tile] = Iron
-					g.Terrain[tile] = Land
+		outer:
+			for {
+				_, x, y := g.tileToCoord(tiles[rand.Intn(len(tiles))])
+				dTiles := []int{
+					g.tileFromCoord(Earth, x, y),
+					g.tileFromCoord(Earth, x+1, y),
+					g.tileFromCoord(Earth, x, y+1),
+					g.tileFromCoord(Earth, x+1, y+1),
 				}
+
+				for _, tile := range dTiles {
+					if g.Deposits[tile] != "" {
+						continue outer
+					}
+				}
+
+				for _, tile := range dTiles {
+					if tile >= 0 {
+						g.Deposits[tile] = Iron
+						g.Terrain[tile] = Land
+					}
+				}
+				break
 			}
 		}
 	}
@@ -654,6 +665,7 @@ func NewGame(players []string) *Game {
 			g.Territory[tile] = i
 			g.Armies[tile] = 1
 			g.TileTypes[tile] = ""
+			g.Terrain[tile] = Land
 		}
 		g.Armies[tile] = 15
 		g.TileTypes[tile] = Core
@@ -816,7 +828,7 @@ func (g *Game) Nuke(player int, tile int) error {
 	}
 
 	if planet == Earth {
-		g.Pollution += 500
+		g.Pollution += 5000
 	}
 
 	return nil
