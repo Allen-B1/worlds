@@ -44,6 +44,12 @@ td {
 	background: hsl(100, 50%, 50%); }
 .player-2 {
 	background: hsl(200, 50%, 50%); }
+.player-3 {
+	background: hsl(300, 50%, 50%); }
+.player-4 {
+	background: hsl(40, 50%, 50%); }
+.player-5 {
+	background: hsl(250, 50%, 50%); }
 </style>
 
 <table>

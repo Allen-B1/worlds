@@ -397,8 +397,8 @@ var app = (function () {
     			div = element("div");
     			span = element("span");
     			t = text(t_value);
-    			attr(span, "class", "svelte-1iajz4s");
-    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-1iajz4s"));
+    			attr(span, "class", "svelte-l7t3bt");
+    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-l7t3bt"));
     			attr(div, "style", div_style_value = "top:" + 32 * /*y*/ ctx[7] + "px;left:" + 32 * /*x*/ ctx[6] + "px;");
     		},
     		m(target, anchor, remount) {
@@ -413,7 +413,7 @@ var app = (function () {
     			? ""
     			: /*army*/ ctx[0]) + "")) set_data(t, t_value);
 
-    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-1iajz4s"))) {
+    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-l7t3bt"))) {
     				attr(div, "class", div_class_value);
     			}
 
@@ -496,7 +496,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (84:1) {#each tiles as tile}
+    // (96:1) {#each tiles as tile}
     function create_each_block(ctx) {
     	let current;
 
@@ -669,19 +669,31 @@ var app = (function () {
     					let tile = selected.values().next().value;
     					let toTile;
     					if (e.code == "KeyW") toTile = tile - size;
-    					if (e.code == "KeyA") toTile = tile - 1;
     					if (e.code == "KeyS") toTile = tile + size;
+    					if (e.code == "KeyA") toTile = tile - 1;
     					if (e.code == "KeyD") toTile = tile + 1;
+
+    					if (e.code == "KeyA" || e.code == "KeyD") {
+    						if (Math.floor(toTile / size) != Math.floor(tile / size)) {
+    							return;
+    						}
+    					} else {
+    						if (toTile >= size * size || toTile < 0) {
+    							return;
+    						}
+    					}
+
     					dispatch("move", { from: tile, to: toTile });
     					selected.clear();
     					selected.add(toTile);
     					$$invalidate(0, selected);
     				}
-    				break;
+    				return;
     			case "Backspace":
     				for (let tile of selected) {
     					dispatch("make", { tile, type: "" });
     				}
+    				return;
     		}
 
     		if (e.key in tileTypes) {
@@ -1056,7 +1068,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (50:1) {#each playerOrder as player}
+    // (56:1) {#each playerOrder as player}
     function create_each_block$3(ctx) {
     	let tr;
     	let td;
@@ -1071,11 +1083,11 @@ var app = (function () {
     			td = element("td");
     			t0 = text(t0_value);
     			t1 = space();
-    			attr(td, "class", "svelte-gj44d0");
+    			attr(td, "class", "svelte-enl4e0");
 
     			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[3] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[3]) != -1
     			? "loser"
-    			: "")) + " svelte-gj44d0"));
+    			: "")) + " svelte-enl4e0"));
     		},
     		m(target, anchor) {
     			insert(target, tr, anchor);
@@ -1088,7 +1100,7 @@ var app = (function () {
 
     			if (dirty & /*playerOrder, losers*/ 5 && tr_class_value !== (tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[3] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[3]) != -1
     			? "loser"
-    			: "")) + " svelte-gj44d0"))) {
+    			: "")) + " svelte-enl4e0"))) {
     				attr(tr, "class", tr_class_value);
     			}
     		},
@@ -1115,7 +1127,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr(table, "class", "svelte-gj44d0");
+    			attr(table, "class", "svelte-enl4e0");
     		},
     		m(target, anchor) {
     			insert(target, table, anchor);
@@ -2016,10 +2028,10 @@ var app = (function () {
     			 {
     				if (planet == "earth") {
     					document.title = "worlds • earth";
-    					document.body.style.background = "#0f0";
+    					document.body.style.background = "#335599";
     				} else {
     					document.title = "worlds • mars";
-    					document.body.style.background = "#60f";
+    					document.body.style.background = "#993354";
     				}
     			}
     		}

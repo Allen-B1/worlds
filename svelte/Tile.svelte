@@ -85,19 +85,25 @@ span {
 .territory--1 {
 	--territory: transparent; }
 .territory-0 {
-	--territory: #ffd4cc; }
+	--territory: hsl(0, 50%, 75%); }
 .territory-1 {
-	--territory: #ddffcc; }
+	--territory: hsl(100, 50%, 75%); }
 .territory-2 {
-	--territory: #ccddff; }
+	--territory: hsl(200, 50%, 75%); }
+.territory-3 {
+	--territory: hsl(300, 50%, 75%); }
+.territory-4 {
+	--territory: hsl(40, 50%, 75%); }
+.territory-5 {
+	--territory: hsl(250, 50%, 75%); }
 
 .terrain-ocean span {
 	background: url(/ocean.svg); }
 .terrain-ocean.territory--1 {
-	--territory: #00f; }
+	--territory: #335599; }
 
 .selected {
-	outline: 2px solid #aaa;
+	outline: 2px solid #555;
 	z-index: 5;
 }
 </style>

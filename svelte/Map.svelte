@@ -44,19 +44,31 @@
 			let tile = selected.values().next().value;
 			let toTile;
 			if (e.code == "KeyW") toTile = tile - size;
-			if (e.code == "KeyA") toTile = tile - 1;
 			if (e.code == "KeyS") toTile = tile + size;
+			if (e.code == "KeyA") toTile = tile - 1;
 			if (e.code == "KeyD") toTile = tile + 1;
+
+			if (e.code == "KeyA" || e.code == "KeyD") {
+				if (Math.floor(toTile / size) != Math.floor(tile / size)) {
+					return;
+				}
+			} else {
+				if (toTile >= size*size || toTile < 0) {
+					return;
+				}
+			}
+
 			dispatch("move", {from:tile, to: toTile});
 			selected.clear();
 			selected.add(toTile);
 			selected = selected;
 		}
-		break;
+		return;
 	case "Backspace":
 		for (let tile of selected) {
 			dispatch("make", {tile:tile, type:""});
 		}
+		return;
 	}
 
 	if (e.key in tileTypes) {
