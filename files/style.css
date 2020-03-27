@@ -3,48 +3,39 @@ body, input, button {
 	font-size: 16px;
 }
 
-main {
+h2 {
+	font-size: 20px;
+	margin-top: 0;
+	margin-bottom: 8px;
+}
+
+.card {
+	background: #fff;
+	padding: 16px;
 	text-align: center;
 	max-width: 300px;
 	margin: auto;
 	margin-top: 16px;
 }
 
-main input, main button {
+.card input, .card button {
 	width: -webkit-fill-available;
 	width: -moz-available;
 	width: fill-available;
+	margin-bottom: 8px;
 }
 
-.stats {
-	position: fixed;
-	left: 16px; top: 16px;
-	background: #ddd;
-	border: 2px solid #999;
-    font-family: 'VT323', monospace;
-	font-size: 16px;
-	border-collapse: collapse;
-	z-index: 3;
-}
-
-.stats td {
-	padding: 4px 8px;
-}
-
-.stats.right {
-	left: auto;
-	right: 16px;
-}
-
-.stats.bottom {
-	top: auto;
-	bottom: 16px;
+input.textfield {
+	border: 0px;
+	border-bottom: 2px solid #aaa;
+	background: transparent;
 }
 
 body {
 	padding: 0; margin: 0;
 	margin: 32px;
 	overflow: auto;
+	background: #335599;
 }
 
 kbd {
@@ -74,18 +65,6 @@ kbd {
 	color: #8239cc;
 }
 
-#players tr {
-	background: var(--territory);
-	color: rgba(0,0,0,0.65);
-}
-
-#launcher {
-	position: fixed;
-	left: 16px;
-	top: 248px;
-	z-index: 3;
-}
-
 button, .button {
 	color: #000;
 	text-decoration: none;
@@ -97,47 +76,3 @@ button, .button {
 	padding: 4px 8px;
 }
 
-#notification-box {
-	position: fixed;
-	bottom: 16px;
-	right: 16px;
-	z-index: 3;
-}
-
-.notification {
-	display: block;
-	min-width: 200px;
-	padding: 8px 16px;
-	background: #444;
-	border: 2px solid #111;
-	color: #ddd;
-	margin-top: 16px;
-}
-
-.notification.big {
-	position: fixed;
-	font-size: 24px;
-
-	height: 32px;
-	width: 400px;
-	z-index: 3;
-	text-align: center;
-	top:0;
-	bottom: 0;
-	left: 0;
-	right: 0;
-
-	margin: auto;
-}
-
-.notification .close {
-	display: inline-block;
-	cursor: pointer;
-	border-radius: 2px;
-	padding: 0 4px;
-	float: right;
-}
-
-.notification .close:active {
-	background: #aaa;
-}

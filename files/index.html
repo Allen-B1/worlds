@@ -6,10 +6,22 @@
 		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body>
-		<main>
-			<input type="number" id="max" min="1" max="6" placeholder="max players">
+		<div class="card" style="background:hsl(100,50%,75%)">
+			<h2>Create</h2>
+			<input class="textfield" type="number" id="max" min="1" max="6" placeholder="max players">
 			<button id="create">Create</button>
-		</main>
+		</div>
+		<div class="card" style="background:hsl(40,50%,75%)">
+			<h2>Join</h2>
+			<form id="join">
+				<input class="textfield" required type="url" placeholder="room url" id="url">
+				<button type="submit">Join</button>
+			</form>
+		</div>
+		<div class="card" style="background:hsl(300,50%,75%)">
+			<h2>Tutorial</h2>
+			<button id="tutorial">Start</button>
+		</div>
 
 		<script>
 document.getElementById("create").addEventListener("click", function() {
@@ -21,6 +33,26 @@ document.getElementById("create").addEventListener("click", function() {
 	});
 	xhr.open("POST", "/api/new?max=" + document.getElementById("max").value);
 	xhr.send();
+});
+document.getElementById("tutorial").addEventListener("click", function() {
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load", function() {
+		var roomId = xhr.responseText;
+		var xhr2 = new XMLHttpRequest();
+		xhr2.addEventListener("load", function() {
+			userId = xhr2.responseText;
+			location.href = "/" + roomId + "/game#" + userId + ":tutorial";
+		});
+		xhr2.open("POST", "/api/" + roomId + "/join?name=" + name);
+		xhr2.send();
+	});
+	xhr.open("POST", "/api/new?max=1");
+	xhr.send();
+});
+document.getElementById("join").addEventListener("submit", function(e) {
+	location.href = document.getElementById("url").value;
+	e.preventDefault();
+	return false;
 });
 		</script>
 	</body>

@@ -6,18 +6,20 @@
 		<link rel="stylesheet" href="/style.css">
 	</head>
 	<body>
-		<main>
+		<div class="card">
 			<p>You are <b id="name">Anonymous</b></p>
 			<p><b id="count">0</b> of <b id="max">0</b></p>
 			<a class="button" href="/">Back</a>
-		</main>
+		</div>
 		<script>
 document.body.style.display = "none";
 
 const roomId = location.pathname.split("/")[1];
 var userId = null;
 var name = prompt("What is your name?");
-
+if (name == "" || name == null) {
+	location.href = "/";
+}
 {
 	var xhr = new XMLHttpRequest();
 	xhr.addEventListener("load", function() {
@@ -34,7 +36,7 @@ var nameElem = document.getElementById("name");
 
 nameElem.innerHTML = name;
 
-setInterval(function() {
+function req() {
 	var xhr = new XMLHttpRequest();
 	xhr.addEventListener("load", function() {
 		var json = JSON.parse(xhr.responseText);
@@ -47,7 +49,9 @@ setInterval(function() {
 	});
 	xhr.open("GET", "/api/" + roomId + "/data.json");
 	xhr.send();
-}, 500);
+}
+setInterval(req, 500);
+req();
 
 window.addEventListener("beforeunload", function() {
 	navigator.sendBeacon("/api/" + roomId + "/leave?key=" + userId, null);
