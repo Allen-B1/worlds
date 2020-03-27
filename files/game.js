@@ -397,8 +397,8 @@ var app = (function () {
     			div = element("div");
     			span = element("span");
     			t = text(t_value);
-    			attr(span, "class", "svelte-r4d7ix");
-    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-r4d7ix"));
+    			attr(span, "class", "svelte-65e9j");
+    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-65e9j"));
     			attr(div, "style", div_style_value = "top:" + 32 * /*y*/ ctx[7] + "px;left:" + 32 * /*x*/ ctx[6] + "px;");
     		},
     		m(target, anchor, remount) {
@@ -413,7 +413,7 @@ var app = (function () {
     			? ""
     			: /*army*/ ctx[0]) + "")) set_data(t, t_value);
 
-    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-r4d7ix"))) {
+    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-65e9j"))) {
     				attr(div, "class", div_class_value);
     			}
 
@@ -1907,7 +1907,7 @@ var app = (function () {
     			 {
     				if (planet == "earth") {
     					document.title = "worlds • earth";
-    					document.body.style.background = "#335599";
+    					document.body.style.background = "#3F6ABF";
     				} else {
     					document.title = "worlds • mars";
     					document.body.style.background = "#993354";

@@ -100,7 +100,7 @@ span {
 .terrain-ocean span {
 	background: url(/ocean.svg); }
 .terrain-ocean.territory--1 {
-	--territory: #335599; }
+	--territory: #3F6ABF; }
 .terrain-fog {
 	background: #aaa; }
 .terrain-fog span::before {

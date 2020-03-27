@@ -40,7 +40,7 @@ let planet = "earth";
 $: {
 	if (planet == "earth") {
 		document.title = "worlds • earth";
-		document.body.style.background = "#335599";
+		document.body.style.background = "#3F6ABF";
 	} else {
 		document.title = "worlds • mars";
 		document.body.style.background = "#993354";
