@@ -101,10 +101,13 @@ span {
 	background: url(/ocean.svg); }
 .terrain-ocean.territory--1 {
 	--territory: #335599; }
-
+.terrain-fog {
+	background: #aaa; }
+.terrain-fog span::before {
+	content: "?"; }
 .selected {
 	outline: 2px solid #555;
-	z-index: 5;
+	z-index: 2;
 }
 </style>
 

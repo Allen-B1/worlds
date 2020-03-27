@@ -96,7 +96,7 @@ setInterval(function(){
 		players = json.players;
 		losers = json.losers;
 	};
-	xhr.open("GET", "/api/" + roomId + "/data.json");
+	xhr.open("GET", "/api/" + roomId + "/data.json?key=" + userKey);
 	xhr.send();
 }, 500);
 
@@ -129,8 +129,7 @@ window.addEventListener("keydown", function(e) {
 });
 </script>
 
-{#if planet == "earth"}
-<Map planet="earth"
+<Map planet={planet}
 	armies={armies}
 	terrain={terrain}
 	territory={territory}
@@ -141,19 +140,6 @@ window.addEventListener("keydown", function(e) {
 	on:launch={launch}
 	bind:selected={selected}
  />
-{:else}
-<Map planet="mars"
-	armies={armies}
-	terrain={terrain}
-	territory={territory}
-	deposits={deposits}
-	tiletypes={tiletypes}
-	on:move={move}
-	on:make={make}
-	on:launch={launch}
-	bind:selected={selected}
- />
-{/if}
 
 {#if !hide}
 <Stats stats={stats}

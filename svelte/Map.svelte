@@ -13,10 +13,15 @@
 	export let territory;
 	export let tiletypes;
 
-	const size = planet == "earth" ? sizes.earth : sizes.mars;
-	const tiles = planet == "earth" ? 
-		[...Array(sizes.earth*sizes.earth).keys()] :
-		[...Array(sizes.mars*sizes.mars).keys()].map(i => i+sizes.earth*sizes.earth);
+	let size, tiles, offset;
+	$: {
+		size = planet == "earth" ? sizes.earth : sizes.mars;
+		offset = planet == "earth" ? 0 : sizes.earth*sizes.earth;
+		tiles = planet == "earth" ? 
+			[...Array(sizes.earth*sizes.earth).keys()] :
+			[...Array(sizes.mars*sizes.mars).keys()].map(i => i+offset);
+		console.log(size);
+	}
 
 	console.log(tiles);
 
@@ -49,11 +54,11 @@
 			if (e.code == "KeyD") toTile = tile + 1;
 
 			if (e.code == "KeyA" || e.code == "KeyD") {
-				if (Math.floor(toTile / size) != Math.floor(tile / size)) {
+				if (Math.floor((toTile-offset) / size) != Math.floor((tile-offset) / size)) {
 					return;
 				}
 			} else {
-				if (toTile >= size*size || toTile < 0) {
+				if (toTile >= offset+size*size || toTile < offset) {
 					return;
 				}
 			}

@@ -136,6 +136,7 @@ type Terrain string
 const (
 	Land  Terrain = ""
 	Ocean Terrain = "ocean"
+	Fog   Terrain = "fog"
 )
 
 type PlayerStat struct {
@@ -158,18 +159,73 @@ type Game struct {
 	Pollution uint
 }
 
+// spectator
 func (g *Game) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]interface{}{
 		"armies":    g.Armies,
 		"territory": g.Territory,
 		"tiletypes": g.TileTypes,
 		"deposits":  g.Deposits,
+		"terrain":   g.Terrain,
 		"players":   g.Players,
 		"losers":    g.Losers,
 		"stats":     g.Stats,
 		"turn":      g.Turn,
 		"pollution": g.Pollution,
-		"terrain":   g.Terrain,
+
+		"type": "game",
+	})
+}
+
+func (g *Game) MarshalFor(player int) ([]byte, error) {
+	armies := make([]uint32, len(g.Armies))
+	territory := make([]int, len(g.Territory))
+	tiletypes := make([]TileType, len(g.TileTypes))
+	deposits := make([]Material, len(g.Deposits))
+	terrain := make([]Terrain, len(g.Terrain))
+
+	for tile, _ := range territory {
+		territory[tile] = -1
+		terrain[tile] = Fog
+	}
+
+	for tile, terr := range g.Territory {
+		if terr == player {
+			planet, x, y := g.tileToCoord(tile)
+			tiles := []int{
+				tile,
+				g.tileFromCoord(planet, x-1, y+1),
+				g.tileFromCoord(planet, x-1, y),
+				g.tileFromCoord(planet, x-1, y-1),
+				g.tileFromCoord(planet, x, y+1),
+				g.tileFromCoord(planet, x, y-1),
+				g.tileFromCoord(planet, x+1, y+1),
+				g.tileFromCoord(planet, x+1, y),
+				g.tileFromCoord(planet, x+1, y-1),
+			}
+			for _, knownTile := range tiles {
+				if knownTile != -1 {
+					territory[knownTile] = g.Territory[knownTile]
+					armies[knownTile] = g.Armies[knownTile]
+					tiletypes[knownTile] = g.TileTypes[knownTile]
+					terrain[knownTile] = g.Terrain[knownTile]
+					deposits[knownTile] = g.Deposits[knownTile]
+				}
+			}
+		}
+	}
+
+	return json.Marshal(map[string]interface{}{
+		"armies":    armies,
+		"territory": territory,
+		"tiletypes": tiletypes,
+		"deposits":  deposits,
+		"terrain":   terrain,
+		"players":   g.Players,
+		"losers":    g.Losers,
+		"stats":     g.Stats,
+		"turn":      g.Turn,
+		"pollution": g.Pollution,
 
 		"type": "game",
 	})

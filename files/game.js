@@ -397,8 +397,8 @@ var app = (function () {
     			div = element("div");
     			span = element("span");
     			t = text(t_value);
-    			attr(span, "class", "svelte-l7t3bt");
-    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-l7t3bt"));
+    			attr(span, "class", "svelte-b81w1c");
+    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-b81w1c"));
     			attr(div, "style", div_style_value = "top:" + 32 * /*y*/ ctx[7] + "px;left:" + 32 * /*x*/ ctx[6] + "px;");
     		},
     		m(target, anchor, remount) {
@@ -413,7 +413,7 @@ var app = (function () {
     			? ""
     			: /*army*/ ctx[0]) + "")) set_data(t, t_value);
 
-    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-l7t3bt"))) {
+    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-b81w1c"))) {
     				attr(div, "class", div_class_value);
     			}
 
@@ -492,23 +492,23 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[13] = list[i];
+    	child_ctx[14] = list[i];
     	return child_ctx;
     }
 
-    // (96:1) {#each tiles as tile}
+    // (101:1) {#each tiles as tile}
     function create_each_block(ctx) {
     	let current;
 
     	const tile = new Tile({
     			props: {
-    				selected: /*selected*/ ctx[0].has(/*tile*/ ctx[13]),
-    				tile: /*tile*/ ctx[13],
-    				terrain: /*terrain*/ ctx[3][/*tile*/ ctx[13]],
-    				army: /*armies*/ ctx[2][/*tile*/ ctx[13]],
-    				territory: /*territory*/ ctx[4][/*tile*/ ctx[13]],
-    				deposit: /*deposits*/ ctx[1][/*tile*/ ctx[13]],
-    				tiletype: /*tiletypes*/ ctx[5][/*tile*/ ctx[13]]
+    				selected: /*selected*/ ctx[0].has(/*tile*/ ctx[14]),
+    				tile: /*tile*/ ctx[14],
+    				terrain: /*terrain*/ ctx[3][/*tile*/ ctx[14]],
+    				army: /*armies*/ ctx[2][/*tile*/ ctx[14]],
+    				territory: /*territory*/ ctx[4][/*tile*/ ctx[14]],
+    				deposit: /*deposits*/ ctx[1][/*tile*/ ctx[14]],
+    				tiletype: /*tiletypes*/ ctx[5][/*tile*/ ctx[14]]
     			}
     		});
 
@@ -524,12 +524,13 @@ var app = (function () {
     		},
     		p(ctx, dirty) {
     			const tile_changes = {};
-    			if (dirty & /*selected*/ 1) tile_changes.selected = /*selected*/ ctx[0].has(/*tile*/ ctx[13]);
-    			if (dirty & /*terrain*/ 8) tile_changes.terrain = /*terrain*/ ctx[3][/*tile*/ ctx[13]];
-    			if (dirty & /*armies*/ 4) tile_changes.army = /*armies*/ ctx[2][/*tile*/ ctx[13]];
-    			if (dirty & /*territory*/ 16) tile_changes.territory = /*territory*/ ctx[4][/*tile*/ ctx[13]];
-    			if (dirty & /*deposits*/ 2) tile_changes.deposit = /*deposits*/ ctx[1][/*tile*/ ctx[13]];
-    			if (dirty & /*tiletypes*/ 32) tile_changes.tiletype = /*tiletypes*/ ctx[5][/*tile*/ ctx[13]];
+    			if (dirty & /*selected, tiles*/ 65) tile_changes.selected = /*selected*/ ctx[0].has(/*tile*/ ctx[14]);
+    			if (dirty & /*tiles*/ 64) tile_changes.tile = /*tile*/ ctx[14];
+    			if (dirty & /*terrain, tiles*/ 72) tile_changes.terrain = /*terrain*/ ctx[3][/*tile*/ ctx[14]];
+    			if (dirty & /*armies, tiles*/ 68) tile_changes.army = /*armies*/ ctx[2][/*tile*/ ctx[14]];
+    			if (dirty & /*territory, tiles*/ 80) tile_changes.territory = /*territory*/ ctx[4][/*tile*/ ctx[14]];
+    			if (dirty & /*deposits, tiles*/ 66) tile_changes.deposit = /*deposits*/ ctx[1][/*tile*/ ctx[14]];
+    			if (dirty & /*tiletypes, tiles*/ 96) tile_changes.tiletype = /*tiletypes*/ ctx[5][/*tile*/ ctx[14]];
     			tile.$set(tile_changes);
     		},
     		i(local) {
@@ -550,7 +551,7 @@ var app = (function () {
     function create_fragment$1(ctx) {
     	let div;
     	let current;
-    	let each_value = /*tiles*/ ctx[7];
+    	let each_value = /*tiles*/ ctx[6];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -578,12 +579,12 @@ var app = (function () {
     				each_blocks[i].m(div, null);
     			}
 
-    			/*div_binding*/ ctx[12](div);
+    			/*div_binding*/ ctx[13](div);
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*selected, tiles, terrain, armies, territory, deposits, tiletypes, select*/ 447) {
-    				each_value = /*tiles*/ ctx[7];
+    			if (dirty & /*selected, tiles, terrain, armies, territory, deposits, tiletypes, select*/ 383) {
+    				each_value = /*tiles*/ ctx[6];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -630,7 +631,7 @@ var app = (function () {
     		d(detaching) {
     			if (detaching) detach(div);
     			destroy_each(each_blocks, detaching);
-    			/*div_binding*/ ctx[12](null);
+    			/*div_binding*/ ctx[13](null);
     		}
     	};
     }
@@ -643,12 +644,7 @@ var app = (function () {
     	let { terrain } = $$props;
     	let { territory } = $$props;
     	let { tiletypes } = $$props;
-    	const size = planet == "earth" ? sizes.earth : sizes.mars;
-
-    	const tiles = planet == "earth"
-    	? [...Array(sizes.earth * sizes.earth).keys()]
-    	: [...Array(sizes.mars * sizes.mars).keys()].map(i => i + sizes.earth * sizes.earth);
-
+    	let size, tiles, offset;
     	console.log(tiles);
     	let elem;
     	let { selected = new Set() } = $$props;
@@ -674,11 +670,11 @@ var app = (function () {
     					if (e.code == "KeyD") toTile = tile + 1;
 
     					if (e.code == "KeyA" || e.code == "KeyD") {
-    						if (Math.floor(toTile / size) != Math.floor(tile / size)) {
+    						if (Math.floor((toTile - offset) / size) != Math.floor((tile - offset) / size)) {
     							return;
     						}
     					} else {
-    						if (toTile >= size * size || toTile < 0) {
+    						if (toTile >= offset + size * size || toTile < offset) {
     							return;
     						}
     					}
@@ -710,7 +706,7 @@ var app = (function () {
 
     	function div_binding($$value) {
     		binding_callbacks[$$value ? "unshift" : "push"](() => {
-    			$$invalidate(6, elem = $$value);
+    			$$invalidate(7, elem = $$value);
     		});
     	}
 
@@ -725,10 +721,23 @@ var app = (function () {
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*elem*/ 64) {
+    		if ($$self.$$.dirty & /*planet, offset, size*/ 3584) {
+    			 {
+    				$$invalidate(10, size = planet == "earth" ? sizes.earth : sizes.mars);
+    				$$invalidate(11, offset = planet == "earth" ? 0 : sizes.earth * sizes.earth);
+
+    				$$invalidate(6, tiles = planet == "earth"
+    				? [...Array(sizes.earth * sizes.earth).keys()]
+    				: [...Array(sizes.mars * sizes.mars).keys()].map(i => i + offset));
+
+    				console.log(size);
+    			}
+    		}
+
+    		if ($$self.$$.dirty & /*elem, size*/ 1152) {
     			 {
     				if (elem) {
-    					$$invalidate(6, elem.style.width = $$invalidate(6, elem.style.height = size * 32 + "px", elem), elem);
+    					$$invalidate(7, elem.style.width = $$invalidate(7, elem.style.height = size * 32 + "px", elem), elem);
     				}
     			}
     		}
@@ -741,12 +750,13 @@ var app = (function () {
     		terrain,
     		territory,
     		tiletypes,
-    		elem,
     		tiles,
+    		elem,
     		select,
     		planet,
-    		dispatch,
     		size,
+    		offset,
+    		dispatch,
     		div_binding
     	];
     }
@@ -1430,7 +1440,7 @@ var app = (function () {
     					6: "See those little brown squares? Those are copper deposits. Copper is an important resource that is required for many buildings. A <b>Mine v1</b> can be used to get copper.<br><br>Go to a copper deposit and build a Mine on top of it by pressing <kbd>4</kbd>.",
     					7: "Good! Our next step is to build a Mine v2 over an iron deposit (the little silver squares). While you're waiting, it might be a good idea to build some more copper mines.<br><br>Gather copper and build a Mine v2 over an iron deposit by pressing <kbd>5</kbd>.",
     					8: "In addition to iron, Mine v2 can also mine copper and uranium.<br><br>Build some more iron & copper mines.",
-    					9: "Next, we have to mine some gold, which we need to build a Launcher to get to Mars. Only the Mine v3 can mine gold.<br><br>Move to a gold deposit (small yellow squares) and build a Mine v3 on top oit by pressing <kbd>6</kbd>.",
+    					9: "Next, we have to mine some gold, which we need to build a Launcher to get to Mars. Only the Mine v3 can mine gold.<br><br>Find a gold deposit (small yellow squares). You'll have to cross the ocean. Build a Mine v3 on top of the deposit by pressing <kbd>6</kbd>.",
     					10: "Hooray! Now it's time to build a Launcher, which will get us to Mars. Launchers can be located anywhere on land.",
     					11: "Let's go to Mars! Select your Launcher and press <kbd>L</kbd>.",
     					12: "Hooray! You've reached the end of this tutorial. You should be able to continue on your own from here."
@@ -1476,140 +1486,6 @@ var app = (function () {
 
     /* svelte/App.svelte generated by Svelte v3.20.1 */
 
-    function create_else_block(ctx) {
-    	let updating_selected;
-    	let current;
-
-    	function map_selected_binding_1(value) {
-    		/*map_selected_binding_1*/ ctx[24].call(null, value);
-    	}
-
-    	let map_props = {
-    		planet: "mars",
-    		armies: /*armies*/ ctx[0],
-    		terrain: /*terrain*/ ctx[1],
-    		territory: /*territory*/ ctx[2],
-    		deposits: /*deposits*/ ctx[3],
-    		tiletypes: /*tiletypes*/ ctx[4]
-    	};
-
-    	if (/*selected*/ ctx[7] !== void 0) {
-    		map_props.selected = /*selected*/ ctx[7];
-    	}
-
-    	const map = new Map$1({ props: map_props });
-    	binding_callbacks.push(() => bind(map, "selected", map_selected_binding_1));
-    	map.$on("move", /*move*/ ctx[18]);
-    	map.$on("make", /*make*/ ctx[19]);
-    	map.$on("launch", /*launch*/ ctx[20]);
-
-    	return {
-    		c() {
-    			create_component(map.$$.fragment);
-    		},
-    		m(target, anchor) {
-    			mount_component(map, target, anchor);
-    			current = true;
-    		},
-    		p(ctx, dirty) {
-    			const map_changes = {};
-    			if (dirty & /*armies*/ 1) map_changes.armies = /*armies*/ ctx[0];
-    			if (dirty & /*terrain*/ 2) map_changes.terrain = /*terrain*/ ctx[1];
-    			if (dirty & /*territory*/ 4) map_changes.territory = /*territory*/ ctx[2];
-    			if (dirty & /*deposits*/ 8) map_changes.deposits = /*deposits*/ ctx[3];
-    			if (dirty & /*tiletypes*/ 16) map_changes.tiletypes = /*tiletypes*/ ctx[4];
-
-    			if (!updating_selected && dirty & /*selected*/ 128) {
-    				updating_selected = true;
-    				map_changes.selected = /*selected*/ ctx[7];
-    				add_flush_callback(() => updating_selected = false);
-    			}
-
-    			map.$set(map_changes);
-    		},
-    		i(local) {
-    			if (current) return;
-    			transition_in(map.$$.fragment, local);
-    			current = true;
-    		},
-    		o(local) {
-    			transition_out(map.$$.fragment, local);
-    			current = false;
-    		},
-    		d(detaching) {
-    			destroy_component(map, detaching);
-    		}
-    	};
-    }
-
-    // (132:0) {#if planet == "earth"}
-    function create_if_block_2(ctx) {
-    	let updating_selected;
-    	let current;
-
-    	function map_selected_binding(value) {
-    		/*map_selected_binding*/ ctx[23].call(null, value);
-    	}
-
-    	let map_props = {
-    		planet: "earth",
-    		armies: /*armies*/ ctx[0],
-    		terrain: /*terrain*/ ctx[1],
-    		territory: /*territory*/ ctx[2],
-    		deposits: /*deposits*/ ctx[3],
-    		tiletypes: /*tiletypes*/ ctx[4]
-    	};
-
-    	if (/*selected*/ ctx[7] !== void 0) {
-    		map_props.selected = /*selected*/ ctx[7];
-    	}
-
-    	const map = new Map$1({ props: map_props });
-    	binding_callbacks.push(() => bind(map, "selected", map_selected_binding));
-    	map.$on("move", /*move*/ ctx[18]);
-    	map.$on("make", /*make*/ ctx[19]);
-    	map.$on("launch", /*launch*/ ctx[20]);
-
-    	return {
-    		c() {
-    			create_component(map.$$.fragment);
-    		},
-    		m(target, anchor) {
-    			mount_component(map, target, anchor);
-    			current = true;
-    		},
-    		p(ctx, dirty) {
-    			const map_changes = {};
-    			if (dirty & /*armies*/ 1) map_changes.armies = /*armies*/ ctx[0];
-    			if (dirty & /*terrain*/ 2) map_changes.terrain = /*terrain*/ ctx[1];
-    			if (dirty & /*territory*/ 4) map_changes.territory = /*territory*/ ctx[2];
-    			if (dirty & /*deposits*/ 8) map_changes.deposits = /*deposits*/ ctx[3];
-    			if (dirty & /*tiletypes*/ 16) map_changes.tiletypes = /*tiletypes*/ ctx[4];
-
-    			if (!updating_selected && dirty & /*selected*/ 128) {
-    				updating_selected = true;
-    				map_changes.selected = /*selected*/ ctx[7];
-    				add_flush_callback(() => updating_selected = false);
-    			}
-
-    			map.$set(map_changes);
-    		},
-    		i(local) {
-    			if (current) return;
-    			transition_in(map.$$.fragment, local);
-    			current = true;
-    		},
-    		o(local) {
-    			transition_out(map.$$.fragment, local);
-    			current = false;
-    		},
-    		d(detaching) {
-    			destroy_component(map, detaching);
-    		}
-    	};
-    }
-
-    // (158:0) {#if !hide}
     function create_if_block_1(ctx) {
     	let t0;
     	let t1;
@@ -1679,7 +1555,7 @@ var app = (function () {
     			append(button, t5);
     			current = true;
     			if (remount) dispose();
-    			dispose = listen(button, "click", /*click_handler*/ ctx[25]);
+    			dispose = listen(button, "click", /*click_handler*/ ctx[24]);
     		},
     		p(ctx, dirty) {
     			const stats0_changes = {};
@@ -1731,7 +1607,7 @@ var app = (function () {
     	};
     }
 
-    // (172:0) {#if isTutorial}
+    // (158:0) {#if isTutorial}
     function create_if_block$1(ctx) {
     	let current;
 
@@ -1784,110 +1660,114 @@ var app = (function () {
     }
 
     function create_fragment$6(ctx) {
-    	let current_block_type_index;
-    	let if_block0;
+    	let updating_selected;
     	let t0;
     	let t1;
-    	let if_block2_anchor;
+    	let if_block1_anchor;
     	let current;
-    	const if_block_creators = [create_if_block_2, create_else_block];
-    	const if_blocks = [];
 
-    	function select_block_type(ctx, dirty) {
-    		if (/*planet*/ ctx[12] == "earth") return 0;
-    		return 1;
+    	function map_selected_binding(value) {
+    		/*map_selected_binding*/ ctx[23].call(null, value);
     	}
 
-    	current_block_type_index = select_block_type(ctx);
-    	if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    	let if_block1 = !/*hide*/ ctx[9] && create_if_block_1(ctx);
-    	let if_block2 = /*isTutorial*/ ctx[17] && create_if_block$1(ctx);
+    	let map_props = {
+    		planet: /*planet*/ ctx[12],
+    		armies: /*armies*/ ctx[0],
+    		terrain: /*terrain*/ ctx[1],
+    		territory: /*territory*/ ctx[2],
+    		deposits: /*deposits*/ ctx[3],
+    		tiletypes: /*tiletypes*/ ctx[4]
+    	};
+
+    	if (/*selected*/ ctx[7] !== void 0) {
+    		map_props.selected = /*selected*/ ctx[7];
+    	}
+
+    	const map = new Map$1({ props: map_props });
+    	binding_callbacks.push(() => bind(map, "selected", map_selected_binding));
+    	map.$on("move", /*move*/ ctx[18]);
+    	map.$on("make", /*make*/ ctx[19]);
+    	map.$on("launch", /*launch*/ ctx[20]);
+    	let if_block0 = !/*hide*/ ctx[9] && create_if_block_1(ctx);
+    	let if_block1 = /*isTutorial*/ ctx[17] && create_if_block$1(ctx);
 
     	return {
     		c() {
-    			if_block0.c();
+    			create_component(map.$$.fragment);
     			t0 = space();
-    			if (if_block1) if_block1.c();
+    			if (if_block0) if_block0.c();
     			t1 = space();
-    			if (if_block2) if_block2.c();
-    			if_block2_anchor = empty();
+    			if (if_block1) if_block1.c();
+    			if_block1_anchor = empty();
     		},
     		m(target, anchor) {
-    			if_blocks[current_block_type_index].m(target, anchor);
+    			mount_component(map, target, anchor);
     			insert(target, t0, anchor);
-    			if (if_block1) if_block1.m(target, anchor);
+    			if (if_block0) if_block0.m(target, anchor);
     			insert(target, t1, anchor);
-    			if (if_block2) if_block2.m(target, anchor);
-    			insert(target, if_block2_anchor, anchor);
+    			if (if_block1) if_block1.m(target, anchor);
+    			insert(target, if_block1_anchor, anchor);
     			current = true;
     		},
     		p(ctx, [dirty]) {
-    			let previous_block_index = current_block_type_index;
-    			current_block_type_index = select_block_type(ctx);
+    			const map_changes = {};
+    			if (dirty & /*planet*/ 4096) map_changes.planet = /*planet*/ ctx[12];
+    			if (dirty & /*armies*/ 1) map_changes.armies = /*armies*/ ctx[0];
+    			if (dirty & /*terrain*/ 2) map_changes.terrain = /*terrain*/ ctx[1];
+    			if (dirty & /*territory*/ 4) map_changes.territory = /*territory*/ ctx[2];
+    			if (dirty & /*deposits*/ 8) map_changes.deposits = /*deposits*/ ctx[3];
+    			if (dirty & /*tiletypes*/ 16) map_changes.tiletypes = /*tiletypes*/ ctx[4];
 
-    			if (current_block_type_index === previous_block_index) {
-    				if_blocks[current_block_type_index].p(ctx, dirty);
-    			} else {
-    				group_outros();
-
-    				transition_out(if_blocks[previous_block_index], 1, 1, () => {
-    					if_blocks[previous_block_index] = null;
-    				});
-
-    				check_outros();
-    				if_block0 = if_blocks[current_block_type_index];
-
-    				if (!if_block0) {
-    					if_block0 = if_blocks[current_block_type_index] = if_block_creators[current_block_type_index](ctx);
-    					if_block0.c();
-    				}
-
-    				transition_in(if_block0, 1);
-    				if_block0.m(t0.parentNode, t0);
+    			if (!updating_selected && dirty & /*selected*/ 128) {
+    				updating_selected = true;
+    				map_changes.selected = /*selected*/ ctx[7];
+    				add_flush_callback(() => updating_selected = false);
     			}
+
+    			map.$set(map_changes);
 
     			if (!/*hide*/ ctx[9]) {
-    				if (if_block1) {
-    					if_block1.p(ctx, dirty);
-    					transition_in(if_block1, 1);
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    					transition_in(if_block0, 1);
     				} else {
-    					if_block1 = create_if_block_1(ctx);
-    					if_block1.c();
-    					transition_in(if_block1, 1);
-    					if_block1.m(t1.parentNode, t1);
+    					if_block0 = create_if_block_1(ctx);
+    					if_block0.c();
+    					transition_in(if_block0, 1);
+    					if_block0.m(t1.parentNode, t1);
     				}
-    			} else if (if_block1) {
+    			} else if (if_block0) {
     				group_outros();
 
-    				transition_out(if_block1, 1, 1, () => {
-    					if_block1 = null;
+    				transition_out(if_block0, 1, 1, () => {
+    					if_block0 = null;
     				});
 
     				check_outros();
     			}
 
-    			if (/*isTutorial*/ ctx[17]) if_block2.p(ctx, dirty);
+    			if (/*isTutorial*/ ctx[17]) if_block1.p(ctx, dirty);
     		},
     		i(local) {
     			if (current) return;
+    			transition_in(map.$$.fragment, local);
     			transition_in(if_block0);
     			transition_in(if_block1);
-    			transition_in(if_block2);
     			current = true;
     		},
     		o(local) {
+    			transition_out(map.$$.fragment, local);
     			transition_out(if_block0);
     			transition_out(if_block1);
-    			transition_out(if_block2);
     			current = false;
     		},
     		d(detaching) {
-    			if_blocks[current_block_type_index].d(detaching);
+    			destroy_component(map, detaching);
     			if (detaching) detach(t0);
-    			if (if_block1) if_block1.d(detaching);
+    			if (if_block0) if_block0.d(detaching);
     			if (detaching) detach(t1);
-    			if (if_block2) if_block2.d(detaching);
-    			if (detaching) detach(if_block2_anchor);
+    			if (if_block1) if_block1.d(detaching);
+    			if (detaching) detach(if_block1_anchor);
     		}
     	};
     }
@@ -1973,7 +1853,7 @@ var app = (function () {
     				$$invalidate(6, losers = json.losers);
     			};
 
-    			xhr.open("GET", "/api/" + roomId + "/data.json");
+    			xhr.open("GET", "/api/" + roomId + "/data.json?key=" + userKey);
     			xhr.send();
     		},
     		500
@@ -2010,11 +1890,6 @@ var app = (function () {
     	});
 
     	function map_selected_binding(value) {
-    		selected = value;
-    		$$invalidate(7, selected);
-    	}
-
-    	function map_selected_binding_1(value) {
     		selected = value;
     		$$invalidate(7, selected);
     	}
@@ -2062,7 +1937,6 @@ var app = (function () {
     		roomId,
     		userKey,
     		map_selected_binding,
-    		map_selected_binding_1,
     		click_handler
     	];
     }

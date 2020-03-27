@@ -28,7 +28,9 @@ func gameThread() {
 		fmt.Println("next turn")
 		objects.Range(func(key, value interface{}) bool {
 			obj := value.(*Object)
+			//			fmt.Println("locking... loop")
 			obj.Lock()
+			//			fmt.Println("locked loop")
 			if game, ok := obj.Data.(*Game); ok {
 				game.NextTurn()
 
@@ -37,6 +39,7 @@ func gameThread() {
 				}
 			}
 			obj.Unlock()
+			//			fmt.Println("unlocked loop")
 			return true
 		})
 		<-turnTimer
@@ -75,9 +78,25 @@ func main() {
 		}
 
 		obj := raw.(*Object)
+		//		fmt.Println("locking /data.json")
 		obj.Lock()
-		body, err := json.Marshal(obj.Data)
-		obj.Unlock()
+		defer obj.Unlock()
+		//		fmt.Println("locked /data.json")
+		var body []byte
+		var err error
+		if game, ok := obj.Data.(*Game); ok {
+			key := r.FormValue("key")
+			index, ok := obj.Transition[key]
+			if !ok {
+				fmt.Fprintln(w, `{"type":"game"}`)
+				return
+			}
+
+			body, err = game.MarshalFor(index)
+		} else {
+			body, err = json.Marshal(obj.Data)
+		}
+		//		fmt.Println("unlocked /data.json")
 
 		if err != nil {
 			return
@@ -173,6 +192,7 @@ func main() {
 		if !ok {
 			w.WriteHeader(400)
 			fmt.Fprintln(w, "invalid key")
+			return
 		}
 
 		err := game.Move(index, from, to)
@@ -211,6 +231,7 @@ func main() {
 		if !ok {
 			w.WriteHeader(400)
 			fmt.Fprintln(w, "invalid key")
+			return
 		}
 
 		err = game.Make(index, tile, tileType)
@@ -248,6 +269,7 @@ func main() {
 		if !ok {
 			w.WriteHeader(400)
 			fmt.Fprintln(w, "invalid key")
+			return
 		}
 
 		err = game.Launch(index, tile)
@@ -285,6 +307,7 @@ func main() {
 		if !ok {
 			w.WriteHeader(400)
 			fmt.Fprintln(w, "invalid key")
+			return
 		}
 
 		err = game.Nuke(index, tile)
