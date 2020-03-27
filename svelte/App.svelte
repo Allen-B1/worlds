@@ -149,7 +149,7 @@ window.addEventListener("keydown", function(e) {
 	labels={materialLabels}
 	x="16" y="88" />
 <TileInfos infos={tileInfos} />
-<Players players={players} losers={losers} />
+<Players players={players} losers={losers} userIndex={userIndex} />
 
 <button style={"top:240px;left:16px;position:fixed;display:" + (launched?"block":"none")}
 	on:click={() => {planet=planet=="earth"?"mars":"earth"}}>To {planet == "earth" ? "Mars" : "Earth"}</button>

@@ -1,6 +1,7 @@
 <script>
 export let players = [];
 export let losers = [];
+export let userIndex;
 
 let playerOrder = players;
 $: {
@@ -50,11 +51,13 @@ td {
 	background: hsl(40, 50%, 50%); }
 .player-5 {
 	background: hsl(250, 50%, 50%); }
+.self {
+	font-weight: bold; }
 </style>
 
 <table>
 	{#each playerOrder as player}
-	<tr class={"player-" + player + " " + (losers.indexOf(player) != -1 ? "loser": "")}>
+	<tr class={"player-" + player + " " + (losers.indexOf(player) != -1 ? "loser ": " ") + (userIndex === player ? "self" : "")}>
 		<td>{players[player]}</td>
 	</tr>
 	{/each}

@@ -397,8 +397,8 @@ var app = (function () {
     			div = element("div");
     			span = element("span");
     			t = text(t_value);
-    			attr(span, "class", "svelte-b81w1c");
-    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-b81w1c"));
+    			attr(span, "class", "svelte-r4d7ix");
+    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-r4d7ix"));
     			attr(div, "style", div_style_value = "top:" + 32 * /*y*/ ctx[7] + "px;left:" + 32 * /*x*/ ctx[6] + "px;");
     		},
     		m(target, anchor, remount) {
@@ -413,7 +413,7 @@ var app = (function () {
     			? ""
     			: /*army*/ ctx[0]) + "")) set_data(t, t_value);
 
-    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-b81w1c"))) {
+    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-r4d7ix"))) {
     				attr(div, "class", div_class_value);
     			}
 
@@ -1074,15 +1074,15 @@ var app = (function () {
 
     function get_each_context$3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[3] = list[i];
+    	child_ctx[4] = list[i];
     	return child_ctx;
     }
 
-    // (56:1) {#each playerOrder as player}
+    // (59:1) {#each playerOrder as player}
     function create_each_block$3(ctx) {
     	let tr;
     	let td;
-    	let t0_value = /*players*/ ctx[1][/*player*/ ctx[3]] + "";
+    	let t0_value = /*players*/ ctx[1][/*player*/ ctx[4]] + "";
     	let t0;
     	let t1;
     	let tr_class_value;
@@ -1093,11 +1093,11 @@ var app = (function () {
     			td = element("td");
     			t0 = text(t0_value);
     			t1 = space();
-    			attr(td, "class", "svelte-enl4e0");
+    			attr(td, "class", "svelte-1wa1b2p");
 
-    			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[3] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[3]) != -1
-    			? "loser"
-    			: "")) + " svelte-enl4e0"));
+    			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[4] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[4]) != -1
+    			? "loser "
+    			: " ") + (/*userIndex*/ ctx[2] === /*player*/ ctx[4] ? "self" : "")) + " svelte-1wa1b2p"));
     		},
     		m(target, anchor) {
     			insert(target, tr, anchor);
@@ -1106,11 +1106,11 @@ var app = (function () {
     			append(tr, t1);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*players, playerOrder*/ 6 && t0_value !== (t0_value = /*players*/ ctx[1][/*player*/ ctx[3]] + "")) set_data(t0, t0_value);
+    			if (dirty & /*players, playerOrder*/ 10 && t0_value !== (t0_value = /*players*/ ctx[1][/*player*/ ctx[4]] + "")) set_data(t0, t0_value);
 
-    			if (dirty & /*playerOrder, losers*/ 5 && tr_class_value !== (tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[3] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[3]) != -1
-    			? "loser"
-    			: "")) + " svelte-enl4e0"))) {
+    			if (dirty & /*playerOrder, losers, userIndex*/ 13 && tr_class_value !== (tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[4] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[4]) != -1
+    			? "loser "
+    			: " ") + (/*userIndex*/ ctx[2] === /*player*/ ctx[4] ? "self" : "")) + " svelte-1wa1b2p"))) {
     				attr(tr, "class", tr_class_value);
     			}
     		},
@@ -1122,7 +1122,7 @@ var app = (function () {
 
     function create_fragment$4(ctx) {
     	let table;
-    	let each_value = /*playerOrder*/ ctx[2];
+    	let each_value = /*playerOrder*/ ctx[3];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1137,7 +1137,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr(table, "class", "svelte-enl4e0");
+    			attr(table, "class", "svelte-1wa1b2p");
     		},
     		m(target, anchor) {
     			insert(target, table, anchor);
@@ -1147,8 +1147,8 @@ var app = (function () {
     			}
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*playerOrder, losers, players*/ 7) {
-    				each_value = /*playerOrder*/ ctx[2];
+    			if (dirty & /*playerOrder, losers, userIndex, players*/ 15) {
+    				each_value = /*playerOrder*/ ctx[3];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -1182,17 +1182,19 @@ var app = (function () {
     function instance$4($$self, $$props, $$invalidate) {
     	let { players = [] } = $$props;
     	let { losers = [] } = $$props;
+    	let { userIndex } = $$props;
     	let playerOrder = players;
 
     	$$self.$set = $$props => {
     		if ("players" in $$props) $$invalidate(1, players = $$props.players);
     		if ("losers" in $$props) $$invalidate(0, losers = $$props.losers);
+    		if ("userIndex" in $$props) $$invalidate(2, userIndex = $$props.userIndex);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*losers, players, playerOrder*/ 7) {
+    		if ($$self.$$.dirty & /*losers, players, playerOrder*/ 11) {
     			 {
-    				$$invalidate(2, playerOrder = []);
+    				$$invalidate(3, playerOrder = []);
     				if (losers == null) $$invalidate(0, losers = []);
 
     				for (let i = 0; i < players.length; i++) {
@@ -1205,18 +1207,18 @@ var app = (function () {
     					playerOrder.push(i);
     				}
 
-    				(($$invalidate(2, playerOrder), $$invalidate(0, losers)), $$invalidate(1, players));
+    				(($$invalidate(3, playerOrder), $$invalidate(0, losers)), $$invalidate(1, players));
     			}
     		}
     	};
 
-    	return [losers, players, playerOrder];
+    	return [losers, players, userIndex, playerOrder];
     }
 
     class Players extends SvelteComponent {
     	constructor(options) {
     		super();
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { players: 1, losers: 0 });
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { players: 1, losers: 0, userIndex: 2 });
     	}
     }
 
@@ -1522,7 +1524,8 @@ var app = (function () {
     	const players_1 = new Players({
     			props: {
     				players: /*players*/ ctx[5],
-    				losers: /*losers*/ ctx[6]
+    				losers: /*losers*/ ctx[6],
+    				userIndex: /*userIndex*/ ctx[13]
     			}
     		});
 
@@ -1570,6 +1573,7 @@ var app = (function () {
     			const players_1_changes = {};
     			if (dirty & /*players*/ 32) players_1_changes.players = /*players*/ ctx[5];
     			if (dirty & /*losers*/ 64) players_1_changes.losers = /*losers*/ ctx[6];
+    			if (dirty & /*userIndex*/ 8192) players_1_changes.userIndex = /*userIndex*/ ctx[13];
     			players_1.$set(players_1_changes);
     			if ((!current || dirty & /*planet*/ 4096) && t5_value !== (t5_value = (/*planet*/ ctx[12] == "earth" ? "Mars" : "Earth") + "")) set_data(t5, t5_value);
 

@@ -114,3 +114,4 @@ span {
 <div on:click={click} class={"deposit-" + deposit + " terrain-" + terrain + " tiletype-" + tiletype + " territory-" + territory + (selected ? " selected" : "")} style={"top:"+(32*y)+"px;left:"+(32*x)+"px;"}>
 	<span>{((territory == -1 && !army) || army == undefined) ? "" : army}</span>
 </div>
+
