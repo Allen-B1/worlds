@@ -496,7 +496,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (101:1) {#each tiles as tile}
+    // (106:1) {#each tiles as tile}
     function create_each_block(ctx) {
     	let current;
 
@@ -701,6 +701,11 @@ var app = (function () {
     		if (e.key == "l") {
     			let tile = selected.values().next().value;
     			dispatch("launch", { tile });
+    		}
+
+    		if (e.key == "n") {
+    			let tile = selected.values().next().value;
+    			dispatch("nuke", { tile });
     		}
     	});
 
@@ -1584,7 +1589,7 @@ var app = (function () {
     			append(button, t5);
     			current = true;
     			if (remount) dispose();
-    			dispose = listen(button, "click", /*click_handler*/ ctx[24]);
+    			dispose = listen(button, "click", /*click_handler*/ ctx[25]);
     		},
     		p(ctx, dirty) {
     			const stats0_changes = {};
@@ -1637,7 +1642,7 @@ var app = (function () {
     	};
     }
 
-    // (158:0) {#if isTutorial}
+    // (166:0) {#if isTutorial}
     function create_if_block$1(ctx) {
     	let current;
 
@@ -1697,7 +1702,7 @@ var app = (function () {
     	let current;
 
     	function map_selected_binding(value) {
-    		/*map_selected_binding*/ ctx[23].call(null, value);
+    		/*map_selected_binding*/ ctx[24].call(null, value);
     	}
 
     	let map_props = {
@@ -1718,6 +1723,7 @@ var app = (function () {
     	map.$on("move", /*move*/ ctx[18]);
     	map.$on("make", /*make*/ ctx[19]);
     	map.$on("launch", /*launch*/ ctx[20]);
+    	map.$on("nuke", /*nuke*/ ctx[21]);
     	let if_block0 = !/*hide*/ ctx[9] && create_if_block_1(ctx);
     	let if_block1 = /*isTutorial*/ ctx[17] && create_if_block$1(ctx);
 
@@ -1915,6 +1921,12 @@ var app = (function () {
     		xhr.send();
     	}
 
+    	function nuke(evt) {
+    		var xhr = new XMLHttpRequest();
+    		xhr.open("POST", "/api/" + roomId + "/nuke?tile=" + evt.detail.tile + "&key=" + userKey);
+    		xhr.send();
+    	}
+
     	window.addEventListener("keydown", function (e) {
     		if (e.key == "h") $$invalidate(9, hide = !hide);
     	});
@@ -1964,6 +1976,7 @@ var app = (function () {
     		move,
     		make,
     		launch,
+    		nuke,
     		roomId,
     		userKey,
     		map_selected_binding,

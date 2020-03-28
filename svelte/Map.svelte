@@ -86,6 +86,11 @@
 		let tile = selected.values().next().value;
 		dispatch("launch", {tile:tile});
 	}
+
+	if (e.key == "n") {
+		let tile = selected.values().next().value;
+		dispatch("nuke", {tile:tile});
+	}
 	});
 </script>
 

@@ -124,6 +124,13 @@ function launch(evt) {
 	xhr.send();
 }
 
+
+function nuke(evt) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/api/" + roomId + "/nuke?tile=" + evt.detail.tile + "&key=" + userKey);
+	xhr.send();
+}
+
 window.addEventListener("keydown", function(e) {
 	if (e.key == "h") hide = !hide;
 });
@@ -138,6 +145,7 @@ window.addEventListener("keydown", function(e) {
 	on:move={move}
 	on:make={make}
 	on:launch={launch}
+	on:nuke={nuke}
 	bind:selected={selected}
  />
 
