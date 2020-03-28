@@ -129,6 +129,7 @@ const (
 	Iron    Material = "iron"
 	Gold    Material = "gold"
 	Uranium Material = "uranium"
+	Green   Material = "green"
 )
 
 type Terrain string
@@ -364,7 +365,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 	if tileType == MineV1 && g.Deposits[tile] != Copper {
 		return errors.New("mine v1 can only mine copper")
 	}
-	if tileType == MineV2 && g.Deposits[tile] != Copper && g.Deposits[tile] != Iron && g.Deposits[tile] != Uranium {
+	if tileType == MineV2 && g.Deposits[tile] != Copper && g.Deposits[tile] != Iron && g.Deposits[tile] != Uranium && g.Deposits[tile] != Green {
 		return errors.New("mine v2 can only mine copper, iron, and uranium")
 	}
 	if tileType == MineV3 && g.Deposits[tile] != Gold {
@@ -682,44 +683,100 @@ func NewGame(players []string, fog bool) *Game {
 	}
 
 	// Small Islands
-	for i := 0; i < 7; i++ {
+	for i := 0; i < 4; i++ {
 		var x, y uint
 		for {
-			x = uint(rand.Intn(EarthSize - 1))
-			y = uint(rand.Intn(EarthSize - 1))
+			x = uint(rand.Intn(EarthSize-2)) + 1
+			y = uint(rand.Intn(EarthSize-2)) + 1
 			tooClose := false
 			for _, oldCenter := range islandCenters {
 				_, oldX, oldY := g.tileToCoord(oldCenter)
 
 				if (x-oldX < 8 || oldX-x < 8) && (y-oldY < 8 || oldY-y < 8) {
 					tooClose = true
-					break
 				}
 			}
+
 			if !tooClose {
 				break
 			}
 		}
-		goldTile := g.tileFromCoord(Earth, x, y)
-		islandCenters = append(islandCenters, goldTile)
+		centerTile := g.tileFromCoord(Earth, x, y)
+		islandCenters = append(islandCenters, centerTile)
 
 		tiles := []int{
-			goldTile,
+			centerTile,
 			g.tileFromCoord(Earth, x+1, y),
 			g.tileFromCoord(Earth, x, y+1),
 			g.tileFromCoord(Earth, x+1, y+1),
+			g.tileFromCoord(Earth, x-1, y),
+			g.tileFromCoord(Earth, x, y-1),
+			g.tileFromCoord(Earth, x-1, y-1),
+			g.tileFromCoord(Earth, x-1, y+1),
+			g.tileFromCoord(Earth, x+1, y-1),
 		}
 
-		// these are guarenteed not to be -1
+		// Remove one edge tile randomly
+		// [1,8]
+		tiles[rand.Intn(8)+1] = -1
+
 		for _, tile := range tiles {
-			g.Terrain[tile] = Land
+			if tile != -1 {
+				g.Terrain[tile] = Land
+			}
 		}
 
 		if i < 3 {
-			g.Deposits[goldTile] = Gold
+			g.Deposits[centerTile] = Gold
 		} else {
 			for _, tile := range tiles {
-				g.Deposits[tile] = Iron
+				if tile != -1 {
+					g.Deposits[tile] = Iron
+				}
+			}
+		}
+	}
+
+	// Tiny Islands
+	for i := 0; i < 6; i++ {
+		var x, y uint
+		for {
+			x = uint(rand.Intn(EarthSize-2)) + 1
+			y = uint(rand.Intn(EarthSize-2)) + 1
+			tooClose := false
+			for _, oldCenter := range islandCenters {
+				_, oldX, oldY := g.tileToCoord(oldCenter)
+
+				if (x-oldX < 6 || oldX-x < 6) && (y-oldY < 6 || oldY-y < 6) {
+					tooClose = true
+					break
+				}
+			}
+
+			if !tooClose {
+				break
+			}
+		}
+		centerTile := g.tileFromCoord(Earth, x, y)
+		islandCenters = append(islandCenters, centerTile)
+
+		tiles := []int{
+			centerTile,
+			g.tileFromCoord(Earth, x+1, y),
+		}
+
+		if rand.Intn(2) == 0 {
+			tiles[1] = g.tileFromCoord(Earth, x, y+1)
+		}
+
+		// cannot be -1
+		for _, tile := range tiles {
+			g.Terrain[tile] = Land
+
+			if rand.Intn(3) == 0 {
+				g.Deposits[tile] = Copper
+			} else if rand.Intn(9) == 0 {
+				g.Deposits[tile] = Green
 			}
 		}
 	}

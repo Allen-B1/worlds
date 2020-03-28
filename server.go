@@ -153,7 +153,9 @@ func main() {
 			if item.Full() {
 				arr, keymap := item.PlayersAsArray()
 				obj.Transition = keymap
+				fmt.Println("generating game...")
 				obj.Data = NewGame(arr, item.Fog)
+				fmt.Println("generated game")
 			}
 		case *Game:
 			key := r.FormValue("key")
@@ -341,7 +343,7 @@ func main() {
 		http.ServeFile(w, r, "files/index.html")
 	}).Methods("GET")
 
-	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg", "ocean.svg", "uranium.svg", "earth.ogg", "mars.ogg", "game.js", "game.css"}
+	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg", "ocean.svg", "uranium.svg", "earth.ogg", "mars.ogg", "game.js", "game.css", "green.svg"}
 	for _, file := range files {
 		file2 := file
 		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {

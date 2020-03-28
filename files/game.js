@@ -397,8 +397,8 @@ var app = (function () {
     			div = element("div");
     			span = element("span");
     			t = text(t_value);
-    			attr(span, "class", "svelte-65e9j");
-    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-65e9j"));
+    			attr(span, "class", "svelte-1w8fr4d");
+    			attr(div, "class", div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-1w8fr4d"));
     			attr(div, "style", div_style_value = "top:" + 32 * /*y*/ ctx[7] + "px;left:" + 32 * /*x*/ ctx[6] + "px;");
     		},
     		m(target, anchor, remount) {
@@ -413,7 +413,7 @@ var app = (function () {
     			? ""
     			: /*army*/ ctx[0]) + "")) set_data(t, t_value);
 
-    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-65e9j"))) {
+    			if (dirty & /*deposit, terrain, tiletype, territory, selected*/ 62 && div_class_value !== (div_class_value = "" + (null_to_empty("deposit-" + /*deposit*/ ctx[4] + " terrain-" + /*terrain*/ ctx[1] + " tiletype-" + /*tiletype*/ ctx[3] + " territory-" + /*territory*/ ctx[2] + (/*selected*/ ctx[5] ? " selected" : "")) + " svelte-1w8fr4d"))) {
     				attr(div, "class", div_class_value);
     			}
 
@@ -1526,7 +1526,7 @@ var app = (function () {
     	let t3;
     	let button;
     	let t4;
-    	let t5_value = (/*planet*/ ctx[12] == "earth" ? "Mars" : "Earth") + "";
+    	let t5_value = (/*planet*/ ctx[13] == "earth" ? "Mars" : "Earth") + "";
     	let t5;
     	let button_style_value;
     	let current;
@@ -1534,7 +1534,7 @@ var app = (function () {
 
     	const stats0 = new Stats({
     			props: {
-    				stats: /*stats*/ ctx[11],
+    				stats: /*stats*/ ctx[12],
     				labels: /*statsLabels*/ ctx[16],
     				x: "16",
     				y: "16"
@@ -1544,19 +1544,19 @@ var app = (function () {
     	const stats1 = new Stats({
     			props: {
     				stats: /*materials*/ ctx[10],
-    				labels: /*materialLabels*/ ctx[15],
+    				labels: /*materialLabels*/ ctx[11],
     				x: "16",
     				y: "88"
     			}
     		});
 
-    	const tileinfos = new TileInfos({ props: { infos: /*tileInfos*/ ctx[14] } });
+    	const tileinfos = new TileInfos({ props: { infos: /*tileInfos*/ ctx[15] } });
 
     	const players_1 = new Players({
     			props: {
     				players: /*players*/ ctx[5],
     				losers: /*losers*/ ctx[6],
-    				userIndex: /*userIndex*/ ctx[13]
+    				userIndex: /*userIndex*/ ctx[14]
     			}
     		});
 
@@ -1593,20 +1593,21 @@ var app = (function () {
     		},
     		p(ctx, dirty) {
     			const stats0_changes = {};
-    			if (dirty & /*stats*/ 2048) stats0_changes.stats = /*stats*/ ctx[11];
+    			if (dirty & /*stats*/ 4096) stats0_changes.stats = /*stats*/ ctx[12];
     			stats0.$set(stats0_changes);
     			const stats1_changes = {};
     			if (dirty & /*materials*/ 1024) stats1_changes.stats = /*materials*/ ctx[10];
+    			if (dirty & /*materialLabels*/ 2048) stats1_changes.labels = /*materialLabels*/ ctx[11];
     			stats1.$set(stats1_changes);
     			const tileinfos_changes = {};
-    			if (dirty & /*tileInfos*/ 16384) tileinfos_changes.infos = /*tileInfos*/ ctx[14];
+    			if (dirty & /*tileInfos*/ 32768) tileinfos_changes.infos = /*tileInfos*/ ctx[15];
     			tileinfos.$set(tileinfos_changes);
     			const players_1_changes = {};
     			if (dirty & /*players*/ 32) players_1_changes.players = /*players*/ ctx[5];
     			if (dirty & /*losers*/ 64) players_1_changes.losers = /*losers*/ ctx[6];
-    			if (dirty & /*userIndex*/ 8192) players_1_changes.userIndex = /*userIndex*/ ctx[13];
+    			if (dirty & /*userIndex*/ 16384) players_1_changes.userIndex = /*userIndex*/ ctx[14];
     			players_1.$set(players_1_changes);
-    			if ((!current || dirty & /*planet*/ 4096) && t5_value !== (t5_value = (/*planet*/ ctx[12] == "earth" ? "Mars" : "Earth") + "")) set_data(t5, t5_value);
+    			if ((!current || dirty & /*planet*/ 8192) && t5_value !== (t5_value = (/*planet*/ ctx[13] == "earth" ? "Mars" : "Earth") + "")) set_data(t5, t5_value);
 
     			if (!current || dirty & /*launched*/ 256 && button_style_value !== (button_style_value = "top:240px;left:16px;position:fixed;display:" + (/*launched*/ ctx[8] ? "block" : "none"))) {
     				attr(button, "style", button_style_value);
@@ -1642,7 +1643,7 @@ var app = (function () {
     	};
     }
 
-    // (166:0) {#if isTutorial}
+    // (171:0) {#if isTutorial}
     function create_if_block$1(ctx) {
     	let current;
 
@@ -1654,8 +1655,8 @@ var app = (function () {
     				deposits: /*deposits*/ ctx[3],
     				tiletypes: /*tiletypes*/ ctx[4],
     				selected: /*selected*/ ctx[7],
-    				userIndex: /*userIndex*/ ctx[13],
-    				planet: /*planet*/ ctx[12]
+    				userIndex: /*userIndex*/ ctx[14],
+    				planet: /*planet*/ ctx[13]
     			}
     		});
 
@@ -1675,8 +1676,8 @@ var app = (function () {
     			if (dirty & /*deposits*/ 8) tutorial_changes.deposits = /*deposits*/ ctx[3];
     			if (dirty & /*tiletypes*/ 16) tutorial_changes.tiletypes = /*tiletypes*/ ctx[4];
     			if (dirty & /*selected*/ 128) tutorial_changes.selected = /*selected*/ ctx[7];
-    			if (dirty & /*userIndex*/ 8192) tutorial_changes.userIndex = /*userIndex*/ ctx[13];
-    			if (dirty & /*planet*/ 4096) tutorial_changes.planet = /*planet*/ ctx[12];
+    			if (dirty & /*userIndex*/ 16384) tutorial_changes.userIndex = /*userIndex*/ ctx[14];
+    			if (dirty & /*planet*/ 8192) tutorial_changes.planet = /*planet*/ ctx[13];
     			tutorial.$set(tutorial_changes);
     		},
     		i(local) {
@@ -1706,7 +1707,7 @@ var app = (function () {
     	}
 
     	let map_props = {
-    		planet: /*planet*/ ctx[12],
+    		planet: /*planet*/ ctx[13],
     		armies: /*armies*/ ctx[0],
     		terrain: /*terrain*/ ctx[1],
     		territory: /*territory*/ ctx[2],
@@ -1747,7 +1748,7 @@ var app = (function () {
     		},
     		p(ctx, [dirty]) {
     			const map_changes = {};
-    			if (dirty & /*planet*/ 4096) map_changes.planet = /*planet*/ ctx[12];
+    			if (dirty & /*planet*/ 8192) map_changes.planet = /*planet*/ ctx[13];
     			if (dirty & /*armies*/ 1) map_changes.armies = /*armies*/ ctx[0];
     			if (dirty & /*terrain*/ 2) map_changes.terrain = /*terrain*/ ctx[1];
     			if (dirty & /*territory*/ 4) map_changes.territory = /*territory*/ ctx[2];
@@ -1824,7 +1825,7 @@ var app = (function () {
     	let hide = false;
     	let materials = {};
 
-    	const materialLabels = [
+    	let materialLabels = [
     		["Brk", "brick", "text-brick"],
     		["Cu", "copper", "text-copper"],
     		["Fe", "iron", "text-iron"],
@@ -1844,7 +1845,7 @@ var app = (function () {
     		let xhr = new XMLHttpRequest();
 
     		xhr.onload = function () {
-    			$$invalidate(13, userIndex = xhr.responseText | 0);
+    			$$invalidate(14, userIndex = xhr.responseText | 0);
     		};
 
     		xhr.open("POST", "/api/" + roomId + "/join?key=" + userKey);
@@ -1862,7 +1863,7 @@ var app = (function () {
     				let info = JSON.parse(xhr.responseText);
     				info.key = kbd;
     				tileInfos.push(info);
-    				$$invalidate(14, tileInfos);
+    				$$invalidate(15, tileInfos);
     			};
 
     			xhr.open("GET", "/api/tileinfo?type=" + type);
@@ -1882,9 +1883,9 @@ var app = (function () {
     				$$invalidate(3, deposits = json.deposits);
     				$$invalidate(4, tiletypes = json.tiletypes);
     				$$invalidate(10, materials = json.stats[userIndex].materials);
-    				$$invalidate(11, stats.pollution = json.pollution, stats);
-    				$$invalidate(11, stats.turn = json.turn, stats);
-    				$$invalidate(11, stats);
+    				$$invalidate(12, stats.pollution = json.pollution, stats);
+    				$$invalidate(12, stats.turn = json.turn, stats);
+    				$$invalidate(12, stats);
     				$$invalidate(5, players = json.players);
     				$$invalidate(6, losers = json.losers);
     			};
@@ -1912,7 +1913,7 @@ var app = (function () {
 
     		xhr.onload = function () {
     			if (xhr.status == 200) {
-    				$$invalidate(12, planet = "mars");
+    				$$invalidate(13, planet = "mars");
     				$$invalidate(8, launched = true);
     			}
     		};
@@ -1937,11 +1938,19 @@ var app = (function () {
     	}
 
     	const click_handler = () => {
-    		$$invalidate(12, planet = planet == "earth" ? "mars" : "earth");
+    		$$invalidate(13, planet = planet == "earth" ? "mars" : "earth");
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*planet*/ 4096) {
+    		if ($$self.$$.dirty & /*materials*/ 1024) {
+    			 if (materials.green) {
+    				$$invalidate(11, materialLabels[5] = ["G", "green", "text-green"], materialLabels);
+    			} else {
+    				$$invalidate(11, materialLabels.length = 5, materialLabels);
+    			}
+    		}
+
+    		if ($$self.$$.dirty & /*planet*/ 8192) {
     			 {
     				if (planet == "earth") {
     					document.title = "worlds • earth";
@@ -1966,11 +1975,11 @@ var app = (function () {
     		launched,
     		hide,
     		materials,
+    		materialLabels,
     		stats,
     		planet,
     		userIndex,
     		tileInfos,
-    		materialLabels,
     		statsLabels,
     		isTutorial,
     		move,

@@ -82,6 +82,8 @@ span {
 	background: url(/gold.svg) var(--territory); }
 .deposit-uranium {
 	background: url(/uranium.svg) var(--territory); }
+.deposit-green {
+	background: url(/green.svg) var(--territory); }
 .territory--1 {
 	--territory: transparent; }
 .territory-0 {

@@ -24,12 +24,17 @@ let launched = false;
 let hide = false;
 
 let materials = {};
-const materialLabels = [
+let materialLabels = [
 		["Brk", "brick", "text-brick"],
 		["Cu", "copper", "text-copper"],
 		["Fe", "iron", "text-iron"],
 		["Au", "gold", "text-gold"],
 		["U", "uranium", "text-uranium"]];
+$: if (materials.green) {
+	materialLabels[5] = ["G", "green", "text-green"];
+} else {
+	materialLabels.length = 5;
+}
 
 let stats = {};
 const statsLabels = [

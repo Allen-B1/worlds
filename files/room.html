@@ -43,7 +43,8 @@ function req() {
 	xhr.addEventListener("load", function() {
 		var json = JSON.parse(xhr.responseText);
 		if (json.type != "room") {
-			location.href = "/" + roomId + "/game#" + userId;
+			if (userId != null)
+				location.href = "/" + roomId + "/game#" + userId;
 		} else {
 			countElem.innerHTML = json.players.length;
 			maxElem.innerHTML = json.max;

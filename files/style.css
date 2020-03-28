@@ -68,6 +68,8 @@ kbd {
 	color: #8239cc;
 }
 
+.text-green {color: #559933; }
+
 button, .button {
 	color: #000;
 	text-decoration: none;
