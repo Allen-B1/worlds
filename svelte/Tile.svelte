@@ -73,6 +73,8 @@ span {
 	background: url(/launcher.svg); }
 .tiletype-cleaner span {
 	background: url(/cleaner.svg); }
+.tiletype-greenhouse span {
+	background: url(/greenhouse.svg); }
 
 .deposit-iron {
 	background: url(/iron.svg) var(--territory); }

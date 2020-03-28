@@ -4,6 +4,7 @@ import Stats from './Stats.svelte';
 import TileInfos from './TileInfos.svelte';
 import Players from './Players.svelte';
 import Tutorial from './Tutorial.svelte';
+import History from './History.svelte';
 
 import {tileTypes, tileKeys} from './constants.js';
 
@@ -136,9 +137,28 @@ function nuke(evt) {
 	xhr.send();
 }
 
+let greenhouses = 0;
+let showHistory = false;
+$: {
+	greenhouses = 0;
+	for (let i = 0; i < territory.length; i++) {
+		if (territory[i] == userIndex & tiletypes[i] == "greenhouse") {
+			greenhouses += 1;
+		}
+	}
+}
+
 window.addEventListener("keydown", function(e) {
 	if (e.key == "h") hide = !hide;
+	if (e.key == "r") {
+		if (greenhouses != 0) {
+			showHistory = !showHistory;
+		} else {
+			showHistory = false;
+		}
+	}
 });
+
 </script>
 
 <Map planet={planet}
@@ -166,6 +186,10 @@ window.addEventListener("keydown", function(e) {
 
 <button style={"top:240px;left:16px;position:fixed;display:" + (launched?"block":"none")}
 	on:click={() => {planet=planet=="earth"?"mars":"earth"}}>To {planet == "earth" ? "Mars" : "Earth"}</button>
+{/if}
+
+{#if showHistory}
+<History documents={greenhouses} />
 {/if}
 
 {#if isTutorial}

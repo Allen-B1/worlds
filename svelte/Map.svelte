@@ -82,6 +82,12 @@
 		}
 	}
 
+	if (e.key == "g") {
+		for (let tile of selected) {
+			dispatch("make", {tile:tile, type:"greenhouse"});
+		}
+	}
+
 	if (e.key == "l") {
 		let tile = selected.values().next().value;
 		dispatch("launch", {tile:tile});

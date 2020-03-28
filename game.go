@@ -34,6 +34,8 @@ const (
 
 	Launcher TileType = "launcher"
 	Cleaner  TileType = "cleaner"
+
+	GreenHouse TileType = "greenhouse"
 )
 
 type TileInfo struct {
@@ -117,6 +119,13 @@ var TileInfos = map[TileType]TileInfo{
 		Cost: map[Material]uint{
 			Iron:    50,
 			Uranium: 50,
+		},
+	},
+	GreenHouse: TileInfo{
+		Name: "Greenhouse",
+		Cost: map[Material]uint{
+			Green: 50,
+			Iron:  10,
 		},
 	},
 }
@@ -492,6 +501,8 @@ func NewGame(players []string, fog bool) *Game {
 	g := new(Game)
 	g.Fog = fog
 
+	g.Pollution = 10000
+
 	g.Armies = make([]uint32, EarthSize*EarthSize+MarsSize*MarsSize)
 	g.Territory = make([]int, EarthSize*EarthSize+MarsSize*MarsSize)
 	g.TileTypes = make([]TileType, EarthSize*EarthSize+MarsSize*MarsSize)
@@ -775,7 +786,7 @@ func NewGame(players []string, fog bool) *Game {
 
 			if rand.Intn(3) == 0 {
 				g.Deposits[tile] = Copper
-			} else if rand.Intn(9) == 0 {
+			} else if rand.Intn(12) == 0 {
 				g.Deposits[tile] = Green
 			}
 		}
