@@ -1083,7 +1083,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (59:1) {#each playerOrder as player}
+    // (63:1) {#each playerOrder as player}
     function create_each_block$3(ctx) {
     	let tr;
     	let td;
@@ -1208,7 +1208,7 @@ var app = (function () {
     					}
     				}
 
-    				for (let i = losers.length - 1; i >= 0; i++) {
+    				for (let i = losers.length - 1; i >= 0; i--) {
     					playerOrder.push(i);
     				}
 

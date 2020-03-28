@@ -6,15 +6,19 @@ export let userIndex;
 let playerOrder = players;
 $: {
 	playerOrder = [];
+
 	if (losers == null) losers = [];
+
 	for (let i = 0; i < players.length; i++) {
 		if (losers.indexOf(i) == -1) {
 			playerOrder.push(i);
 		}
 	}
-	for (let i = losers.length - 1; i >= 0; i++) {
+
+	for (let i = losers.length - 1; i >= 0; i--) {
 		playerOrder.push(i);
 	}
+
 	playerOrder = playerOrder;
 }
 </script>

@@ -16,6 +16,7 @@ import (
 type Object struct {
 	Data       interface{}
 	Transition map[string]int
+	Delete     bool
 	sync.Mutex
 }
 
@@ -31,11 +32,14 @@ func gameThread() {
 			//			fmt.Println("locking... loop")
 			obj.Lock()
 			//			fmt.Println("locked loop")
+			if obj.Delete {
+				objects.Delete(key)
+			}
 			if game, ok := obj.Data.(*Game); ok {
 				game.NextTurn()
 
 				if len(game.Losers) == len(game.Players) {
-					objects.Delete(key)
+					obj.Delete = true
 				}
 			}
 			obj.Unlock()
