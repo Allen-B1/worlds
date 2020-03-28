@@ -154,9 +154,10 @@ type Game struct {
 	Stats   []PlayerStat
 	Losers  []int
 
-	Turn uint
-
+	Turn      uint
 	Pollution uint
+
+	Fog bool
 }
 
 // spectator
@@ -178,6 +179,10 @@ func (g *Game) MarshalJSON() ([]byte, error) {
 }
 
 func (g *Game) MarshalFor(player int) ([]byte, error) {
+	if !g.Fog {
+		return g.MarshalJSON()
+	}
+
 	armies := make([]uint32, len(g.Armies))
 	territory := make([]int, len(g.Territory))
 	tiletypes := make([]TileType, len(g.TileTypes))
@@ -482,8 +487,10 @@ func (g *Game) Move(player int, from int, to int) error {
 	return nil
 }
 
-func NewGame(players []string) *Game {
+func NewGame(players []string, fog bool) *Game {
 	g := new(Game)
+	g.Fog = fog
+
 	g.Armies = make([]uint32, EarthSize*EarthSize+MarsSize*MarsSize)
 	g.Territory = make([]int, EarthSize*EarthSize+MarsSize*MarsSize)
 	g.TileTypes = make([]TileType, EarthSize*EarthSize+MarsSize*MarsSize)
@@ -627,8 +634,10 @@ func NewGame(players []string) *Game {
 				}
 
 				for _, tile := range dTiles {
-					if g.Deposits[tile] != "" {
-						continue outer
+					if tile >= 0 {
+						if g.Deposits[tile] != "" {
+							continue outer
+						}
 					}
 				}
 

@@ -11,6 +11,7 @@ import (
 type Room struct {
 	Max     int
 	Players map[string]string
+	Fog     bool
 }
 
 func (r *Room) MarshalJSON() ([]byte, error) {
@@ -18,6 +19,7 @@ func (r *Room) MarshalJSON() ([]byte, error) {
 	return json.Marshal(map[string]interface{}{
 		"type":    "room",
 		"max":     r.Max,
+		"fog":     r.Fog,
 		"players": players,
 	})
 }
@@ -51,9 +53,10 @@ func (r *Room) PlayersAsArray() ([]string, map[string]int) {
 	return a, m
 }
 
-func NewRoom(max int) *Room {
+func NewRoom(max int, fog bool) *Room {
 	return &Room{
 		Max:     max,
 		Players: make(map[string]string),
+		Fog:     fog,
 	}
 }

@@ -9,6 +9,7 @@
 		<div class="card" style="background:hsl(100,50%,75%)">
 			<h2>Create</h2>
 			<input class="textfield" type="number" id="max" min="1" max="6" placeholder="max players">
+			<div style="margin-bottom:8px"><input checked type="checkbox" id="fog"><label for="fog">Fog of War</label></div>
 			<button id="create">Create</button>
 		</div>
 		<div class="card" style="background:hsl(40,50%,75%)">
@@ -31,7 +32,7 @@ document.getElementById("create").addEventListener("click", function() {
 
 		location.href = "/" + roomId + "/room";
 	});
-	xhr.open("POST", "/api/new?max=" + document.getElementById("max").value);
+	xhr.open("POST", "/api/new?max=" + document.getElementById("max").value + "&fog=" + (+document.getElementById("fog").checked));
 	xhr.send();
 });
 document.getElementById("tutorial").addEventListener("click", function() {

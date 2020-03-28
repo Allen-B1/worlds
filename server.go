@@ -60,9 +60,11 @@ func main() {
 			max = 4
 		}
 
+		fog := r.FormValue("fog")
+
 		id := strconv.FormatUint(rand.Uint64(), 36)
 		obj := new(Object)
-		obj.Data = NewRoom(max)
+		obj.Data = NewRoom(max, fog != "0")
 		objects.Store(id, obj)
 
 		w.Header().Set("Content-Type", "text/plain")
@@ -151,7 +153,7 @@ func main() {
 			if item.Full() {
 				arr, keymap := item.PlayersAsArray()
 				obj.Transition = keymap
-				obj.Data = NewGame(arr)
+				obj.Data = NewGame(arr, item.Fog)
 			}
 		case *Game:
 			key := r.FormValue("key")

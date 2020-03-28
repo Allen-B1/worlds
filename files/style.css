@@ -18,7 +18,7 @@ h2 {
 	margin-top: 16px;
 }
 
-.card input, .card button {
+.card .textfield, .card button {
 	width: -webkit-fill-available;
 	width: -moz-available;
 	width: fill-available;

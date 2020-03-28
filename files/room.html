@@ -9,6 +9,7 @@
 		<div class="card">
 			<p>You are <b id="name">Anonymous</b></p>
 			<p><b id="count">0</b> of <b id="max">0</b></p>
+			<p><b>Fog of War</b>: <span id="fog">On</span></p>
 			<a class="button" href="/">Back</a>
 		</div>
 		<script>
@@ -33,6 +34,7 @@ if (name == "" || name == null) {
 var countElem = document.getElementById("count");
 var maxElem = document.getElementById("max");
 var nameElem = document.getElementById("name");
+var fogElem = document.getElementById("fog");
 
 nameElem.innerHTML = name;
 
@@ -45,6 +47,7 @@ function req() {
 		} else {
 			countElem.innerHTML = json.players.length;
 			maxElem.innerHTML = json.max;
+			fogElem.innerHTML = json.fog ? "On" : "Off";
 		}
 	});
 	xhr.open("GET", "/api/" + roomId + "/data.json");
