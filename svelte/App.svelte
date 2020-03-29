@@ -69,17 +69,20 @@ let userIndex;
 
 let tileInfos = [];
 {
+	let i = 0;
 	for (let kbd of tileKeys) {
 		let type = tileTypes[kbd];
 		let xhr = new XMLHttpRequest();
+		let j = i;
 		xhr.onload = function() {
 			let info = JSON.parse(xhr.responseText);
 			info.key = kbd;
-			tileInfos.push(info);
+			tileInfos[j] = info;
 			tileInfos = tileInfos;
 		};
 		xhr.open("GET", "/api/tileinfo?type=" + type);
 		xhr.send();
+		i += 1;
 	}
 }
 
@@ -181,16 +184,16 @@ window.addEventListener("keydown", function(e) {
 <Stats stats={materials}
 	labels={materialLabels}
 	x="16" y="88" />
+{#if tileInfos.length == 11}
 <TileInfos infos={tileInfos} />
+{/if}
 <Players players={players} losers={losers} userIndex={userIndex} />
 
-<button style={"top:240px;left:16px;position:fixed;display:" + (launched?"block":"none")}
+<button style={"z-index:5;top:300px;left:16px;position:fixed;display:" + (launched?"block":"none")}
 	on:click={() => {planet=planet=="earth"?"mars":"earth"}}>To {planet == "earth" ? "Mars" : "Earth"}</button>
 {/if}
 
-{#if showHistory}
-<History documents={greenhouses} />
-{/if}
+<History documents={greenhouses} show={showHistory} />
 
 {#if isTutorial}
 <Tutorial armies={armies}
