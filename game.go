@@ -23,12 +23,13 @@ const (
 	Core TileType = "core"
 	Camp TileType = "camp"
 
+	Bridge TileType = "bridge"
+
 	Kiln   TileType = "kiln"
 	MineV1 TileType = "mine1"
 	MineV2 TileType = "mine2"
 	MineV3 TileType = "mine3"
 
-	BrickWall  TileType = "brick-wall"
 	IronWall   TileType = "iron-wall"
 	CopperWall TileType = "copper-wall"
 
@@ -87,12 +88,6 @@ var TileInfos = map[TileType]TileInfo{
 			Iron:   200,
 		},
 	},
-	BrickWall: TileInfo{
-		Name: "Brick Wall",
-		Cost: map[Material]uint{
-			Brick: 10,
-		},
-	},
 	CopperWall: TileInfo{
 		Name: "Copper Wall",
 		Cost: map[Material]uint{
@@ -103,6 +98,13 @@ var TileInfos = map[TileType]TileInfo{
 		Name: "Iron Wall",
 		Cost: map[Material]uint{
 			Iron: 10,
+		},
+	},
+	Bridge: TileInfo{
+		Name: "Bridge",
+		Cost: map[Material]uint{
+			Iron:   10,
+			Copper: 10,
 		},
 	},
 	Launcher: TileInfo{
@@ -276,7 +278,7 @@ func (g *Game) NextTurn() {
 			g.Pollution += TileInfos[tileType].Pollution
 		}
 
-		if g.Terrain[tile] == Ocean && g.Armies[tile] != 0 {
+		if g.Terrain[tile] == Ocean && g.TileTypes[tile] != Bridge && g.Armies[tile] != 0 {
 			g.Armies[tile] -= 1
 			if g.Armies[tile] == 0 {
 				g.Territory[tile] = -1
@@ -317,7 +319,7 @@ func (g *Game) NextTurn() {
 	}
 
 	// death from pollution
-	if g.Pollution >= 100*1000 {
+	if g.Pollution >= 50000 {
 		for i := 0; i < EarthSize*EarthSize; i++ {
 			if g.Territory[i] >= 0 {
 				g.TileTypes[i] = ""
@@ -361,8 +363,12 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		return nil
 	}
 
-	if g.TileTypes[tile] != "" || g.Terrain[tile] == Ocean {
+	if g.TileTypes[tile] != "" || (g.Terrain[tile] == Ocean && tileType != Bridge) {
 		return errors.New("tile " + fmt.Sprint(tile) + " is not empty")
+	}
+
+	if tileType == Bridge && g.Terrain[tile] != Ocean {
+		return errors.New("bridges must be built in the ocean")
 	}
 
 	for material, cost := range TileInfos[tileType].Cost {
@@ -426,10 +432,6 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		}
 	}
 
-	if tileType == BrickWall {
-		g.Territory[tile] = -1
-		g.Armies[tile] = 200
-	}
 	if tileType == CopperWall {
 		g.Territory[tile] = -1
 		g.Armies[tile] = 500
@@ -876,9 +878,8 @@ func (g *Game) Nuke(player int, tile int) error {
 		for nY := y - 2; nY <= y+2; nY++ {
 			nTile := g.tileFromCoord(planet, nX, nY)
 			if nTile >= 0 {
-				if g.TileTypes[nTile] == BrickWall || g.TileTypes[nTile] == CopperWall || g.TileTypes[nTile] == IronWall {
+				if g.TileTypes[nTile] == CopperWall || g.TileTypes[nTile] == IronWall {
 					damage := map[TileType]uint32{
-						BrickWall:  50,
 						CopperWall: 30,
 						IronWall:   20,
 					}[g.TileTypes[nTile]]

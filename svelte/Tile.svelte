@@ -51,6 +51,12 @@ span {
 	z-index: 2;
 	color: #000;
 }
+
+.terrain-ocean span {
+	background: url(/ocean.svg); }
+.terrain-ocean.territory--1 {
+	--territory: #3F6ABF; }
+
 .tiletype-core span {
 	background: url(/core.svg); }
 .tiletype-camp span {
@@ -63,8 +69,8 @@ span {
 	background: url(/mine2.svg); }
 .tiletype-mine3 span {
 	background: url(/mine3.svg); }
-.tiletype-brick-wall span {
-	background: url(/brick-wall.svg); }
+.tiletype-bridge span {
+	background: url(/bridge.svg); }
 .tiletype-copper-wall span {
 	background: url(/copper-wall.svg); }
 .tiletype-iron-wall span {
@@ -101,14 +107,11 @@ span {
 .territory-5 {
 	--territory: hsl(250, 50%, 75%); }
 
-.terrain-ocean span {
-	background: url(/ocean.svg); }
-.terrain-ocean.territory--1 {
-	--territory: #3F6ABF; }
 .terrain-fog {
 	background: #aaa; }
 .terrain-fog span::before {
 	content: "?"; }
+
 .selected {
 	outline: 2px solid #555;
 	z-index: 2;

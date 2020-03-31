@@ -12,7 +12,7 @@ export const tileTypes = {
 	"4": "mine1",
 	"5": "mine2",
 	"6": "mine3",
-	"7": "brick-wall",
+	"7": "bridge",
 	"8": "copper-wall",
 	"9": "iron-wall",
 	"0": "launcher",
@@ -25,4 +25,5 @@ export const materialSyms = {
 	"iron": "Fe",
 	"gold": "Au",
 	"uranium": "U"
-}
+};
+
