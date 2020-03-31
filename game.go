@@ -348,7 +348,9 @@ func (g *Game) checkLoser(player int, winner int) {
 		for tile, territory := range g.Territory {
 			if territory == player {
 				g.Territory[tile] = winner
-				g.Armies[tile] = 0
+				if winner == -1 {
+					g.Armies[tile] = 0
+				}
 			}
 		}
 	}
