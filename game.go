@@ -49,10 +49,10 @@ var TileInfos = map[TileType]TileInfo{
 	Core: TileInfo{
 		Name: "Core",
 		Cost: map[Material]uint{
-			Brick:  200,
-			Copper: 500,
-			Iron:   350,
-			Gold:   20,
+			Brick:  500,
+			Copper: 1000,
+			Iron:   1000,
+			Gold:   500,
 		},
 	},
 	Camp: TileInfo{
@@ -110,10 +110,10 @@ var TileInfos = map[TileType]TileInfo{
 	Launcher: TileInfo{
 		Name: "Launcher",
 		Cost: map[Material]uint{
-			Brick:  500,
-			Copper: 1000,
-			Iron:   1000,
-			Gold:   250,
+			Brick:  300,
+			Copper: 800,
+			Iron:   500,
+			Gold:   200,
 		},
 	},
 	Cleaner: TileInfo{
@@ -328,7 +328,7 @@ func (g *Game) NextTurn() {
 			}
 		}
 		for player, _ := range g.Players {
-			g.checkLoser(player)
+			g.checkLoser(player, -1)
 		}
 	}
 
@@ -336,7 +336,7 @@ func (g *Game) NextTurn() {
 }
 
 // Checks whether this player should lose
-func (g *Game) checkLoser(player int) {
+func (g *Game) checkLoser(player int, winner int) {
 	hasCore := false
 	for tile, tileType := range g.TileTypes {
 		if tileType == Core && g.Territory[tile] == player {
@@ -345,6 +345,12 @@ func (g *Game) checkLoser(player int) {
 	}
 	if !hasCore {
 		g.Losers = append(g.Losers, player)
+		for tile, territory := range g.Territory {
+			if territory == player {
+				g.Territory[tile] = winner
+				g.Armies[tile] = 0
+			}
+		}
 	}
 }
 
@@ -358,7 +364,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		g.TileTypes[tile] = ""
 
 		if oldType == Core {
-			g.checkLoser(player)
+			g.checkLoser(player, -1)
 		}
 		return nil
 	}
@@ -483,13 +489,15 @@ func (g *Game) Move(player int, from int, to int) error {
 			toType := g.TileTypes[to]
 			toPlayer := g.Territory[to]
 
+			if g.Territory[to] != -1 {
+				g.TileTypes[to] = ""
+			}
 			g.Armies[to] = fromArmies - toArmies
 			g.Territory[to] = player
-			g.TileTypes[to] = ""
 
 			// Lose if no cores left
 			if toType == Core {
-				g.checkLoser(toPlayer)
+				g.checkLoser(toPlayer, player)
 			}
 		} else {
 			g.Armies[to] -= fromArmies
@@ -899,7 +907,7 @@ func (g *Game) Nuke(player int, tile int) error {
 					g.TileTypes[nTile] = ""
 					g.Territory[nTile] = -1
 
-					g.checkLoser(g.Territory[nTile])
+					g.checkLoser(g.Territory[nTile], -1)
 				}
 			}
 		}
