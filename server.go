@@ -42,6 +42,13 @@ func gameThread() {
 					obj.Delete = true
 				}
 			}
+			if room, ok := obj.Data.(*Room); ok {
+				if room.Full() {
+					arr, keymap := room.PlayersAsArray()
+					obj.Transition = keymap
+					obj.Data = NewGame(NewRandomMap(), arr, room.Fog)
+				}
+			}
 			obj.Unlock()
 			//			fmt.Println("unlocked loop")
 			return true
@@ -153,14 +160,6 @@ func main() {
 				name = "Anonymous"
 			}
 			output = item.Join(name)
-
-			if item.Full() {
-				arr, keymap := item.PlayersAsArray()
-				obj.Transition = keymap
-				fmt.Println("generating game...")
-				obj.Data = NewGame(arr, item.Fog)
-				fmt.Println("generated game")
-			}
 		case *Game:
 			key := r.FormValue("key")
 			output = fmt.Sprint(obj.Transition[key])
