@@ -162,8 +162,8 @@ func NewRandomMap() *Map {
 		}
 	}
 
-	// Small Islands
-	for i := 0; i < 4; i++ {
+	// Iron Islands
+	for i := 0; i < 2; i++ {
 		var x, y uint
 		for {
 			x = uint(rand.Intn(EarthSize-2)) + 1
@@ -172,7 +172,7 @@ func NewRandomMap() *Map {
 			for _, oldCenter := range islandCenters {
 				_, oldX, oldY := tileToCoord(oldCenter)
 
-				if (x-oldX < 8 || oldX-x < 8) && (y-oldY < 8 || oldY-y < 8) {
+				if (x-oldX < 11 || oldX-x < 11) && (y-oldY < 11 || oldY-y < 11) {
 					tooClose = true
 				}
 			}
@@ -187,18 +187,73 @@ func NewRandomMap() *Map {
 		tiles := []int{
 			centerTile,
 			tileFromCoord(Earth, x+1, y),
-			tileFromCoord(Earth, x, y+1),
 			tileFromCoord(Earth, x+1, y+1),
-			tileFromCoord(Earth, x-1, y),
+			tileFromCoord(Earth, x, y+1),
+
 			tileFromCoord(Earth, x, y-1),
+			tileFromCoord(Earth, x+1, y-1),
+			tileFromCoord(Earth, x, y+2),
+			tileFromCoord(Earth, x+1, y+2),
+			tileFromCoord(Earth, x-1, y),
+			tileFromCoord(Earth, x+2, y),
+			tileFromCoord(Earth, x-1, y+1),
+			tileFromCoord(Earth, x+2, y+1),
+
+			tileFromCoord(Earth, x+2, y+2),
+			tileFromCoord(Earth, x-1, y-1),
+			tileFromCoord(Earth, x-1, y+2),
+			tileFromCoord(Earth, x+2, y-1),
+		}
+
+		tiles[rand.Intn(4)+12] = -1
+
+		for i, tile := range tiles {
+			if tile != -1 {
+				m.Terrain[tile] = Land
+				if i < 4 {
+					m.Deposits[tile] = Iron
+				}
+			}
+		}
+	}
+
+	// Gold Islands
+	for i := 0; i < 4; i++ {
+		var x, y uint
+		for {
+			x = uint(rand.Intn(EarthSize-2)) + 1
+			y = uint(rand.Intn(EarthSize-2)) + 1
+			tooClose := false
+			for _, oldCenter := range islandCenters {
+				_, oldX, oldY := tileToCoord(oldCenter)
+
+				if (x-oldX < 9 || oldX-x < 9) && (y-oldY < 9 || oldY-y < 9) {
+					tooClose = true
+				}
+			}
+
+			if !tooClose {
+				break
+			}
+		}
+		centerTile := tileFromCoord(Earth, x, y)
+		islandCenters = append(islandCenters, centerTile)
+
+		tiles := []int{
+			centerTile,
+			tileFromCoord(Earth, x+1, y+1),
 			tileFromCoord(Earth, x-1, y-1),
 			tileFromCoord(Earth, x-1, y+1),
 			tileFromCoord(Earth, x+1, y-1),
+			tileFromCoord(Earth, x+1, y),
+			tileFromCoord(Earth, x, y+1),
+			tileFromCoord(Earth, x-1, y),
+			tileFromCoord(Earth, x, y-1),
 		}
 
-		// Remove one edge tile randomly
-		// [1,8]
-		tiles[rand.Intn(8)+1] = -1
+		// Remove one corner tile randomly
+		// [1,4]
+		tiles[rand.Intn(4)+1] = -1
 
 		for _, tile := range tiles {
 			if tile != -1 {
@@ -206,19 +261,11 @@ func NewRandomMap() *Map {
 			}
 		}
 
-		if i < 3 {
-			m.Deposits[centerTile] = Gold
-		} else {
-			for _, tile := range tiles {
-				if tile != -1 {
-					m.Deposits[tile] = Iron
-				}
-			}
-		}
+		m.Deposits[centerTile] = Gold
 	}
 
 	// Tiny Islands
-	for i := 0; i < 6; i++ {
+	for i := 0; i < 12; i++ {
 		var x, y uint
 		for {
 			x = uint(rand.Intn(EarthSize-2)) + 1
@@ -255,7 +302,7 @@ func NewRandomMap() *Map {
 
 			if rand.Intn(3) == 0 {
 				m.Deposits[tile] = Copper
-			} else if rand.Intn(12) == 0 {
+			} else if rand.Intn(16) == 0 {
 				m.Deposits[tile] = Green
 			}
 		}

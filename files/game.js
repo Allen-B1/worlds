@@ -352,7 +352,7 @@ var app = (function () {
     }
 
     const sizes = {
-    	earth: 40,
+    	earth: 48,
     	mars: 24
     };
 
