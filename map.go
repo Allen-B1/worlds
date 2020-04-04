@@ -129,6 +129,27 @@ func NewRandomMap() *Map {
 					m.Terrain[tile] = Land
 				}
 			}
+
+			lTiles := []int{
+				tileFromCoord(Earth, x-2, y-1),
+				tileFromCoord(Earth, x-2, y),
+				tileFromCoord(Earth, x-2, y+1),
+				tileFromCoord(Earth, x+2, y-1),
+				tileFromCoord(Earth, x+2, y),
+				tileFromCoord(Earth, x+2, y+1),
+				tileFromCoord(Earth, x-1, y-2),
+				tileFromCoord(Earth, x, y-2),
+				tileFromCoord(Earth, x+1, y-2),
+				tileFromCoord(Earth, x-1, y+2),
+				tileFromCoord(Earth, x, y+2),
+				tileFromCoord(Earth, x+1, y+2),
+			}
+
+			for _, tile := range lTiles {
+				if tile >= 0 {
+					m.Terrain[tile] = Land
+				}
+			}
 		}
 
 		// Iron
@@ -157,6 +178,24 @@ func NewRandomMap() *Map {
 						m.Terrain[tile] = Land
 					}
 				}
+
+				lTiles := []int{
+					tileFromCoord(Earth, x-1, y),
+					tileFromCoord(Earth, x-1, y+1),
+					tileFromCoord(Earth, x+2, y),
+					tileFromCoord(Earth, x+2, y+1),
+					tileFromCoord(Earth, x, y-1),
+					tileFromCoord(Earth, x+1, y-1),
+					tileFromCoord(Earth, x, y+2),
+					tileFromCoord(Earth, x+1, y+2),
+				}
+
+				for _, tile := range lTiles {
+					if tile >= 0 {
+						m.Terrain[tile] = Land
+					}
+				}
+
 				break
 			}
 		}
