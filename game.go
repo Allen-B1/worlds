@@ -170,6 +170,10 @@ func (g *Game) NextTurn() {
 
 // Checks whether this player should lose
 func (g *Game) checkLoser(player int, winner int) {
+	if player < 0 {
+		return
+	}
+
 	hasCore := false
 	for tile, tileType := range g.TileTypes {
 		if tileType == Core && g.Territory[tile] == player {
