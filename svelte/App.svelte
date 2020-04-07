@@ -23,6 +23,7 @@ let selected = new Set();
 let launched = false;
 
 let hide = false;
+let minimized = false;
 
 let materials = {};
 let materialLabels = [
@@ -153,6 +154,7 @@ $: {
 
 window.addEventListener("keydown", function(e) {
 	if (e.key == "h") hide = !hide;
+	if (e.key == "m") minimized = !minimized;
 	if (e.key == "r") {
 		if (greenhouses != 0) {
 			showHistory = !showHistory;
@@ -185,7 +187,7 @@ window.addEventListener("keydown", function(e) {
 	labels={materialLabels}
 	x="16" y="88" />
 {#if tileInfos.length == 11}
-<TileInfos infos={tileInfos} />
+<TileInfos infos={tileInfos} minimized={minimized} />
 {/if}
 <Players players={players} losers={losers} userIndex={userIndex} />
 
@@ -193,7 +195,7 @@ window.addEventListener("keydown", function(e) {
 	on:click={() => {planet=planet=="earth"?"mars":"earth"}}>To {planet == "earth" ? "Mars" : "Earth"}</button>
 {/if}
 
-<History documents={greenhouses} show={showHistory} />
+<History documents={greenhouses} show={showHistory} />ni
 
 {#if isTutorial}
 <Tutorial armies={armies}

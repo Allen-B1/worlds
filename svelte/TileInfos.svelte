@@ -2,6 +2,7 @@
 import {materialSyms} from './constants.js';
 
 export let infos;
+export let minimized;
 
 function costToHTML(costs) {
 	var str = "";
@@ -35,7 +36,9 @@ td {
 	<tr>
 		<td><kbd>{info.key}</kbd></td>
 		<td>{info.name}</td>
+		{#if !minimized}
 		<td>{@html costToHTML(info.cost)}</td>
+		{/if}
 	</tr>
 {/each}
 </table>
