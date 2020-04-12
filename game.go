@@ -7,6 +7,15 @@ import (
 	"math/rand"
 )
 
+type Relationship int
+
+const (
+	Enemies Relationship = -1
+	Neutral Relationship = 0
+	Cordial Relationship = 1
+	Allies  Relationship = 2
+)
+
 type PlayerStat struct {
 	Materials map[Material]uint `json:"materials"`
 }
@@ -21,6 +30,9 @@ type Game struct {
 	Players []string
 	Stats   []PlayerStat
 	Losers  []int
+
+	Relationships map[[2]int]Relationship
+	Requests      map[[2]int]bool
 
 	Turn      uint
 	Pollution uint
@@ -63,7 +75,7 @@ func (g *Game) MarshalFor(player int) ([]byte, error) {
 	}
 
 	for tile, terr := range g.Territory {
-		if terr == player {
+		if terr == player || g.Relationships[g.association(terr, player)] == Allies {
 			planet, x, y := tileToCoord(tile)
 			tiles := []int{
 				tile,
@@ -166,6 +178,55 @@ func (g *Game) NextTurn() {
 	}
 
 	g.Turn++
+}
+
+func (g *Game) association(player1 int, player2 int) [2]int {
+	larger := player2
+	smaller := player1
+	if player1 > player2 {
+		larger = player1
+		smaller = player2
+	}
+	return [2]int{smaller, larger}
+}
+
+func (g *Game) DowngradeRelationship(player1 int, player2 int) {
+	assoc := g.association(player1, player2)
+	if g.Relationships[assoc] >= 0 {
+		g.Relationships[assoc] -= 1
+	}
+	if g.Relationships[assoc] == Enemies {
+		for assoc, status := range g.Relationships {
+			if status >= Cordial {
+				otherPlayer := -1
+				if assoc[0] == player2 {
+					otherPlayer = assoc[1]
+				} else if assoc[1] == player2 {
+					otherPlayer = assoc[0]
+				} else {
+					continue
+				}
+
+				otherAssoc := g.association(player1, otherPlayer)
+				if g.Relationships[otherAssoc] == Neutral {
+					g.Relationships[otherAssoc] = Enemies
+				}
+				if g.Relationships[otherAssoc] > Neutral {
+					g.Relationships[otherAssoc] = Neutral
+				}
+			}
+		}
+	}
+}
+
+func (g *Game) UpgradeRelationship(player1 int, player2 int) {
+	assoc := g.association(player1, player2)
+	if g.Requests[assoc] {
+		g.Relationships[assoc] += 1
+		g.Requests[assoc] = false
+	} else {
+		g.Requests[assoc] = true
+	}
 }
 
 // Checks whether this player should lose
@@ -320,10 +381,12 @@ func (g *Game) Move(player int, from int, to int) error {
 	fromArmies := g.Armies[from] - 1
 	toArmies := g.Armies[to]
 
-	g.Armies[from] -= fromArmies
-	if player == g.Territory[to] {
+	assoc := g.association(player, g.Territory[to])
+	if player == g.Territory[to] || g.Relationships[assoc] == Allies {
+		g.Armies[from] -= fromArmies
 		g.Armies[to] += fromArmies
-	} else {
+	} else if g.Relationships[assoc] == Enemies || g.Territory[to] == -1 {
+		g.Armies[from] -= fromArmies
 		if fromArmies > toArmies {
 			toType := g.TileTypes[to]
 			toPlayer := g.Territory[to]
@@ -341,6 +404,8 @@ func (g *Game) Move(player int, from int, to int) error {
 		} else {
 			g.Armies[to] -= fromArmies
 		}
+	} else {
+		return fmt.Errorf("can't attack neutral or cordial player")
 	}
 
 	return nil
@@ -357,6 +422,9 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 	g.TileTypes = append([]TileType(nil), m.Walls...)
 	g.Deposits = append([]Material(nil), m.Deposits...)
 	g.Terrain = append([]Terrain(nil), m.Terrain...)
+
+	g.Relationships = make(map[[2]int]Relationship)
+	g.Requests = make(map[[2]int]bool)
 
 	g.Players = players
 	g.Stats = make([]PlayerStat, len(players))
