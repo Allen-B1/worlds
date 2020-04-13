@@ -28,8 +28,7 @@ $: {
 const RELATIONSHIP_SYMBOLS = {
 	"-1": "E",
 	"0": "N",
-	"1": "C",
-	"2": "A"
+	"1": "A"
 };
 
 function inc(evt) {
@@ -67,8 +66,7 @@ td {
 .name {
 	color: #fff;
 	min-width: 80px;
-	text-align: center;
-}
+	text-align: center; }
 
 .player-0 .name {
 	background: hsl(0, 50%, 50%); }
@@ -111,3 +109,4 @@ td {
 	</tr>
 	{/each}
 </table>
+

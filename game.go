@@ -12,8 +12,7 @@ type Relationship int
 const (
 	Enemies Relationship = -1
 	Neutral Relationship = 0
-	Cordial Relationship = 1
-	Allies  Relationship = 2
+	Allies  Relationship = 1
 )
 
 type PlayerStat struct {
@@ -208,7 +207,7 @@ func (g *Game) DowngradeRelationship(player1 int, player2 int) {
 
 		if g.Relationships[assoc] == Enemies {
 			for assoc, status := range g.Relationships {
-				if status >= Cordial {
+				if status == Allies {
 					otherPlayer := -1
 					if assoc[0] == player2 {
 						otherPlayer = assoc[1]

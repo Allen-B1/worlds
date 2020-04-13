@@ -1162,7 +1162,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (104:2) {#if player != userIndex}
+    // (102:2) {#if player != userIndex}
     function create_if_block$1(ctx) {
     	let td;
     	let t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "";
@@ -1179,7 +1179,7 @@ var app = (function () {
     			t1 = space();
     			if (if_block) if_block.c();
     			if_block_anchor = empty();
-    			attr(td, "class", "relationship svelte-1svw7vf");
+    			attr(td, "class", "relationship svelte-1hjxaxh");
     		},
     		m(target, anchor) {
     			insert(target, td, anchor);
@@ -1214,7 +1214,7 @@ var app = (function () {
     	};
     }
 
-    // (106:2) {#if losers.indexOf(player) == -1}
+    // (104:2) {#if losers.indexOf(player) == -1}
     function create_if_block_1$1(ctx) {
     	let td0;
     	let t1;
@@ -1228,8 +1228,8 @@ var app = (function () {
     			t1 = space();
     			td1 = element("td");
     			td1.textContent = "↓";
-    			attr(td0, "class", "action svelte-1svw7vf");
-    			attr(td1, "class", "action svelte-1svw7vf");
+    			attr(td0, "class", "action svelte-1hjxaxh");
+    			attr(td1, "class", "action svelte-1hjxaxh");
     		},
     		m(target, anchor, remount) {
     			insert(target, td0, anchor);
@@ -1248,7 +1248,7 @@ var app = (function () {
     	};
     }
 
-    // (101:1) {#each playerOrder as player}
+    // (99:1) {#each playerOrder as player}
     function create_each_block$3(ctx) {
     	let tr;
     	let td;
@@ -1267,13 +1267,13 @@ var app = (function () {
     			t1 = space();
     			if (if_block) if_block.c();
     			t2 = space();
-    			attr(td, "class", "name svelte-1svw7vf");
+    			attr(td, "class", "name svelte-1hjxaxh");
 
     			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[9] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) != -1
     			? "loser "
     			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[9]
     			? "self "
-    			: "")) + " svelte-1svw7vf"));
+    			: "")) + " svelte-1hjxaxh"));
     		},
     		m(target, anchor) {
     			insert(target, tr, anchor);
@@ -1303,7 +1303,7 @@ var app = (function () {
     			? "loser "
     			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[9]
     			? "self "
-    			: "")) + " svelte-1svw7vf"))) {
+    			: "")) + " svelte-1hjxaxh"))) {
     				attr(tr, "class", tr_class_value);
     			}
     		},
@@ -1331,7 +1331,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr(table, "class", "svelte-1svw7vf");
+    			attr(table, "class", "svelte-1hjxaxh");
     		},
     		m(target, anchor) {
     			insert(target, table, anchor);
@@ -1380,7 +1380,7 @@ var app = (function () {
     	let { userIndex } = $$props;
     	const dispatch = createEventDispatcher();
     	let playerOrder = players;
-    	const RELATIONSHIP_SYMBOLS = { "-1": "E", "0": "N", "1": "C", "2": "A" };
+    	const RELATIONSHIP_SYMBOLS = { "-1": "E", "0": "N", "1": "A" };
 
     	function inc(evt) {
     		let i = evt.target.parentNode.className.indexOf("player-") + ("player-").length;
