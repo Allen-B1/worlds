@@ -249,6 +249,12 @@ func (g *Game) checkLoser(player int, winner int) {
 		return
 	}
 
+	for _, loser := range g.Losers {
+		if player == loser {
+			return
+		}
+	}
+
 	hasCore := false
 	for tile, tileType := range g.TileTypes {
 		if tileType == Core && g.Territory[tile] == player {
