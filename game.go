@@ -399,6 +399,10 @@ func (g *Game) Move(player int, from int, to int) error {
 	if player == g.Territory[to] || g.Relationships[assoc] == Allies {
 		g.Armies[from] -= fromArmies
 		g.Armies[to] += fromArmies
+
+		if g.TileTypes[to] == "" || g.TileTypes[to] == Bridge {
+			g.Territory[to] = player
+		}
 	} else if g.Relationships[assoc] == Enemies || g.Territory[to] == -1 {
 		g.Armies[from] -= fromArmies
 		if fromArmies > toArmies {
