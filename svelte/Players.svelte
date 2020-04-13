@@ -20,9 +20,7 @@ $: {
 		}
 	}
 
-	for (let i = losers.length - 1; i >= 0; i--) {
-		playerOrder.push(i);
-	}
+	playerOrder = playerOrder.concat(losers);
 
 	playerOrder = playerOrder;
 }
@@ -63,7 +61,7 @@ table {
 td {
 	padding: 4px 8px;
 }
-.loser {
+.loser .name {
 	text-decoration: line-through;
 }
 .name {
@@ -105,11 +103,10 @@ td {
 		<td class="name">{players[player]}</td>
 		{#if player != userIndex}
 		<td class="relationship">{RELATIONSHIP_SYMBOLS[relationships[player]]}</td>
+		{#if losers.indexOf(player) == -1}
 		<td class="action" on:click={inc}>↑</td>
 		<td class="action" on:click={dec}>↓</td>
-		{:else}
-		<td></td>
-		<td></td>
+		{/if}
 		{/if}
 	</tr>
 	{/each}

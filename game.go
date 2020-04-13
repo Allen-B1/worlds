@@ -371,7 +371,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 
 func (g *Game) Move(player int, from int, to int) error {
 	if g.Territory[from] != player ||
-		g.Armies[from] < 2 ||
+		g.Armies[from] < 1 ||
 		to >= len(g.Territory) || to < 0 {
 		return nil
 	}

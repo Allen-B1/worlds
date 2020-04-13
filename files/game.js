@@ -1162,84 +1162,93 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (110:2) {:else}
-    function create_else_block(ctx) {
-    	let td0;
-    	let t;
-    	let td1;
+    // (104:2) {#if player != userIndex}
+    function create_if_block$1(ctx) {
+    	let td;
+    	let t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "";
+    	let t0;
+    	let t1;
+    	let show_if = /*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) == -1;
+    	let if_block_anchor;
+    	let if_block = show_if && create_if_block_1$1(ctx);
 
     	return {
     		c() {
-    			td0 = element("td");
-    			t = space();
-    			td1 = element("td");
-    			attr(td0, "class", "svelte-1egi768");
-    			attr(td1, "class", "svelte-1egi768");
+    			td = element("td");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    			attr(td, "class", "relationship svelte-1svw7vf");
     		},
     		m(target, anchor) {
-    			insert(target, td0, anchor);
-    			insert(target, t, anchor);
-    			insert(target, td1, anchor);
+    			insert(target, td, anchor);
+    			append(td, t0);
+    			insert(target, t1, anchor);
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
     		},
-    		p: noop,
+    		p(ctx, dirty) {
+    			if (dirty & /*relationships, playerOrder*/ 20 && t0_value !== (t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "")) set_data(t0, t0_value);
+    			if (dirty & /*losers, playerOrder*/ 17) show_if = /*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) == -1;
+
+    			if (show_if) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block_1$1(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
     		d(detaching) {
-    			if (detaching) detach(td0);
-    			if (detaching) detach(t);
-    			if (detaching) detach(td1);
+    			if (detaching) detach(td);
+    			if (detaching) detach(t1);
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
     		}
     	};
     }
 
-    // (106:2) {#if player != userIndex}
-    function create_if_block$1(ctx) {
+    // (106:2) {#if losers.indexOf(player) == -1}
+    function create_if_block_1$1(ctx) {
     	let td0;
-    	let t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "";
-    	let t0;
     	let t1;
     	let td1;
-    	let t3;
-    	let td2;
     	let dispose;
 
     	return {
     		c() {
     			td0 = element("td");
-    			t0 = text(t0_value);
+    			td0.textContent = "↑";
     			t1 = space();
     			td1 = element("td");
-    			td1.textContent = "↑";
-    			t3 = space();
-    			td2 = element("td");
-    			td2.textContent = "↓";
-    			attr(td0, "class", "relationship svelte-1egi768");
-    			attr(td1, "class", "action svelte-1egi768");
-    			attr(td2, "class", "action svelte-1egi768");
+    			td1.textContent = "↓";
+    			attr(td0, "class", "action svelte-1svw7vf");
+    			attr(td1, "class", "action svelte-1svw7vf");
     		},
     		m(target, anchor, remount) {
     			insert(target, td0, anchor);
-    			append(td0, t0);
     			insert(target, t1, anchor);
     			insert(target, td1, anchor);
-    			insert(target, t3, anchor);
-    			insert(target, td2, anchor);
     			if (remount) run_all(dispose);
-    			dispose = [listen(td1, "click", /*inc*/ ctx[6]), listen(td2, "click", /*dec*/ ctx[7])];
+    			dispose = [listen(td0, "click", /*inc*/ ctx[6]), listen(td1, "click", /*dec*/ ctx[7])];
     		},
-    		p(ctx, dirty) {
-    			if (dirty & /*relationships, playerOrder*/ 20 && t0_value !== (t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "")) set_data(t0, t0_value);
-    		},
+    		p: noop,
     		d(detaching) {
     			if (detaching) detach(td0);
     			if (detaching) detach(t1);
     			if (detaching) detach(td1);
-    			if (detaching) detach(t3);
-    			if (detaching) detach(td2);
     			run_all(dispose);
     		}
     	};
     }
 
-    // (103:1) {#each playerOrder as player}
+    // (101:1) {#each playerOrder as player}
     function create_each_block$3(ctx) {
     	let tr;
     	let td;
@@ -1248,14 +1257,7 @@ var app = (function () {
     	let t1;
     	let t2;
     	let tr_class_value;
-
-    	function select_block_type(ctx, dirty) {
-    		if (/*player*/ ctx[9] != /*userIndex*/ ctx[3]) return create_if_block$1;
-    		return create_else_block;
-    	}
-
-    	let current_block_type = select_block_type(ctx);
-    	let if_block = current_block_type(ctx);
+    	let if_block = /*player*/ ctx[9] != /*userIndex*/ ctx[3] && create_if_block$1(ctx);
 
     	return {
     		c() {
@@ -1263,50 +1265,51 @@ var app = (function () {
     			td = element("td");
     			t0 = text(t0_value);
     			t1 = space();
-    			if_block.c();
+    			if (if_block) if_block.c();
     			t2 = space();
-    			attr(td, "class", "name svelte-1egi768");
+    			attr(td, "class", "name svelte-1svw7vf");
 
     			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[9] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) != -1
     			? "loser "
     			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[9]
     			? "self "
-    			: "")) + " svelte-1egi768"));
+    			: "")) + " svelte-1svw7vf"));
     		},
     		m(target, anchor) {
     			insert(target, tr, anchor);
     			append(tr, td);
     			append(td, t0);
     			append(tr, t1);
-    			if_block.m(tr, null);
+    			if (if_block) if_block.m(tr, null);
     			append(tr, t2);
     		},
     		p(ctx, dirty) {
     			if (dirty & /*players, playerOrder*/ 18 && t0_value !== (t0_value = /*players*/ ctx[1][/*player*/ ctx[9]] + "")) set_data(t0, t0_value);
 
-    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
-    				if_block.p(ctx, dirty);
-    			} else {
-    				if_block.d(1);
-    				if_block = current_block_type(ctx);
-
+    			if (/*player*/ ctx[9] != /*userIndex*/ ctx[3]) {
     				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block$1(ctx);
     					if_block.c();
     					if_block.m(tr, t2);
     				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
     			}
 
     			if (dirty & /*playerOrder, losers, userIndex*/ 25 && tr_class_value !== (tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[9] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) != -1
     			? "loser "
     			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[9]
     			? "self "
-    			: "")) + " svelte-1egi768"))) {
+    			: "")) + " svelte-1svw7vf"))) {
     				attr(tr, "class", tr_class_value);
     			}
     		},
     		d(detaching) {
     			if (detaching) detach(tr);
-    			if_block.d();
+    			if (if_block) if_block.d();
     		}
     	};
     }
@@ -1328,7 +1331,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr(table, "class", "svelte-1egi768");
+    			attr(table, "class", "svelte-1svw7vf");
     		},
     		m(target, anchor) {
     			insert(target, table, anchor);
@@ -1410,10 +1413,7 @@ var app = (function () {
     					}
     				}
 
-    				for (let i = losers.length - 1; i >= 0; i--) {
-    					playerOrder.push(i);
-    				}
-
+    				$$invalidate(4, playerOrder = playerOrder.concat(losers));
     				(($$invalidate(4, playerOrder), $$invalidate(0, losers)), $$invalidate(1, players));
     			}
     		}
@@ -2110,7 +2110,7 @@ who wished to remain anonymous.`;
     }
 
     // (136:0) {#if document != 1}
-    function create_if_block_1$1(ctx) {
+    function create_if_block_1$2(ctx) {
     	let button;
     	let dispose;
 
@@ -2183,7 +2183,7 @@ who wished to remain anonymous.`;
 
     	let current_block_type = select_block_type(ctx);
     	let if_block0 = current_block_type && current_block_type(ctx);
-    	let if_block1 = /*document*/ ctx[2] != 1 && create_if_block_1$1(ctx);
+    	let if_block1 = /*document*/ ctx[2] != 1 && create_if_block_1$2(ctx);
     	let if_block2 = /*document*/ ctx[2] < /*documentcount*/ ctx[1] && create_if_block$3(ctx);
 
     	return {
@@ -2234,7 +2234,7 @@ who wished to remain anonymous.`;
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
-    					if_block1 = create_if_block_1$1(ctx);
+    					if_block1 = create_if_block_1$2(ctx);
     					if_block1.c();
     					if_block1.m(div, t5);
     				}
@@ -2308,7 +2308,7 @@ who wished to remain anonymous.`;
 
     /* svelte/App.svelte generated by Svelte v3.20.1 */
 
-    function create_if_block_1$2(ctx) {
+    function create_if_block_1$3(ctx) {
     	let t0;
     	let t1;
     	let t2;
@@ -2577,7 +2577,7 @@ who wished to remain anonymous.`;
     	map.$on("make", /*make*/ ctx[23]);
     	map.$on("launch", /*launch*/ ctx[24]);
     	map.$on("nuke", /*nuke*/ ctx[25]);
-    	let if_block0 = !/*hide*/ ctx[10] && create_if_block_1$2(ctx);
+    	let if_block0 = !/*hide*/ ctx[10] && create_if_block_1$3(ctx);
 
     	const history = new History({
     			props: {
@@ -2632,7 +2632,7 @@ who wished to remain anonymous.`;
     					if_block0.p(ctx, dirty);
     					transition_in(if_block0, 1);
     				} else {
-    					if_block0 = create_if_block_1$2(ctx);
+    					if_block0 = create_if_block_1$3(ctx);
     					if_block0.c();
     					transition_in(if_block0, 1);
     					if_block0.m(t1.parentNode, t1);
