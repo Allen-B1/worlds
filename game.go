@@ -32,7 +32,7 @@ type Game struct {
 	Losers  []int
 
 	Relationships map[[2]int]Relationship
-	Requests      map[[2]int]bool
+	Requests      map[[2]int]int
 
 	Turn      uint
 	Pollution uint
@@ -59,45 +59,53 @@ func (g *Game) MarshalJSON() ([]byte, error) {
 }
 
 func (g *Game) MarshalFor(player int) ([]byte, error) {
-	if !g.Fog {
-		return g.MarshalJSON()
-	}
+	armies := g.Armies
+	territory := g.Territory
+	tiletypes := g.TileTypes
+	deposits := g.Deposits
+	terrain := g.Terrain
+	relationships := make([]Relationship, len(g.Players))
+	if g.Fog {
+		armies = make([]uint32, len(g.Armies))
+		territory = make([]int, len(g.Territory))
+		tiletypes = make([]TileType, len(g.TileTypes))
+		deposits = make([]Material, len(g.Deposits))
+		terrain = make([]Terrain, len(g.Terrain))
 
-	armies := make([]uint32, len(g.Armies))
-	territory := make([]int, len(g.Territory))
-	tiletypes := make([]TileType, len(g.TileTypes))
-	deposits := make([]Material, len(g.Deposits))
-	terrain := make([]Terrain, len(g.Terrain))
+		for tile, _ := range territory {
+			territory[tile] = -1
+			terrain[tile] = Fog
+		}
 
-	for tile, _ := range territory {
-		territory[tile] = -1
-		terrain[tile] = Fog
-	}
-
-	for tile, terr := range g.Territory {
-		if terr == player || g.Relationships[g.association(terr, player)] == Allies {
-			planet, x, y := tileToCoord(tile)
-			tiles := []int{
-				tile,
-				tileFromCoord(planet, x-1, y+1),
-				tileFromCoord(planet, x-1, y),
-				tileFromCoord(planet, x-1, y-1),
-				tileFromCoord(planet, x, y+1),
-				tileFromCoord(planet, x, y-1),
-				tileFromCoord(planet, x+1, y+1),
-				tileFromCoord(planet, x+1, y),
-				tileFromCoord(planet, x+1, y-1),
-			}
-			for _, knownTile := range tiles {
-				if knownTile != -1 {
-					territory[knownTile] = g.Territory[knownTile]
-					armies[knownTile] = g.Armies[knownTile]
-					tiletypes[knownTile] = g.TileTypes[knownTile]
-					terrain[knownTile] = g.Terrain[knownTile]
-					deposits[knownTile] = g.Deposits[knownTile]
+		for tile, terr := range g.Territory {
+			if terr == player || g.Relationships[g.association(terr, player)] == Allies {
+				planet, x, y := tileToCoord(tile)
+				tiles := []int{
+					tile,
+					tileFromCoord(planet, x-1, y+1),
+					tileFromCoord(planet, x-1, y),
+					tileFromCoord(planet, x-1, y-1),
+					tileFromCoord(planet, x, y+1),
+					tileFromCoord(planet, x, y-1),
+					tileFromCoord(planet, x+1, y+1),
+					tileFromCoord(planet, x+1, y),
+					tileFromCoord(planet, x+1, y-1),
+				}
+				for _, knownTile := range tiles {
+					if knownTile != -1 {
+						territory[knownTile] = g.Territory[knownTile]
+						armies[knownTile] = g.Armies[knownTile]
+						tiletypes[knownTile] = g.TileTypes[knownTile]
+						terrain[knownTile] = g.Terrain[knownTile]
+						deposits[knownTile] = g.Deposits[knownTile]
+					}
 				}
 			}
 		}
+	}
+
+	for player2, _ := range relationships {
+		relationships[player2] = g.Relationships[g.association(player, player2)]
 	}
 
 	return json.Marshal(map[string]interface{}{
@@ -111,6 +119,8 @@ func (g *Game) MarshalFor(player int) ([]byte, error) {
 		"stats":     g.Stats,
 		"turn":      g.Turn,
 		"pollution": g.Pollution,
+
+		"relationships": relationships,
 
 		"type": "game",
 	})
@@ -194,25 +204,27 @@ func (g *Game) DowngradeRelationship(player1 int, player2 int) {
 	assoc := g.association(player1, player2)
 	if g.Relationships[assoc] >= 0 {
 		g.Relationships[assoc] -= 1
-	}
-	if g.Relationships[assoc] == Enemies {
-		for assoc, status := range g.Relationships {
-			if status >= Cordial {
-				otherPlayer := -1
-				if assoc[0] == player2 {
-					otherPlayer = assoc[1]
-				} else if assoc[1] == player2 {
-					otherPlayer = assoc[0]
-				} else {
-					continue
-				}
+		g.Requests[assoc] = -1
 
-				otherAssoc := g.association(player1, otherPlayer)
-				if g.Relationships[otherAssoc] == Neutral {
-					g.Relationships[otherAssoc] = Enemies
-				}
-				if g.Relationships[otherAssoc] > Neutral {
-					g.Relationships[otherAssoc] = Neutral
+		if g.Relationships[assoc] == Enemies {
+			for assoc, status := range g.Relationships {
+				if status >= Cordial {
+					otherPlayer := -1
+					if assoc[0] == player2 {
+						otherPlayer = assoc[1]
+					} else if assoc[1] == player2 {
+						otherPlayer = assoc[0]
+					} else {
+						continue
+					}
+
+					otherAssoc := g.association(player1, otherPlayer)
+					if g.Relationships[otherAssoc] == Neutral {
+						g.Relationships[otherAssoc] = Enemies
+					}
+					if g.Relationships[otherAssoc] > Neutral {
+						g.Relationships[otherAssoc] = Neutral
+					}
 				}
 			}
 		}
@@ -221,11 +233,13 @@ func (g *Game) DowngradeRelationship(player1 int, player2 int) {
 
 func (g *Game) UpgradeRelationship(player1 int, player2 int) {
 	assoc := g.association(player1, player2)
-	if g.Requests[assoc] {
-		g.Relationships[assoc] += 1
-		g.Requests[assoc] = false
+	if g.Requests[assoc] == player2 {
+		if g.Relationships[assoc] < Allies {
+			g.Relationships[assoc] += 1
+		}
+		g.Requests[assoc] = -1
 	} else {
-		g.Requests[assoc] = true
+		g.Requests[assoc] = player1
 	}
 }
 
@@ -424,7 +438,7 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 	g.Terrain = append([]Terrain(nil), m.Terrain...)
 
 	g.Relationships = make(map[[2]int]Relationship)
-	g.Requests = make(map[[2]int]bool)
+	g.Requests = make(map[[2]int]int)
 
 	g.Players = players
 	g.Stats = make([]PlayerStat, len(players))

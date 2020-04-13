@@ -33,6 +33,7 @@ td {
 
 <table>
 {#each infos as info}
+	{#if info}
 	<tr>
 		<td><kbd>{info.key}</kbd></td>
 		<td>{info.name}</td>
@@ -40,5 +41,6 @@ td {
 		<td>{@html costToHTML(info.cost)}</td>
 		{/if}
 	</tr>
+	{/if}
 {/each}
 </table>

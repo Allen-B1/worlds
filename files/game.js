@@ -943,30 +943,8 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (39:2) {#if !minimized}
+    // (36:1) {#if info}
     function create_if_block(ctx) {
-    	let td;
-    	let raw_value = costToHTML(/*info*/ ctx[2].cost) + "";
-
-    	return {
-    		c() {
-    			td = element("td");
-    			attr(td, "class", "svelte-1k4icsq");
-    		},
-    		m(target, anchor) {
-    			insert(target, td, anchor);
-    			td.innerHTML = raw_value;
-    		},
-    		p(ctx, dirty) {
-    			if (dirty & /*infos*/ 1 && raw_value !== (raw_value = costToHTML(/*info*/ ctx[2].cost) + "")) td.innerHTML = raw_value;		},
-    		d(detaching) {
-    			if (detaching) detach(td);
-    		}
-    	};
-    }
-
-    // (35:0) {#each infos as info}
-    function create_each_block$2(ctx) {
     	let tr;
     	let td0;
     	let kbd;
@@ -978,7 +956,7 @@ var app = (function () {
     	let t2;
     	let t3;
     	let t4;
-    	let if_block = !/*minimized*/ ctx[1] && create_if_block(ctx);
+    	let if_block = !/*minimized*/ ctx[1] && create_if_block_1(ctx);
 
     	return {
     		c() {
@@ -1015,7 +993,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block(ctx);
+    					if_block = create_if_block_1(ctx);
     					if_block.c();
     					if_block.m(tr, t4);
     				}
@@ -1027,6 +1005,63 @@ var app = (function () {
     		d(detaching) {
     			if (detaching) detach(tr);
     			if (if_block) if_block.d();
+    		}
+    	};
+    }
+
+    // (40:2) {#if !minimized}
+    function create_if_block_1(ctx) {
+    	let td;
+    	let raw_value = costToHTML(/*info*/ ctx[2].cost) + "";
+
+    	return {
+    		c() {
+    			td = element("td");
+    			attr(td, "class", "svelte-1k4icsq");
+    		},
+    		m(target, anchor) {
+    			insert(target, td, anchor);
+    			td.innerHTML = raw_value;
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*infos*/ 1 && raw_value !== (raw_value = costToHTML(/*info*/ ctx[2].cost) + "")) td.innerHTML = raw_value;		},
+    		d(detaching) {
+    			if (detaching) detach(td);
+    		}
+    	};
+    }
+
+    // (35:0) {#each infos as info}
+    function create_each_block$2(ctx) {
+    	let if_block_anchor;
+    	let if_block = /*info*/ ctx[2] && create_if_block(ctx);
+
+    	return {
+    		c() {
+    			if (if_block) if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if (if_block) if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+    		p(ctx, dirty) {
+    			if (/*info*/ ctx[2]) {
+    				if (if_block) {
+    					if_block.p(ctx, dirty);
+    				} else {
+    					if_block = create_if_block(ctx);
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+    		},
+    		d(detaching) {
+    			if (if_block) if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
     		}
     	};
     }
@@ -1123,18 +1158,104 @@ var app = (function () {
 
     function get_each_context$3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[4] = list[i];
+    	child_ctx[9] = list[i];
     	return child_ctx;
     }
 
-    // (63:1) {#each playerOrder as player}
+    // (110:2) {:else}
+    function create_else_block(ctx) {
+    	let td0;
+    	let t;
+    	let td1;
+
+    	return {
+    		c() {
+    			td0 = element("td");
+    			t = space();
+    			td1 = element("td");
+    			attr(td0, "class", "svelte-1egi768");
+    			attr(td1, "class", "svelte-1egi768");
+    		},
+    		m(target, anchor) {
+    			insert(target, td0, anchor);
+    			insert(target, t, anchor);
+    			insert(target, td1, anchor);
+    		},
+    		p: noop,
+    		d(detaching) {
+    			if (detaching) detach(td0);
+    			if (detaching) detach(t);
+    			if (detaching) detach(td1);
+    		}
+    	};
+    }
+
+    // (106:2) {#if player != userIndex}
+    function create_if_block$1(ctx) {
+    	let td0;
+    	let t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "";
+    	let t0;
+    	let t1;
+    	let td1;
+    	let t3;
+    	let td2;
+    	let dispose;
+
+    	return {
+    		c() {
+    			td0 = element("td");
+    			t0 = text(t0_value);
+    			t1 = space();
+    			td1 = element("td");
+    			td1.textContent = "↑";
+    			t3 = space();
+    			td2 = element("td");
+    			td2.textContent = "↓";
+    			attr(td0, "class", "relationship svelte-1egi768");
+    			attr(td1, "class", "action svelte-1egi768");
+    			attr(td2, "class", "action svelte-1egi768");
+    		},
+    		m(target, anchor, remount) {
+    			insert(target, td0, anchor);
+    			append(td0, t0);
+    			insert(target, t1, anchor);
+    			insert(target, td1, anchor);
+    			insert(target, t3, anchor);
+    			insert(target, td2, anchor);
+    			if (remount) run_all(dispose);
+    			dispose = [listen(td1, "click", /*inc*/ ctx[6]), listen(td2, "click", /*dec*/ ctx[7])];
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*relationships, playerOrder*/ 20 && t0_value !== (t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "")) set_data(t0, t0_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(td0);
+    			if (detaching) detach(t1);
+    			if (detaching) detach(td1);
+    			if (detaching) detach(t3);
+    			if (detaching) detach(td2);
+    			run_all(dispose);
+    		}
+    	};
+    }
+
+    // (103:1) {#each playerOrder as player}
     function create_each_block$3(ctx) {
     	let tr;
     	let td;
-    	let t0_value = /*players*/ ctx[1][/*player*/ ctx[4]] + "";
+    	let t0_value = /*players*/ ctx[1][/*player*/ ctx[9]] + "";
     	let t0;
     	let t1;
+    	let t2;
     	let tr_class_value;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*player*/ ctx[9] != /*userIndex*/ ctx[3]) return create_if_block$1;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
 
     	return {
     		c() {
@@ -1142,36 +1263,57 @@ var app = (function () {
     			td = element("td");
     			t0 = text(t0_value);
     			t1 = space();
-    			attr(td, "class", "svelte-1wa1b2p");
+    			if_block.c();
+    			t2 = space();
+    			attr(td, "class", "name svelte-1egi768");
 
-    			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[4] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[4]) != -1
+    			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[9] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) != -1
     			? "loser "
-    			: " ") + (/*userIndex*/ ctx[2] === /*player*/ ctx[4] ? "self" : "")) + " svelte-1wa1b2p"));
+    			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[9]
+    			? "self "
+    			: "")) + " svelte-1egi768"));
     		},
     		m(target, anchor) {
     			insert(target, tr, anchor);
     			append(tr, td);
     			append(td, t0);
     			append(tr, t1);
+    			if_block.m(tr, null);
+    			append(tr, t2);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*players, playerOrder*/ 10 && t0_value !== (t0_value = /*players*/ ctx[1][/*player*/ ctx[4]] + "")) set_data(t0, t0_value);
+    			if (dirty & /*players, playerOrder*/ 18 && t0_value !== (t0_value = /*players*/ ctx[1][/*player*/ ctx[9]] + "")) set_data(t0, t0_value);
 
-    			if (dirty & /*playerOrder, losers, userIndex*/ 13 && tr_class_value !== (tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[4] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[4]) != -1
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(tr, t2);
+    				}
+    			}
+
+    			if (dirty & /*playerOrder, losers, userIndex*/ 25 && tr_class_value !== (tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[9] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) != -1
     			? "loser "
-    			: " ") + (/*userIndex*/ ctx[2] === /*player*/ ctx[4] ? "self" : "")) + " svelte-1wa1b2p"))) {
+    			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[9]
+    			? "self "
+    			: "")) + " svelte-1egi768"))) {
     				attr(tr, "class", tr_class_value);
     			}
     		},
     		d(detaching) {
     			if (detaching) detach(tr);
+    			if_block.d();
     		}
     	};
     }
 
     function create_fragment$4(ctx) {
     	let table;
-    	let each_value = /*playerOrder*/ ctx[3];
+    	let each_value = /*playerOrder*/ ctx[4];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1186,7 +1328,7 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			attr(table, "class", "svelte-1wa1b2p");
+    			attr(table, "class", "svelte-1egi768");
     		},
     		m(target, anchor) {
     			insert(target, table, anchor);
@@ -1196,8 +1338,8 @@ var app = (function () {
     			}
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*playerOrder, losers, userIndex, players*/ 15) {
-    				each_value = /*playerOrder*/ ctx[3];
+    			if (dirty & /*playerOrder, losers, userIndex, dec, inc, RELATIONSHIP_SYMBOLS, relationships, players*/ 255) {
+    				each_value = /*playerOrder*/ ctx[4];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -1231,19 +1373,35 @@ var app = (function () {
     function instance$4($$self, $$props, $$invalidate) {
     	let { players = [] } = $$props;
     	let { losers = [] } = $$props;
+    	let { relationships = [] } = $$props;
     	let { userIndex } = $$props;
+    	const dispatch = createEventDispatcher();
     	let playerOrder = players;
+    	const RELATIONSHIP_SYMBOLS = { "-1": "E", "0": "N", "1": "C", "2": "A" };
+
+    	function inc(evt) {
+    		let i = evt.target.parentNode.className.indexOf("player-") + ("player-").length;
+    		let player = evt.target.parentNode.className[i];
+    		dispatch("status", { player, action: "upgrade" });
+    	}
+
+    	function dec(evt) {
+    		let i = evt.target.parentNode.className.indexOf("player-") + ("player-").length;
+    		let player = evt.target.parentNode.className[i];
+    		dispatch("status", { player, action: "downgrade" });
+    	}
 
     	$$self.$set = $$props => {
     		if ("players" in $$props) $$invalidate(1, players = $$props.players);
     		if ("losers" in $$props) $$invalidate(0, losers = $$props.losers);
-    		if ("userIndex" in $$props) $$invalidate(2, userIndex = $$props.userIndex);
+    		if ("relationships" in $$props) $$invalidate(2, relationships = $$props.relationships);
+    		if ("userIndex" in $$props) $$invalidate(3, userIndex = $$props.userIndex);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*losers, players, playerOrder*/ 11) {
+    		if ($$self.$$.dirty & /*losers, players, playerOrder*/ 19) {
     			 {
-    				$$invalidate(3, playerOrder = []);
+    				$$invalidate(4, playerOrder = []);
     				if (losers == null) $$invalidate(0, losers = []);
 
     				for (let i = 0; i < players.length; i++) {
@@ -1256,24 +1414,39 @@ var app = (function () {
     					playerOrder.push(i);
     				}
 
-    				(($$invalidate(3, playerOrder), $$invalidate(0, losers)), $$invalidate(1, players));
+    				(($$invalidate(4, playerOrder), $$invalidate(0, losers)), $$invalidate(1, players));
     			}
     		}
     	};
 
-    	return [losers, players, userIndex, playerOrder];
+    	return [
+    		losers,
+    		players,
+    		relationships,
+    		userIndex,
+    		playerOrder,
+    		RELATIONSHIP_SYMBOLS,
+    		inc,
+    		dec
+    	];
     }
 
     class Players extends SvelteComponent {
     	constructor(options) {
     		super();
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, { players: 1, losers: 0, userIndex: 2 });
+
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {
+    			players: 1,
+    			losers: 0,
+    			relationships: 2,
+    			userIndex: 3
+    		});
     	}
     }
 
     /* svelte/Tutorial.svelte generated by Svelte v3.20.1 */
 
-    function create_if_block$1(ctx) {
+    function create_if_block$2(ctx) {
     	let button;
     	let dispose;
 
@@ -1300,7 +1473,7 @@ var app = (function () {
     	let div;
     	let html_tag;
     	let t;
-    	let if_block = /*canSkip*/ ctx[2][/*stage*/ ctx[0]] && create_if_block$1(ctx);
+    	let if_block = /*canSkip*/ ctx[2][/*stage*/ ctx[0]] && create_if_block$2(ctx);
 
     	return {
     		c() {
@@ -1323,7 +1496,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block$1(ctx);
+    					if_block = create_if_block$2(ctx);
     					if_block.c();
     					if_block.m(div, null);
     				}
@@ -1937,7 +2110,7 @@ who wished to remain anonymous.`;
     }
 
     // (136:0) {#if document != 1}
-    function create_if_block_1(ctx) {
+    function create_if_block_1$1(ctx) {
     	let button;
     	let dispose;
 
@@ -1962,7 +2135,7 @@ who wished to remain anonymous.`;
     }
 
     // (139:0) {#if document < documentcount}
-    function create_if_block$2(ctx) {
+    function create_if_block$3(ctx) {
     	let button;
     	let dispose;
 
@@ -2010,8 +2183,8 @@ who wished to remain anonymous.`;
 
     	let current_block_type = select_block_type(ctx);
     	let if_block0 = current_block_type && current_block_type(ctx);
-    	let if_block1 = /*document*/ ctx[2] != 1 && create_if_block_1(ctx);
-    	let if_block2 = /*document*/ ctx[2] < /*documentcount*/ ctx[1] && create_if_block$2(ctx);
+    	let if_block1 = /*document*/ ctx[2] != 1 && create_if_block_1$1(ctx);
+    	let if_block2 = /*document*/ ctx[2] < /*documentcount*/ ctx[1] && create_if_block$3(ctx);
 
     	return {
     		c() {
@@ -2061,7 +2234,7 @@ who wished to remain anonymous.`;
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
-    					if_block1 = create_if_block_1(ctx);
+    					if_block1 = create_if_block_1$1(ctx);
     					if_block1.c();
     					if_block1.m(div, t5);
     				}
@@ -2074,7 +2247,7 @@ who wished to remain anonymous.`;
     				if (if_block2) {
     					if_block2.p(ctx, dirty);
     				} else {
-    					if_block2 = create_if_block$2(ctx);
+    					if_block2 = create_if_block$3(ctx);
     					if_block2.c();
     					if_block2.m(div, null);
     				}
@@ -2135,14 +2308,14 @@ who wished to remain anonymous.`;
 
     /* svelte/App.svelte generated by Svelte v3.20.1 */
 
-    function create_if_block_1$1(ctx) {
+    function create_if_block_1$2(ctx) {
     	let t0;
     	let t1;
     	let t2;
     	let t3;
     	let button;
     	let t4;
-    	let t5_value = (/*planet*/ ctx[14] == "earth" ? "Mars" : "Earth") + "";
+    	let t5_value = (/*planet*/ ctx[15] == "earth" ? "Mars" : "Earth") + "";
     	let t5;
     	let button_style_value;
     	let current;
@@ -2150,8 +2323,8 @@ who wished to remain anonymous.`;
 
     	const stats0 = new Stats({
     			props: {
-    				stats: /*stats*/ ctx[13],
-    				labels: /*statsLabels*/ ctx[19],
+    				stats: /*stats*/ ctx[14],
+    				labels: /*statsLabels*/ ctx[20],
     				x: "16",
     				y: "16"
     			}
@@ -2159,22 +2332,25 @@ who wished to remain anonymous.`;
 
     	const stats1 = new Stats({
     			props: {
-    				stats: /*materials*/ ctx[11],
-    				labels: /*materialLabels*/ ctx[12],
+    				stats: /*materials*/ ctx[12],
+    				labels: /*materialLabels*/ ctx[13],
     				x: "16",
     				y: "88"
     			}
     		});
 
-    	let if_block = /*tileInfos*/ ctx[16].length == 11 && create_if_block_2$1(ctx);
+    	let if_block = /*tileInfos*/ ctx[17].length == 11 && create_if_block_2$1(ctx);
 
     	const players_1 = new Players({
     			props: {
-    				players: /*players*/ ctx[5],
-    				losers: /*losers*/ ctx[6],
-    				userIndex: /*userIndex*/ ctx[15]
+    				players: /*players*/ ctx[6],
+    				losers: /*losers*/ ctx[7],
+    				userIndex: /*userIndex*/ ctx[16],
+    				relationships: /*relationships*/ ctx[5]
     			}
     		});
+
+    	players_1.$on("status", /*relationshipUpdate*/ ctx[26]);
 
     	return {
     		c() {
@@ -2189,7 +2365,7 @@ who wished to remain anonymous.`;
     			button = element("button");
     			t4 = text("To ");
     			t5 = text(t5_value);
-    			attr(button, "style", button_style_value = "z-index:5;top:300px;left:16px;position:fixed;display:" + (/*launched*/ ctx[8] ? "block" : "none"));
+    			attr(button, "style", button_style_value = "z-index:5;top:300px;left:16px;position:fixed;display:" + (/*launched*/ ctx[9] ? "block" : "none"));
     		},
     		m(target, anchor, remount) {
     			mount_component(stats0, target, anchor);
@@ -2205,18 +2381,18 @@ who wished to remain anonymous.`;
     			append(button, t5);
     			current = true;
     			if (remount) dispose();
-    			dispose = listen(button, "click", /*click_handler*/ ctx[28]);
+    			dispose = listen(button, "click", /*click_handler*/ ctx[30]);
     		},
     		p(ctx, dirty) {
     			const stats0_changes = {};
-    			if (dirty & /*stats*/ 8192) stats0_changes.stats = /*stats*/ ctx[13];
+    			if (dirty & /*stats*/ 16384) stats0_changes.stats = /*stats*/ ctx[14];
     			stats0.$set(stats0_changes);
     			const stats1_changes = {};
-    			if (dirty & /*materials*/ 2048) stats1_changes.stats = /*materials*/ ctx[11];
-    			if (dirty & /*materialLabels*/ 4096) stats1_changes.labels = /*materialLabels*/ ctx[12];
+    			if (dirty & /*materials*/ 4096) stats1_changes.stats = /*materials*/ ctx[12];
+    			if (dirty & /*materialLabels*/ 8192) stats1_changes.labels = /*materialLabels*/ ctx[13];
     			stats1.$set(stats1_changes);
 
-    			if (/*tileInfos*/ ctx[16].length == 11) {
+    			if (/*tileInfos*/ ctx[17].length == 11) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     					transition_in(if_block, 1);
@@ -2237,13 +2413,14 @@ who wished to remain anonymous.`;
     			}
 
     			const players_1_changes = {};
-    			if (dirty & /*players*/ 32) players_1_changes.players = /*players*/ ctx[5];
-    			if (dirty & /*losers*/ 64) players_1_changes.losers = /*losers*/ ctx[6];
-    			if (dirty & /*userIndex*/ 32768) players_1_changes.userIndex = /*userIndex*/ ctx[15];
+    			if (dirty & /*players*/ 64) players_1_changes.players = /*players*/ ctx[6];
+    			if (dirty & /*losers*/ 128) players_1_changes.losers = /*losers*/ ctx[7];
+    			if (dirty & /*userIndex*/ 65536) players_1_changes.userIndex = /*userIndex*/ ctx[16];
+    			if (dirty & /*relationships*/ 32) players_1_changes.relationships = /*relationships*/ ctx[5];
     			players_1.$set(players_1_changes);
-    			if ((!current || dirty & /*planet*/ 16384) && t5_value !== (t5_value = (/*planet*/ ctx[14] == "earth" ? "Mars" : "Earth") + "")) set_data(t5, t5_value);
+    			if ((!current || dirty & /*planet*/ 32768) && t5_value !== (t5_value = (/*planet*/ ctx[15] == "earth" ? "Mars" : "Earth") + "")) set_data(t5, t5_value);
 
-    			if (!current || dirty & /*launched*/ 256 && button_style_value !== (button_style_value = "z-index:5;top:300px;left:16px;position:fixed;display:" + (/*launched*/ ctx[8] ? "block" : "none"))) {
+    			if (!current || dirty & /*launched*/ 512 && button_style_value !== (button_style_value = "z-index:5;top:300px;left:16px;position:fixed;display:" + (/*launched*/ ctx[9] ? "block" : "none"))) {
     				attr(button, "style", button_style_value);
     			}
     		},
@@ -2277,14 +2454,14 @@ who wished to remain anonymous.`;
     	};
     }
 
-    // (189:0) {#if tileInfos.length == 11}
+    // (196:0) {#if tileInfos.length == 11}
     function create_if_block_2$1(ctx) {
     	let current;
 
     	const tileinfos = new TileInfos({
     			props: {
-    				infos: /*tileInfos*/ ctx[16],
-    				minimized: /*minimized*/ ctx[10]
+    				infos: /*tileInfos*/ ctx[17],
+    				minimized: /*minimized*/ ctx[11]
     			}
     		});
 
@@ -2298,8 +2475,8 @@ who wished to remain anonymous.`;
     		},
     		p(ctx, dirty) {
     			const tileinfos_changes = {};
-    			if (dirty & /*tileInfos*/ 65536) tileinfos_changes.infos = /*tileInfos*/ ctx[16];
-    			if (dirty & /*minimized*/ 1024) tileinfos_changes.minimized = /*minimized*/ ctx[10];
+    			if (dirty & /*tileInfos*/ 131072) tileinfos_changes.infos = /*tileInfos*/ ctx[17];
+    			if (dirty & /*minimized*/ 2048) tileinfos_changes.minimized = /*minimized*/ ctx[11];
     			tileinfos.$set(tileinfos_changes);
     		},
     		i(local) {
@@ -2317,8 +2494,8 @@ who wished to remain anonymous.`;
     	};
     }
 
-    // (200:0) {#if isTutorial}
-    function create_if_block$3(ctx) {
+    // (207:0) {#if isTutorial}
+    function create_if_block$4(ctx) {
     	let current;
 
     	const tutorial = new Tutorial({
@@ -2328,9 +2505,9 @@ who wished to remain anonymous.`;
     				territory: /*territory*/ ctx[2],
     				deposits: /*deposits*/ ctx[3],
     				tiletypes: /*tiletypes*/ ctx[4],
-    				selected: /*selected*/ ctx[7],
-    				userIndex: /*userIndex*/ ctx[15],
-    				planet: /*planet*/ ctx[14]
+    				selected: /*selected*/ ctx[8],
+    				userIndex: /*userIndex*/ ctx[16],
+    				planet: /*planet*/ ctx[15]
     			}
     		});
 
@@ -2349,9 +2526,9 @@ who wished to remain anonymous.`;
     			if (dirty & /*territory*/ 4) tutorial_changes.territory = /*territory*/ ctx[2];
     			if (dirty & /*deposits*/ 8) tutorial_changes.deposits = /*deposits*/ ctx[3];
     			if (dirty & /*tiletypes*/ 16) tutorial_changes.tiletypes = /*tiletypes*/ ctx[4];
-    			if (dirty & /*selected*/ 128) tutorial_changes.selected = /*selected*/ ctx[7];
-    			if (dirty & /*userIndex*/ 32768) tutorial_changes.userIndex = /*userIndex*/ ctx[15];
-    			if (dirty & /*planet*/ 16384) tutorial_changes.planet = /*planet*/ ctx[14];
+    			if (dirty & /*selected*/ 256) tutorial_changes.selected = /*selected*/ ctx[8];
+    			if (dirty & /*userIndex*/ 65536) tutorial_changes.userIndex = /*userIndex*/ ctx[16];
+    			if (dirty & /*planet*/ 32768) tutorial_changes.planet = /*planet*/ ctx[15];
     			tutorial.$set(tutorial_changes);
     		},
     		i(local) {
@@ -2378,11 +2555,11 @@ who wished to remain anonymous.`;
     	let current;
 
     	function map_selected_binding(value) {
-    		/*map_selected_binding*/ ctx[27].call(null, value);
+    		/*map_selected_binding*/ ctx[29].call(null, value);
     	}
 
     	let map_props = {
-    		planet: /*planet*/ ctx[14],
+    		planet: /*planet*/ ctx[15],
     		armies: /*armies*/ ctx[0],
     		terrain: /*terrain*/ ctx[1],
     		territory: /*territory*/ ctx[2],
@@ -2390,26 +2567,26 @@ who wished to remain anonymous.`;
     		tiletypes: /*tiletypes*/ ctx[4]
     	};
 
-    	if (/*selected*/ ctx[7] !== void 0) {
-    		map_props.selected = /*selected*/ ctx[7];
+    	if (/*selected*/ ctx[8] !== void 0) {
+    		map_props.selected = /*selected*/ ctx[8];
     	}
 
     	const map = new Map$1({ props: map_props });
     	binding_callbacks.push(() => bind(map, "selected", map_selected_binding));
-    	map.$on("move", /*move*/ ctx[21]);
-    	map.$on("make", /*make*/ ctx[22]);
-    	map.$on("launch", /*launch*/ ctx[23]);
-    	map.$on("nuke", /*nuke*/ ctx[24]);
-    	let if_block0 = !/*hide*/ ctx[9] && create_if_block_1$1(ctx);
+    	map.$on("move", /*move*/ ctx[22]);
+    	map.$on("make", /*make*/ ctx[23]);
+    	map.$on("launch", /*launch*/ ctx[24]);
+    	map.$on("nuke", /*nuke*/ ctx[25]);
+    	let if_block0 = !/*hide*/ ctx[10] && create_if_block_1$2(ctx);
 
     	const history = new History({
     			props: {
-    				documents: /*greenhouses*/ ctx[17],
-    				show: /*showHistory*/ ctx[18]
+    				documents: /*greenhouses*/ ctx[18],
+    				show: /*showHistory*/ ctx[19]
     			}
     		});
 
-    	let if_block1 = /*isTutorial*/ ctx[20] && create_if_block$3(ctx);
+    	let if_block1 = /*isTutorial*/ ctx[21] && create_if_block$4(ctx);
 
     	return {
     		c() {
@@ -2435,27 +2612,27 @@ who wished to remain anonymous.`;
     		},
     		p(ctx, [dirty]) {
     			const map_changes = {};
-    			if (dirty & /*planet*/ 16384) map_changes.planet = /*planet*/ ctx[14];
+    			if (dirty & /*planet*/ 32768) map_changes.planet = /*planet*/ ctx[15];
     			if (dirty & /*armies*/ 1) map_changes.armies = /*armies*/ ctx[0];
     			if (dirty & /*terrain*/ 2) map_changes.terrain = /*terrain*/ ctx[1];
     			if (dirty & /*territory*/ 4) map_changes.territory = /*territory*/ ctx[2];
     			if (dirty & /*deposits*/ 8) map_changes.deposits = /*deposits*/ ctx[3];
     			if (dirty & /*tiletypes*/ 16) map_changes.tiletypes = /*tiletypes*/ ctx[4];
 
-    			if (!updating_selected && dirty & /*selected*/ 128) {
+    			if (!updating_selected && dirty & /*selected*/ 256) {
     				updating_selected = true;
-    				map_changes.selected = /*selected*/ ctx[7];
+    				map_changes.selected = /*selected*/ ctx[8];
     				add_flush_callback(() => updating_selected = false);
     			}
 
     			map.$set(map_changes);
 
-    			if (!/*hide*/ ctx[9]) {
+    			if (!/*hide*/ ctx[10]) {
     				if (if_block0) {
     					if_block0.p(ctx, dirty);
     					transition_in(if_block0, 1);
     				} else {
-    					if_block0 = create_if_block_1$1(ctx);
+    					if_block0 = create_if_block_1$2(ctx);
     					if_block0.c();
     					transition_in(if_block0, 1);
     					if_block0.m(t1.parentNode, t1);
@@ -2471,10 +2648,10 @@ who wished to remain anonymous.`;
     			}
 
     			const history_changes = {};
-    			if (dirty & /*greenhouses*/ 131072) history_changes.documents = /*greenhouses*/ ctx[17];
-    			if (dirty & /*showHistory*/ 262144) history_changes.show = /*showHistory*/ ctx[18];
+    			if (dirty & /*greenhouses*/ 262144) history_changes.documents = /*greenhouses*/ ctx[18];
+    			if (dirty & /*showHistory*/ 524288) history_changes.show = /*showHistory*/ ctx[19];
     			history.$set(history_changes);
-    			if (/*isTutorial*/ ctx[20]) if_block1.p(ctx, dirty);
+    			if (/*isTutorial*/ ctx[21]) if_block1.p(ctx, dirty);
     		},
     		i(local) {
     			if (current) return;
@@ -2510,6 +2687,7 @@ who wished to remain anonymous.`;
     	let territory = [];
     	let deposits = [];
     	let tiletypes = [];
+    	let relationships = [];
     	let players = [];
     	let losers = [];
 
@@ -2541,7 +2719,7 @@ who wished to remain anonymous.`;
     		let xhr = new XMLHttpRequest();
 
     		xhr.onload = function () {
-    			$$invalidate(15, userIndex = xhr.responseText | 0);
+    			$$invalidate(16, userIndex = xhr.responseText | 0);
     		};
 
     		xhr.open("POST", "/api/" + roomId + "/join?key=" + userKey);
@@ -2561,8 +2739,8 @@ who wished to remain anonymous.`;
     			xhr.onload = function () {
     				let info = JSON.parse(xhr.responseText);
     				info.key = kbd;
-    				$$invalidate(16, tileInfos[j] = info, tileInfos);
-    				$$invalidate(16, tileInfos);
+    				$$invalidate(17, tileInfos[j] = info, tileInfos);
+    				$$invalidate(17, tileInfos);
     			};
 
     			xhr.open("GET", "/api/tileinfo?type=" + type);
@@ -2582,12 +2760,13 @@ who wished to remain anonymous.`;
     				$$invalidate(2, territory = json.territory);
     				$$invalidate(3, deposits = json.deposits);
     				$$invalidate(4, tiletypes = json.tiletypes);
-    				$$invalidate(11, materials = json.stats[userIndex].materials);
-    				$$invalidate(13, stats.pollution = json.pollution, stats);
-    				$$invalidate(13, stats.turn = json.turn, stats);
-    				$$invalidate(13, stats);
-    				$$invalidate(5, players = json.players);
-    				$$invalidate(6, losers = json.losers);
+    				$$invalidate(12, materials = json.stats[userIndex].materials);
+    				$$invalidate(14, stats.pollution = json.pollution, stats);
+    				$$invalidate(14, stats.turn = json.turn, stats);
+    				$$invalidate(14, stats);
+    				$$invalidate(6, players = json.players);
+    				$$invalidate(7, losers = json.losers);
+    				$$invalidate(5, relationships = json.relationships);
     			};
 
     			xhr.open("GET", "/api/" + roomId + "/data.json?key=" + userKey);
@@ -2613,8 +2792,8 @@ who wished to remain anonymous.`;
 
     		xhr.onload = function () {
     			if (xhr.status == 200) {
-    				$$invalidate(14, planet = "mars");
-    				$$invalidate(8, launched = true);
+    				$$invalidate(15, planet = "mars");
+    				$$invalidate(9, launched = true);
     			}
     		};
 
@@ -2632,37 +2811,43 @@ who wished to remain anonymous.`;
     	let showHistory = false;
 
     	window.addEventListener("keydown", function (e) {
-    		if (e.key == "h") $$invalidate(9, hide = !hide);
-    		if (e.key == "m") $$invalidate(10, minimized = !minimized);
+    		if (e.key == "h") $$invalidate(10, hide = !hide);
+    		if (e.key == "m") $$invalidate(11, minimized = !minimized);
 
     		if (e.key == "r") {
     			if (greenhouses != 0) {
-    				$$invalidate(18, showHistory = !showHistory);
+    				$$invalidate(19, showHistory = !showHistory);
     			} else {
-    				$$invalidate(18, showHistory = false);
+    				$$invalidate(19, showHistory = false);
     			}
     		}
     	});
 
+    	function relationshipUpdate(evt) {
+    		var xhr = new XMLHttpRequest();
+    		xhr.open("POST", "/api/" + roomId + "/relationship?action=" + evt.detail.action + "&player=" + evt.detail.player + "&key=" + userKey);
+    		xhr.send();
+    	}
+
     	function map_selected_binding(value) {
     		selected = value;
-    		$$invalidate(7, selected);
+    		$$invalidate(8, selected);
     	}
 
     	const click_handler = () => {
-    		$$invalidate(14, planet = planet == "earth" ? "mars" : "earth");
+    		$$invalidate(15, planet = planet == "earth" ? "mars" : "earth");
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*materials*/ 2048) {
+    		if ($$self.$$.dirty & /*materials*/ 4096) {
     			 if (materials.green) {
-    				$$invalidate(12, materialLabels[5] = ["G", "green", "text-green"], materialLabels);
+    				$$invalidate(13, materialLabels[5] = ["G", "green", "text-green"], materialLabels);
     			} else {
-    				$$invalidate(12, materialLabels.length = 5, materialLabels);
+    				$$invalidate(13, materialLabels.length = 5, materialLabels);
     			}
     		}
 
-    		if ($$self.$$.dirty & /*planet*/ 16384) {
+    		if ($$self.$$.dirty & /*planet*/ 32768) {
     			 {
     				if (planet == "earth") {
     					document.title = "worlds • earth";
@@ -2674,13 +2859,13 @@ who wished to remain anonymous.`;
     			}
     		}
 
-    		if ($$self.$$.dirty & /*territory, userIndex, tiletypes, greenhouses*/ 163860) {
+    		if ($$self.$$.dirty & /*territory, userIndex, tiletypes, greenhouses*/ 327700) {
     			 {
-    				$$invalidate(17, greenhouses = 0);
+    				$$invalidate(18, greenhouses = 0);
 
     				for (let i = 0; i < territory.length; i++) {
     					if (territory[i] == userIndex & tiletypes[i] == "greenhouse") {
-    						$$invalidate(17, greenhouses += 1);
+    						$$invalidate(18, greenhouses += 1);
     					}
     				}
     			}
@@ -2693,6 +2878,7 @@ who wished to remain anonymous.`;
     		territory,
     		deposits,
     		tiletypes,
+    		relationships,
     		players,
     		losers,
     		selected,
@@ -2713,6 +2899,7 @@ who wished to remain anonymous.`;
     		make,
     		launch,
     		nuke,
+    		relationshipUpdate,
     		roomId,
     		userKey,
     		map_selected_binding,

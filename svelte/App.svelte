@@ -13,6 +13,7 @@ let terrain = [];
 let territory = [];
 let deposits = [];
 let tiletypes = [];
+let relationships = [];
 
 let players = [];
 let losers = [];
@@ -105,6 +106,7 @@ setInterval(function(){
 
 		players = json.players;
 		losers = json.losers;
+		relationships = json.relationships;
 	};
 	xhr.open("GET", "/api/" + roomId + "/data.json?key=" + userKey);
 	xhr.send();
@@ -164,6 +166,11 @@ window.addEventListener("keydown", function(e) {
 	}
 });
 
+function relationshipUpdate(evt) {
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "/api/" + roomId + "/relationship?action=" + evt.detail.action + "&player=" + evt.detail.player + "&key=" + userKey);
+	xhr.send();
+}
 </script>
 
 <Map planet={planet}
@@ -189,7 +196,7 @@ window.addEventListener("keydown", function(e) {
 {#if tileInfos.length == 11}
 <TileInfos infos={tileInfos} minimized={minimized} />
 {/if}
-<Players players={players} losers={losers} userIndex={userIndex} />
+<Players on:status={relationshipUpdate} players={players} losers={losers} userIndex={userIndex} relationships={relationships} />
 
 <button style={"z-index:5;top:300px;left:16px;position:fixed;display:" + (launched?"block":"none")}
 	on:click={() => {planet=planet=="earth"?"mars":"earth"}}>To {planet == "earth" ? "Mars" : "Earth"}</button>
