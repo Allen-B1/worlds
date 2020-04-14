@@ -15,8 +15,11 @@ const (
 	Allies  Relationship = 1
 )
 
-type PlayerStat struct {
-	Materials map[Material]uint `json:"materials"`
+type MaterialAmounts map[Material]uint
+
+// Stats
+type Stats struct {
+	Pollution int `json:"pollution"`
 }
 
 type Game struct {
@@ -27,7 +30,7 @@ type Game struct {
 	Deposits  []Material
 
 	Players []string
-	Stats   []PlayerStat
+	Amounts []MaterialAmounts
 	Losers  []int
 
 	Relationships map[[2]int]Relationship
@@ -37,24 +40,9 @@ type Game struct {
 	Pollution uint
 
 	Fog bool
-}
 
-// spectator
-func (g *Game) MarshalJSON() ([]byte, error) {
-	return json.Marshal(map[string]interface{}{
-		"armies":    g.Armies,
-		"territory": g.Territory,
-		"tiletypes": g.TileTypes,
-		"deposits":  g.Deposits,
-		"terrain":   g.Terrain,
-		"players":   g.Players,
-		"losers":    g.Losers,
-		"stats":     g.Stats,
-		"turn":      g.Turn,
-		"pollution": g.Pollution,
-
-		"type": "game",
-	})
+	// Dependent on above fields
+	Stats []Stats
 }
 
 func (g *Game) MarshalFor(player int) ([]byte, error) {
@@ -115,9 +103,10 @@ func (g *Game) MarshalFor(player int) ([]byte, error) {
 		"terrain":   terrain,
 		"players":   g.Players,
 		"losers":    g.Losers,
-		"stats":     g.Stats,
+		"amounts":   g.Amounts,
 		"turn":      g.Turn,
 		"pollution": g.Pollution,
+		"stats":     g.Stats,
 
 		"relationships": relationships,
 
@@ -142,8 +131,8 @@ func (g *Game) NextTurn() {
 		switch tileType {
 		case Camp:
 			if g.Turn%5 == 0 {
-				if g.Stats[g.Territory[tile]].Materials[Brick] >= 2 {
-					g.Stats[g.Territory[tile]].Materials[Brick] -= 2
+				if g.Amounts[g.Territory[tile]][Brick] >= 2 {
+					g.Amounts[g.Territory[tile]][Brick] -= 2
 					g.Armies[tile] += 1
 				}
 			}
@@ -152,14 +141,14 @@ func (g *Game) NextTurn() {
 			if player < 0 {
 				break
 			}
-			g.Stats[player].Materials[Brick] += 1
+			g.Amounts[player][Brick] += 1
 		case MineV1, MineV2, MineV3:
 			player := g.Territory[tile]
 			if player < 0 {
 				break
 			}
 			material := g.Deposits[tile]
-			g.Stats[player].Materials[material] += 1
+			g.Amounts[player][material] += 1
 		case Cleaner:
 			if planet, _, _ := tileToCoord(tile); planet == Earth {
 				cleaning += 1
@@ -183,6 +172,19 @@ func (g *Game) NextTurn() {
 		}
 		for player, _ := range g.Players {
 			g.checkLoser(player, -1)
+		}
+	}
+
+	for player, _ := range g.Stats {
+		g.Stats[player].Pollution = 0
+	}
+	// calculate stats
+	for tile, tileType := range g.TileTypes {
+		if g.Territory[tile] != -1 {
+			g.Stats[g.Territory[tile]].Pollution += int(TileInfos[tileType].Pollution)
+			if tileType == Cleaner {
+				g.Stats[g.Territory[tile]].Pollution -= 1
+			}
 		}
 	}
 
@@ -297,7 +299,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 	}
 
 	for material, cost := range TileInfos[tileType].Cost {
-		if g.Stats[player].Materials[material] < cost {
+		if g.Amounts[player][material] < cost {
 			return errors.New("insufficient material: " + string(material))
 		}
 	}
@@ -367,7 +369,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 	}
 
 	for material, cost := range TileInfos[tileType].Cost {
-		g.Stats[player].Materials[material] -= cost
+		g.Amounts[player][material] -= cost
 	}
 	g.TileTypes[tile] = tileType
 
@@ -450,10 +452,12 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 	g.Requests = make(map[[2]int]int)
 
 	g.Players = players
-	g.Stats = make([]PlayerStat, len(players))
-	for player, _ := range g.Stats {
-		g.Stats[player].Materials = make(map[Material]uint)
+	g.Amounts = make([]MaterialAmounts, len(players))
+	for player, _ := range g.Amounts {
+		g.Amounts[player] = make(MaterialAmounts)
 	}
+
+	g.Stats = make([]Stats, len(players))
 
 	for tile, _ := range g.Territory {
 		g.Territory[tile] = -1
@@ -541,13 +545,13 @@ func (g *Game) Nuke(player int, tile int) error {
 	}
 
 	for material, amt := range cost {
-		if g.Stats[player].Materials[material] < amt {
+		if g.Amounts[player][material] < amt {
 			return errors.New("not enough " + string(material) + ": " + fmt.Sprint(amt) + " required")
 		}
 	}
 
 	for material, amt := range cost {
-		g.Stats[player].Materials[material] -= amt
+		g.Amounts[player][material] -= amt
 	}
 
 	planet, x, y := tileToCoord(tile)

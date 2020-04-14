@@ -44,6 +44,8 @@ const statsLabels = [
 	["Turn", "turn"],
 	["Pollution", "pollution"]];
 
+let playerStats = [];
+
 let planet = "earth";
 $: {
 	if (planet == "earth") {
@@ -98,11 +100,13 @@ setInterval(function(){
 		deposits = json.deposits;
 		tiletypes = json.tiletypes;
 
-		materials = json.stats[userIndex].materials;
+		materials = json.amounts[userIndex];
 
 		stats.pollution = json.pollution;
 		stats.turn = json.turn;
 		stats = stats;
+
+		playerStats = json.stats;
 
 		players = json.players;
 		losers = json.losers;
@@ -196,7 +200,7 @@ function relationshipUpdate(evt) {
 {#if tileInfos.length == 11}
 <TileInfos infos={tileInfos} minimized={minimized} />
 {/if}
-<Players on:status={relationshipUpdate} players={players} losers={losers} userIndex={userIndex} relationships={relationships} />
+<Players on:status={relationshipUpdate} players={players} losers={losers} userIndex={userIndex} relationships={relationships} stats={playerStats} minimized={minimized} />
 
 <button style={"z-index:5;top:300px;left:16px;position:fixed;display:" + (launched?"block":"none")}
 	on:click={() => {planet=planet=="earth"?"mars":"earth"}}>To {planet == "earth" ? "Mars" : "Earth"}</button>

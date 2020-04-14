@@ -49,25 +49,15 @@ kbd {
 }
 
 .text-copper {
-	color: #b87333;
-}
-
+	color: #b87333; }
 .text-brick {
-	color: #b74933;
-}
-
+	color: #b74933; }
 .text-iron {
-	color: #666;
-}
-
+	color: #666; }
 .text-gold {
-	color: #b7b033;
-}
-
+	color: #b7b033; }
 .text-uranium {
-	color: #8239cc;
-}
-
+	color: #8239cc; }
 .text-green {color: #559933; }
 
 button, .button {

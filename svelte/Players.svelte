@@ -5,6 +5,9 @@ export let players = [];
 export let losers = [];
 export let relationships = [];
 export let userIndex;
+export let stats = [];
+
+export let minimized;
 
 const dispatch = createEventDispatcher();
 
@@ -42,6 +45,10 @@ function dec(evt) {
 	let player = evt.target.parentNode.className[i];
 	dispatch("status", {player:player, action:"downgrade"});
 }
+
+function sign(n) {
+	return n > 0 ? "+" + n : String(n|0);
+}
 </script>
 
 <style>
@@ -57,7 +64,7 @@ table {
 	right: 16px;
 	color: #000;
 }
-td {
+td, th {
 	padding: 4px 8px;
 }
 .loser .name {
@@ -80,7 +87,7 @@ td {
 	background: hsl(40, 50%, 50%); }
 .player-5 .name {
 	background: hsl(250, 50%, 50%); }
-.self {
+.self .name {
 	font-weight: bold; }
 
 .relationship {
@@ -93,18 +100,39 @@ td {
 	min-width: 12px; }
 .action:hover {
 	background: #bbb; }
+
+th.large {
+	padding: 4px 12px;}
 </style>
 
 <table>
+	<tr>
+		<th class="large">Player</th>
+		<th class="large" colspan="3">{minimized?"Rel.":"Relationship"}</th>
+		{#if !minimized}
+		<th>❋</th>
+		{/if}
+	</tr>
 	{#each playerOrder as player}
 	<tr class={"player-" + player + " " + (losers.indexOf(player) != -1 ? "loser ": "") + (userIndex === player ? "self " : "")}>
 		<td class="name">{players[player]}</td>
+
 		{#if player != userIndex}
 		<td class="relationship">{RELATIONSHIP_SYMBOLS[relationships[player]]}</td>
+		{#if !minimized}
 		{#if losers.indexOf(player) == -1}
 		<td class="action" on:click={inc}>↑</td>
 		<td class="action" on:click={dec}>↓</td>
+		{:else}
+		<td colspan="2"></td>
 		{/if}
+		{/if}
+		{:else}
+		<td colspan="{minimized?1:3}"></td>
+		{/if}
+
+		{#if stats[player] && !minimized}
+		<td>{sign(stats[player].pollution)}</td>
 		{/if}
 	</tr>
 	{/each}

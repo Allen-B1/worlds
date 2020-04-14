@@ -1158,19 +1158,62 @@ var app = (function () {
 
     function get_each_context$3(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[9] = list[i];
+    	child_ctx[11] = list[i];
     	return child_ctx;
     }
 
-    // (102:2) {#if player != userIndex}
-    function create_if_block$1(ctx) {
+    // (112:2) {#if !minimized}
+    function create_if_block_4(ctx) {
+    	let th;
+
+    	return {
+    		c() {
+    			th = element("th");
+    			th.textContent = "❋";
+    			attr(th, "class", "svelte-8a858p");
+    		},
+    		m(target, anchor) {
+    			insert(target, th, anchor);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(th);
+    		}
+    	};
+    }
+
+    // (130:2) {:else}
+    function create_else_block_1(ctx) {
     	let td;
-    	let t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "";
+    	let td_colspan_value;
+
+    	return {
+    		c() {
+    			td = element("td");
+    			attr(td, "colspan", td_colspan_value = /*minimized*/ ctx[5] ? 1 : 3);
+    			attr(td, "class", "svelte-8a858p");
+    		},
+    		m(target, anchor) {
+    			insert(target, td, anchor);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*minimized*/ 32 && td_colspan_value !== (td_colspan_value = /*minimized*/ ctx[5] ? 1 : 3)) {
+    				attr(td, "colspan", td_colspan_value);
+    			}
+    		},
+    		d(detaching) {
+    			if (detaching) detach(td);
+    		}
+    	};
+    }
+
+    // (120:2) {#if player != userIndex}
+    function create_if_block_1$1(ctx) {
+    	let td;
+    	let t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[7][/*relationships*/ ctx[2][/*player*/ ctx[11]]] + "";
     	let t0;
     	let t1;
-    	let show_if = /*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) == -1;
     	let if_block_anchor;
-    	let if_block = show_if && create_if_block_1$1(ctx);
+    	let if_block = !/*minimized*/ ctx[5] && create_if_block_2(ctx);
 
     	return {
     		c() {
@@ -1179,7 +1222,7 @@ var app = (function () {
     			t1 = space();
     			if (if_block) if_block.c();
     			if_block_anchor = empty();
-    			attr(td, "class", "relationship svelte-1hjxaxh");
+    			attr(td, "class", "relationship svelte-8a858p");
     		},
     		m(target, anchor) {
     			insert(target, td, anchor);
@@ -1189,14 +1232,13 @@ var app = (function () {
     			insert(target, if_block_anchor, anchor);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*relationships, playerOrder*/ 20 && t0_value !== (t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[5][/*relationships*/ ctx[2][/*player*/ ctx[9]]] + "")) set_data(t0, t0_value);
-    			if (dirty & /*losers, playerOrder*/ 17) show_if = /*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) == -1;
+    			if (dirty & /*relationships, playerOrder*/ 68 && t0_value !== (t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[7][/*relationships*/ ctx[2][/*player*/ ctx[11]]] + "")) set_data(t0, t0_value);
 
-    			if (show_if) {
+    			if (!/*minimized*/ ctx[5]) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block_1$1(ctx);
+    					if_block = create_if_block_2(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
@@ -1214,8 +1256,71 @@ var app = (function () {
     	};
     }
 
-    // (104:2) {#if losers.indexOf(player) == -1}
-    function create_if_block_1$1(ctx) {
+    // (122:2) {#if !minimized}
+    function create_if_block_2(ctx) {
+    	let show_if;
+    	let if_block_anchor;
+
+    	function select_block_type_1(ctx, dirty) {
+    		if (show_if == null || dirty & /*losers, playerOrder*/ 65) show_if = !!(/*losers*/ ctx[0].indexOf(/*player*/ ctx[11]) == -1);
+    		if (show_if) return create_if_block_3;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type_1(ctx, -1);
+    	let if_block = current_block_type(ctx);
+
+    	return {
+    		c() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+    		p(ctx, dirty) {
+    			if (current_block_type === (current_block_type = select_block_type_1(ctx, dirty)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+    		d(detaching) {
+    			if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
+    		}
+    	};
+    }
+
+    // (126:2) {:else}
+    function create_else_block(ctx) {
+    	let td;
+
+    	return {
+    		c() {
+    			td = element("td");
+    			attr(td, "colspan", "2");
+    			attr(td, "class", "svelte-8a858p");
+    		},
+    		m(target, anchor) {
+    			insert(target, td, anchor);
+    		},
+    		p: noop,
+    		d(detaching) {
+    			if (detaching) detach(td);
+    		}
+    	};
+    }
+
+    // (123:2) {#if losers.indexOf(player) == -1}
+    function create_if_block_3(ctx) {
     	let td0;
     	let t1;
     	let td1;
@@ -1228,15 +1333,15 @@ var app = (function () {
     			t1 = space();
     			td1 = element("td");
     			td1.textContent = "↓";
-    			attr(td0, "class", "action svelte-1hjxaxh");
-    			attr(td1, "class", "action svelte-1hjxaxh");
+    			attr(td0, "class", "action svelte-8a858p");
+    			attr(td1, "class", "action svelte-8a858p");
     		},
     		m(target, anchor, remount) {
     			insert(target, td0, anchor);
     			insert(target, t1, anchor);
     			insert(target, td1, anchor);
     			if (remount) run_all(dispose);
-    			dispose = [listen(td0, "click", /*inc*/ ctx[6]), listen(td1, "click", /*dec*/ ctx[7])];
+    			dispose = [listen(td0, "click", /*inc*/ ctx[8]), listen(td1, "click", /*dec*/ ctx[9])];
     		},
     		p: noop,
     		d(detaching) {
@@ -1248,16 +1353,50 @@ var app = (function () {
     	};
     }
 
-    // (99:1) {#each playerOrder as player}
+    // (134:2) {#if stats[player] && !minimized}
+    function create_if_block$1(ctx) {
+    	let td;
+    	let t_value = sign(/*stats*/ ctx[4][/*player*/ ctx[11]].pollution) + "";
+    	let t;
+
+    	return {
+    		c() {
+    			td = element("td");
+    			t = text(t_value);
+    			attr(td, "class", "svelte-8a858p");
+    		},
+    		m(target, anchor) {
+    			insert(target, td, anchor);
+    			append(td, t);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*stats, playerOrder*/ 80 && t_value !== (t_value = sign(/*stats*/ ctx[4][/*player*/ ctx[11]].pollution) + "")) set_data(t, t_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(td);
+    		}
+    	};
+    }
+
+    // (116:1) {#each playerOrder as player}
     function create_each_block$3(ctx) {
     	let tr;
     	let td;
-    	let t0_value = /*players*/ ctx[1][/*player*/ ctx[9]] + "";
+    	let t0_value = /*players*/ ctx[1][/*player*/ ctx[11]] + "";
     	let t0;
     	let t1;
     	let t2;
+    	let t3;
     	let tr_class_value;
-    	let if_block = /*player*/ ctx[9] != /*userIndex*/ ctx[3] && create_if_block$1(ctx);
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*player*/ ctx[11] != /*userIndex*/ ctx[3]) return create_if_block_1$1;
+    		return create_else_block_1;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block0 = current_block_type(ctx);
+    	let if_block1 = /*stats*/ ctx[4][/*player*/ ctx[11]] && !/*minimized*/ ctx[5] && create_if_block$1(ctx);
 
     	return {
     		c() {
@@ -1265,58 +1404,84 @@ var app = (function () {
     			td = element("td");
     			t0 = text(t0_value);
     			t1 = space();
-    			if (if_block) if_block.c();
+    			if_block0.c();
     			t2 = space();
-    			attr(td, "class", "name svelte-1hjxaxh");
+    			if (if_block1) if_block1.c();
+    			t3 = space();
+    			attr(td, "class", "name svelte-8a858p");
 
-    			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[9] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) != -1
+    			attr(tr, "class", tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[11] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[11]) != -1
     			? "loser "
-    			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[9]
+    			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[11]
     			? "self "
-    			: "")) + " svelte-1hjxaxh"));
+    			: "")) + " svelte-8a858p"));
     		},
     		m(target, anchor) {
     			insert(target, tr, anchor);
     			append(tr, td);
     			append(td, t0);
     			append(tr, t1);
-    			if (if_block) if_block.m(tr, null);
+    			if_block0.m(tr, null);
     			append(tr, t2);
+    			if (if_block1) if_block1.m(tr, null);
+    			append(tr, t3);
     		},
     		p(ctx, dirty) {
-    			if (dirty & /*players, playerOrder*/ 18 && t0_value !== (t0_value = /*players*/ ctx[1][/*player*/ ctx[9]] + "")) set_data(t0, t0_value);
+    			if (dirty & /*players, playerOrder*/ 66 && t0_value !== (t0_value = /*players*/ ctx[1][/*player*/ ctx[11]] + "")) set_data(t0, t0_value);
 
-    			if (/*player*/ ctx[9] != /*userIndex*/ ctx[3]) {
-    				if (if_block) {
-    					if_block.p(ctx, dirty);
-    				} else {
-    					if_block = create_if_block$1(ctx);
-    					if_block.c();
-    					if_block.m(tr, t2);
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block0) {
+    				if_block0.p(ctx, dirty);
+    			} else {
+    				if_block0.d(1);
+    				if_block0 = current_block_type(ctx);
+
+    				if (if_block0) {
+    					if_block0.c();
+    					if_block0.m(tr, t2);
     				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
     			}
 
-    			if (dirty & /*playerOrder, losers, userIndex*/ 25 && tr_class_value !== (tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[9] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[9]) != -1
+    			if (/*stats*/ ctx[4][/*player*/ ctx[11]] && !/*minimized*/ ctx[5]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block$1(ctx);
+    					if_block1.c();
+    					if_block1.m(tr, t3);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (dirty & /*playerOrder, losers, userIndex*/ 73 && tr_class_value !== (tr_class_value = "" + (null_to_empty("player-" + /*player*/ ctx[11] + " " + (/*losers*/ ctx[0].indexOf(/*player*/ ctx[11]) != -1
     			? "loser "
-    			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[9]
+    			: "") + (/*userIndex*/ ctx[3] === /*player*/ ctx[11]
     			? "self "
-    			: "")) + " svelte-1hjxaxh"))) {
+    			: "")) + " svelte-8a858p"))) {
     				attr(tr, "class", tr_class_value);
     			}
     		},
     		d(detaching) {
     			if (detaching) detach(tr);
-    			if (if_block) if_block.d();
+    			if_block0.d();
+    			if (if_block1) if_block1.d();
     		}
     	};
     }
 
     function create_fragment$4(ctx) {
     	let table;
-    	let each_value = /*playerOrder*/ ctx[4];
+    	let tr;
+    	let th0;
+    	let t1;
+    	let th1;
+    	let t2_value = (/*minimized*/ ctx[5] ? "Rel." : "Relationship") + "";
+    	let t2;
+    	let t3;
+    	let t4;
+    	let if_block = !/*minimized*/ ctx[5] && create_if_block_4();
+    	let each_value = /*playerOrder*/ ctx[6];
     	let each_blocks = [];
 
     	for (let i = 0; i < each_value.length; i += 1) {
@@ -1326,23 +1491,56 @@ var app = (function () {
     	return {
     		c() {
     			table = element("table");
+    			tr = element("tr");
+    			th0 = element("th");
+    			th0.textContent = "Player";
+    			t1 = space();
+    			th1 = element("th");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			if (if_block) if_block.c();
+    			t4 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			attr(table, "class", "svelte-1hjxaxh");
+    			attr(th0, "class", "large svelte-8a858p");
+    			attr(th1, "class", "large svelte-8a858p");
+    			attr(th1, "colspan", "3");
+    			attr(table, "class", "svelte-8a858p");
     		},
     		m(target, anchor) {
     			insert(target, table, anchor);
+    			append(table, tr);
+    			append(tr, th0);
+    			append(tr, t1);
+    			append(tr, th1);
+    			append(th1, t2);
+    			append(tr, t3);
+    			if (if_block) if_block.m(tr, null);
+    			append(table, t4);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(table, null);
     			}
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*playerOrder, losers, userIndex, dec, inc, RELATIONSHIP_SYMBOLS, relationships, players*/ 255) {
-    				each_value = /*playerOrder*/ ctx[4];
+    			if (dirty & /*minimized*/ 32 && t2_value !== (t2_value = (/*minimized*/ ctx[5] ? "Rel." : "Relationship") + "")) set_data(t2, t2_value);
+
+    			if (!/*minimized*/ ctx[5]) {
+    				if (!if_block) {
+    					if_block = create_if_block_4();
+    					if_block.c();
+    					if_block.m(tr, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
+    			if (dirty & /*playerOrder, losers, userIndex, sign, stats, minimized, dec, inc, RELATIONSHIP_SYMBOLS, relationships, players*/ 1023) {
+    				each_value = /*playerOrder*/ ctx[6];
     				let i;
 
     				for (i = 0; i < each_value.length; i += 1) {
@@ -1368,9 +1566,14 @@ var app = (function () {
     		o: noop,
     		d(detaching) {
     			if (detaching) detach(table);
+    			if (if_block) if_block.d();
     			destroy_each(each_blocks, detaching);
     		}
     	};
+    }
+
+    function sign(n) {
+    	return n > 0 ? "+" + n : String(n | 0);
     }
 
     function instance$4($$self, $$props, $$invalidate) {
@@ -1378,6 +1581,8 @@ var app = (function () {
     	let { losers = [] } = $$props;
     	let { relationships = [] } = $$props;
     	let { userIndex } = $$props;
+    	let { stats = [] } = $$props;
+    	let { minimized } = $$props;
     	const dispatch = createEventDispatcher();
     	let playerOrder = players;
     	const RELATIONSHIP_SYMBOLS = { "-1": "E", "0": "N", "1": "A" };
@@ -1399,12 +1604,14 @@ var app = (function () {
     		if ("losers" in $$props) $$invalidate(0, losers = $$props.losers);
     		if ("relationships" in $$props) $$invalidate(2, relationships = $$props.relationships);
     		if ("userIndex" in $$props) $$invalidate(3, userIndex = $$props.userIndex);
+    		if ("stats" in $$props) $$invalidate(4, stats = $$props.stats);
+    		if ("minimized" in $$props) $$invalidate(5, minimized = $$props.minimized);
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*losers, players, playerOrder*/ 19) {
+    		if ($$self.$$.dirty & /*losers, players, playerOrder*/ 67) {
     			 {
-    				$$invalidate(4, playerOrder = []);
+    				$$invalidate(6, playerOrder = []);
     				if (losers == null) $$invalidate(0, losers = []);
 
     				for (let i = 0; i < players.length; i++) {
@@ -1413,8 +1620,8 @@ var app = (function () {
     					}
     				}
 
-    				$$invalidate(4, playerOrder = playerOrder.concat(losers));
-    				(($$invalidate(4, playerOrder), $$invalidate(0, losers)), $$invalidate(1, players));
+    				$$invalidate(6, playerOrder = playerOrder.concat(losers));
+    				(($$invalidate(6, playerOrder), $$invalidate(0, losers)), $$invalidate(1, players));
     			}
     		}
     	};
@@ -1424,6 +1631,8 @@ var app = (function () {
     		players,
     		relationships,
     		userIndex,
+    		stats,
+    		minimized,
     		playerOrder,
     		RELATIONSHIP_SYMBOLS,
     		inc,
@@ -1439,7 +1648,9 @@ var app = (function () {
     			players: 1,
     			losers: 0,
     			relationships: 2,
-    			userIndex: 3
+    			userIndex: 3,
+    			stats: 4,
+    			minimized: 5
     		});
     	}
     }
@@ -1973,7 +2184,7 @@ that specializes in creating small items that supposedly stop the rising of the 
     }
 
     // (84:25) 
-    function create_if_block_4(ctx) {
+    function create_if_block_4$1(ctx) {
     	let h3;
     	let t1;
     	let h4;
@@ -2020,7 +2231,7 @@ factory farms, which China repeatedly denies.
     }
 
     // (76:25) 
-    function create_if_block_3(ctx) {
+    function create_if_block_3$1(ctx) {
     	let h3;
     	let t1;
     	let h4;
@@ -2065,7 +2276,7 @@ theories,&quot; he said at a conference last Friday.`;
     }
 
     // (68:0) {#if document === 1}
-    function create_if_block_2(ctx) {
+    function create_if_block_2$1(ctx) {
     	let h3;
     	let t1;
     	let h4;
@@ -2171,9 +2382,9 @@ who wished to remain anonymous.`;
     	let div_style_value;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*document*/ ctx[2] === 1) return create_if_block_2;
-    		if (/*document*/ ctx[2] === 2) return create_if_block_3;
-    		if (/*document*/ ctx[2] === 3) return create_if_block_4;
+    		if (/*document*/ ctx[2] === 1) return create_if_block_2$1;
+    		if (/*document*/ ctx[2] === 2) return create_if_block_3$1;
+    		if (/*document*/ ctx[2] === 3) return create_if_block_4$1;
     		if (/*document*/ ctx[2] === 4) return create_if_block_5;
     		if (/*document*/ ctx[2] === 5) return create_if_block_6;
     		if (/*document*/ ctx[2] == 6) return create_if_block_7;
@@ -2315,7 +2526,7 @@ who wished to remain anonymous.`;
     	let t3;
     	let button;
     	let t4;
-    	let t5_value = (/*planet*/ ctx[15] == "earth" ? "Mars" : "Earth") + "";
+    	let t5_value = (/*planet*/ ctx[16] == "earth" ? "Mars" : "Earth") + "";
     	let t5;
     	let button_style_value;
     	let current;
@@ -2324,7 +2535,7 @@ who wished to remain anonymous.`;
     	const stats0 = new Stats({
     			props: {
     				stats: /*stats*/ ctx[14],
-    				labels: /*statsLabels*/ ctx[20],
+    				labels: /*statsLabels*/ ctx[21],
     				x: "16",
     				y: "16"
     			}
@@ -2339,18 +2550,20 @@ who wished to remain anonymous.`;
     			}
     		});
 
-    	let if_block = /*tileInfos*/ ctx[17].length == 11 && create_if_block_2$1(ctx);
+    	let if_block = /*tileInfos*/ ctx[18].length == 11 && create_if_block_2$2(ctx);
 
     	const players_1 = new Players({
     			props: {
     				players: /*players*/ ctx[6],
     				losers: /*losers*/ ctx[7],
-    				userIndex: /*userIndex*/ ctx[16],
-    				relationships: /*relationships*/ ctx[5]
+    				userIndex: /*userIndex*/ ctx[17],
+    				relationships: /*relationships*/ ctx[5],
+    				stats: /*playerStats*/ ctx[15],
+    				minimized: /*minimized*/ ctx[11]
     			}
     		});
 
-    	players_1.$on("status", /*relationshipUpdate*/ ctx[26]);
+    	players_1.$on("status", /*relationshipUpdate*/ ctx[27]);
 
     	return {
     		c() {
@@ -2381,23 +2594,23 @@ who wished to remain anonymous.`;
     			append(button, t5);
     			current = true;
     			if (remount) dispose();
-    			dispose = listen(button, "click", /*click_handler*/ ctx[30]);
+    			dispose = listen(button, "click", /*click_handler*/ ctx[31]);
     		},
     		p(ctx, dirty) {
     			const stats0_changes = {};
-    			if (dirty & /*stats*/ 16384) stats0_changes.stats = /*stats*/ ctx[14];
+    			if (dirty[0] & /*stats*/ 16384) stats0_changes.stats = /*stats*/ ctx[14];
     			stats0.$set(stats0_changes);
     			const stats1_changes = {};
-    			if (dirty & /*materials*/ 4096) stats1_changes.stats = /*materials*/ ctx[12];
-    			if (dirty & /*materialLabels*/ 8192) stats1_changes.labels = /*materialLabels*/ ctx[13];
+    			if (dirty[0] & /*materials*/ 4096) stats1_changes.stats = /*materials*/ ctx[12];
+    			if (dirty[0] & /*materialLabels*/ 8192) stats1_changes.labels = /*materialLabels*/ ctx[13];
     			stats1.$set(stats1_changes);
 
-    			if (/*tileInfos*/ ctx[17].length == 11) {
+    			if (/*tileInfos*/ ctx[18].length == 11) {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     					transition_in(if_block, 1);
     				} else {
-    					if_block = create_if_block_2$1(ctx);
+    					if_block = create_if_block_2$2(ctx);
     					if_block.c();
     					transition_in(if_block, 1);
     					if_block.m(t2.parentNode, t2);
@@ -2413,14 +2626,16 @@ who wished to remain anonymous.`;
     			}
 
     			const players_1_changes = {};
-    			if (dirty & /*players*/ 64) players_1_changes.players = /*players*/ ctx[6];
-    			if (dirty & /*losers*/ 128) players_1_changes.losers = /*losers*/ ctx[7];
-    			if (dirty & /*userIndex*/ 65536) players_1_changes.userIndex = /*userIndex*/ ctx[16];
-    			if (dirty & /*relationships*/ 32) players_1_changes.relationships = /*relationships*/ ctx[5];
+    			if (dirty[0] & /*players*/ 64) players_1_changes.players = /*players*/ ctx[6];
+    			if (dirty[0] & /*losers*/ 128) players_1_changes.losers = /*losers*/ ctx[7];
+    			if (dirty[0] & /*userIndex*/ 131072) players_1_changes.userIndex = /*userIndex*/ ctx[17];
+    			if (dirty[0] & /*relationships*/ 32) players_1_changes.relationships = /*relationships*/ ctx[5];
+    			if (dirty[0] & /*playerStats*/ 32768) players_1_changes.stats = /*playerStats*/ ctx[15];
+    			if (dirty[0] & /*minimized*/ 2048) players_1_changes.minimized = /*minimized*/ ctx[11];
     			players_1.$set(players_1_changes);
-    			if ((!current || dirty & /*planet*/ 32768) && t5_value !== (t5_value = (/*planet*/ ctx[15] == "earth" ? "Mars" : "Earth") + "")) set_data(t5, t5_value);
+    			if ((!current || dirty[0] & /*planet*/ 65536) && t5_value !== (t5_value = (/*planet*/ ctx[16] == "earth" ? "Mars" : "Earth") + "")) set_data(t5, t5_value);
 
-    			if (!current || dirty & /*launched*/ 512 && button_style_value !== (button_style_value = "z-index:5;top:300px;left:16px;position:fixed;display:" + (/*launched*/ ctx[9] ? "block" : "none"))) {
+    			if (!current || dirty[0] & /*launched*/ 512 && button_style_value !== (button_style_value = "z-index:5;top:300px;left:16px;position:fixed;display:" + (/*launched*/ ctx[9] ? "block" : "none"))) {
     				attr(button, "style", button_style_value);
     			}
     		},
@@ -2454,13 +2669,13 @@ who wished to remain anonymous.`;
     	};
     }
 
-    // (196:0) {#if tileInfos.length == 11}
-    function create_if_block_2$1(ctx) {
+    // (200:0) {#if tileInfos.length == 11}
+    function create_if_block_2$2(ctx) {
     	let current;
 
     	const tileinfos = new TileInfos({
     			props: {
-    				infos: /*tileInfos*/ ctx[17],
+    				infos: /*tileInfos*/ ctx[18],
     				minimized: /*minimized*/ ctx[11]
     			}
     		});
@@ -2475,8 +2690,8 @@ who wished to remain anonymous.`;
     		},
     		p(ctx, dirty) {
     			const tileinfos_changes = {};
-    			if (dirty & /*tileInfos*/ 131072) tileinfos_changes.infos = /*tileInfos*/ ctx[17];
-    			if (dirty & /*minimized*/ 2048) tileinfos_changes.minimized = /*minimized*/ ctx[11];
+    			if (dirty[0] & /*tileInfos*/ 262144) tileinfos_changes.infos = /*tileInfos*/ ctx[18];
+    			if (dirty[0] & /*minimized*/ 2048) tileinfos_changes.minimized = /*minimized*/ ctx[11];
     			tileinfos.$set(tileinfos_changes);
     		},
     		i(local) {
@@ -2494,7 +2709,7 @@ who wished to remain anonymous.`;
     	};
     }
 
-    // (207:0) {#if isTutorial}
+    // (211:0) {#if isTutorial}
     function create_if_block$4(ctx) {
     	let current;
 
@@ -2506,8 +2721,8 @@ who wished to remain anonymous.`;
     				deposits: /*deposits*/ ctx[3],
     				tiletypes: /*tiletypes*/ ctx[4],
     				selected: /*selected*/ ctx[8],
-    				userIndex: /*userIndex*/ ctx[16],
-    				planet: /*planet*/ ctx[15]
+    				userIndex: /*userIndex*/ ctx[17],
+    				planet: /*planet*/ ctx[16]
     			}
     		});
 
@@ -2521,14 +2736,14 @@ who wished to remain anonymous.`;
     		},
     		p(ctx, dirty) {
     			const tutorial_changes = {};
-    			if (dirty & /*armies*/ 1) tutorial_changes.armies = /*armies*/ ctx[0];
-    			if (dirty & /*terrain*/ 2) tutorial_changes.terrain = /*terrain*/ ctx[1];
-    			if (dirty & /*territory*/ 4) tutorial_changes.territory = /*territory*/ ctx[2];
-    			if (dirty & /*deposits*/ 8) tutorial_changes.deposits = /*deposits*/ ctx[3];
-    			if (dirty & /*tiletypes*/ 16) tutorial_changes.tiletypes = /*tiletypes*/ ctx[4];
-    			if (dirty & /*selected*/ 256) tutorial_changes.selected = /*selected*/ ctx[8];
-    			if (dirty & /*userIndex*/ 65536) tutorial_changes.userIndex = /*userIndex*/ ctx[16];
-    			if (dirty & /*planet*/ 32768) tutorial_changes.planet = /*planet*/ ctx[15];
+    			if (dirty[0] & /*armies*/ 1) tutorial_changes.armies = /*armies*/ ctx[0];
+    			if (dirty[0] & /*terrain*/ 2) tutorial_changes.terrain = /*terrain*/ ctx[1];
+    			if (dirty[0] & /*territory*/ 4) tutorial_changes.territory = /*territory*/ ctx[2];
+    			if (dirty[0] & /*deposits*/ 8) tutorial_changes.deposits = /*deposits*/ ctx[3];
+    			if (dirty[0] & /*tiletypes*/ 16) tutorial_changes.tiletypes = /*tiletypes*/ ctx[4];
+    			if (dirty[0] & /*selected*/ 256) tutorial_changes.selected = /*selected*/ ctx[8];
+    			if (dirty[0] & /*userIndex*/ 131072) tutorial_changes.userIndex = /*userIndex*/ ctx[17];
+    			if (dirty[0] & /*planet*/ 65536) tutorial_changes.planet = /*planet*/ ctx[16];
     			tutorial.$set(tutorial_changes);
     		},
     		i(local) {
@@ -2555,11 +2770,11 @@ who wished to remain anonymous.`;
     	let current;
 
     	function map_selected_binding(value) {
-    		/*map_selected_binding*/ ctx[29].call(null, value);
+    		/*map_selected_binding*/ ctx[30].call(null, value);
     	}
 
     	let map_props = {
-    		planet: /*planet*/ ctx[15],
+    		planet: /*planet*/ ctx[16],
     		armies: /*armies*/ ctx[0],
     		terrain: /*terrain*/ ctx[1],
     		territory: /*territory*/ ctx[2],
@@ -2573,20 +2788,20 @@ who wished to remain anonymous.`;
 
     	const map = new Map$1({ props: map_props });
     	binding_callbacks.push(() => bind(map, "selected", map_selected_binding));
-    	map.$on("move", /*move*/ ctx[22]);
-    	map.$on("make", /*make*/ ctx[23]);
-    	map.$on("launch", /*launch*/ ctx[24]);
-    	map.$on("nuke", /*nuke*/ ctx[25]);
+    	map.$on("move", /*move*/ ctx[23]);
+    	map.$on("make", /*make*/ ctx[24]);
+    	map.$on("launch", /*launch*/ ctx[25]);
+    	map.$on("nuke", /*nuke*/ ctx[26]);
     	let if_block0 = !/*hide*/ ctx[10] && create_if_block_1$3(ctx);
 
     	const history = new History({
     			props: {
-    				documents: /*greenhouses*/ ctx[18],
-    				show: /*showHistory*/ ctx[19]
+    				documents: /*greenhouses*/ ctx[19],
+    				show: /*showHistory*/ ctx[20]
     			}
     		});
 
-    	let if_block1 = /*isTutorial*/ ctx[21] && create_if_block$4(ctx);
+    	let if_block1 = /*isTutorial*/ ctx[22] && create_if_block$4(ctx);
 
     	return {
     		c() {
@@ -2610,16 +2825,16 @@ who wished to remain anonymous.`;
     			insert(target, if_block1_anchor, anchor);
     			current = true;
     		},
-    		p(ctx, [dirty]) {
+    		p(ctx, dirty) {
     			const map_changes = {};
-    			if (dirty & /*planet*/ 32768) map_changes.planet = /*planet*/ ctx[15];
-    			if (dirty & /*armies*/ 1) map_changes.armies = /*armies*/ ctx[0];
-    			if (dirty & /*terrain*/ 2) map_changes.terrain = /*terrain*/ ctx[1];
-    			if (dirty & /*territory*/ 4) map_changes.territory = /*territory*/ ctx[2];
-    			if (dirty & /*deposits*/ 8) map_changes.deposits = /*deposits*/ ctx[3];
-    			if (dirty & /*tiletypes*/ 16) map_changes.tiletypes = /*tiletypes*/ ctx[4];
+    			if (dirty[0] & /*planet*/ 65536) map_changes.planet = /*planet*/ ctx[16];
+    			if (dirty[0] & /*armies*/ 1) map_changes.armies = /*armies*/ ctx[0];
+    			if (dirty[0] & /*terrain*/ 2) map_changes.terrain = /*terrain*/ ctx[1];
+    			if (dirty[0] & /*territory*/ 4) map_changes.territory = /*territory*/ ctx[2];
+    			if (dirty[0] & /*deposits*/ 8) map_changes.deposits = /*deposits*/ ctx[3];
+    			if (dirty[0] & /*tiletypes*/ 16) map_changes.tiletypes = /*tiletypes*/ ctx[4];
 
-    			if (!updating_selected && dirty & /*selected*/ 256) {
+    			if (!updating_selected && dirty[0] & /*selected*/ 256) {
     				updating_selected = true;
     				map_changes.selected = /*selected*/ ctx[8];
     				add_flush_callback(() => updating_selected = false);
@@ -2648,10 +2863,10 @@ who wished to remain anonymous.`;
     			}
 
     			const history_changes = {};
-    			if (dirty & /*greenhouses*/ 262144) history_changes.documents = /*greenhouses*/ ctx[18];
-    			if (dirty & /*showHistory*/ 524288) history_changes.show = /*showHistory*/ ctx[19];
+    			if (dirty[0] & /*greenhouses*/ 524288) history_changes.documents = /*greenhouses*/ ctx[19];
+    			if (dirty[0] & /*showHistory*/ 1048576) history_changes.show = /*showHistory*/ ctx[20];
     			history.$set(history_changes);
-    			if (/*isTutorial*/ ctx[21]) if_block1.p(ctx, dirty);
+    			if (/*isTutorial*/ ctx[22]) if_block1.p(ctx, dirty);
     		},
     		i(local) {
     			if (current) return;
@@ -2709,6 +2924,7 @@ who wished to remain anonymous.`;
 
     	let stats = {};
     	const statsLabels = [["Turn", "turn"], ["Pollution", "pollution"]];
+    	let playerStats = [];
     	let planet = "earth";
     	const isTutorial = location.hash.endsWith(":tutorial");
     	const roomId = location.pathname.split("/")[1];
@@ -2719,7 +2935,7 @@ who wished to remain anonymous.`;
     		let xhr = new XMLHttpRequest();
 
     		xhr.onload = function () {
-    			$$invalidate(16, userIndex = xhr.responseText | 0);
+    			$$invalidate(17, userIndex = xhr.responseText | 0);
     		};
 
     		xhr.open("POST", "/api/" + roomId + "/join?key=" + userKey);
@@ -2739,8 +2955,8 @@ who wished to remain anonymous.`;
     			xhr.onload = function () {
     				let info = JSON.parse(xhr.responseText);
     				info.key = kbd;
-    				$$invalidate(17, tileInfos[j] = info, tileInfos);
-    				$$invalidate(17, tileInfos);
+    				$$invalidate(18, tileInfos[j] = info, tileInfos);
+    				$$invalidate(18, tileInfos);
     			};
 
     			xhr.open("GET", "/api/tileinfo?type=" + type);
@@ -2760,10 +2976,11 @@ who wished to remain anonymous.`;
     				$$invalidate(2, territory = json.territory);
     				$$invalidate(3, deposits = json.deposits);
     				$$invalidate(4, tiletypes = json.tiletypes);
-    				$$invalidate(12, materials = json.stats[userIndex].materials);
+    				$$invalidate(12, materials = json.amounts[userIndex]);
     				$$invalidate(14, stats.pollution = json.pollution, stats);
     				$$invalidate(14, stats.turn = json.turn, stats);
     				$$invalidate(14, stats);
+    				$$invalidate(15, playerStats = json.stats);
     				$$invalidate(6, players = json.players);
     				$$invalidate(7, losers = json.losers);
     				$$invalidate(5, relationships = json.relationships);
@@ -2792,7 +3009,7 @@ who wished to remain anonymous.`;
 
     		xhr.onload = function () {
     			if (xhr.status == 200) {
-    				$$invalidate(15, planet = "mars");
+    				$$invalidate(16, planet = "mars");
     				$$invalidate(9, launched = true);
     			}
     		};
@@ -2816,9 +3033,9 @@ who wished to remain anonymous.`;
 
     		if (e.key == "r") {
     			if (greenhouses != 0) {
-    				$$invalidate(19, showHistory = !showHistory);
+    				$$invalidate(20, showHistory = !showHistory);
     			} else {
-    				$$invalidate(19, showHistory = false);
+    				$$invalidate(20, showHistory = false);
     			}
     		}
     	});
@@ -2835,11 +3052,11 @@ who wished to remain anonymous.`;
     	}
 
     	const click_handler = () => {
-    		$$invalidate(15, planet = planet == "earth" ? "mars" : "earth");
+    		$$invalidate(16, planet = planet == "earth" ? "mars" : "earth");
     	};
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*materials*/ 4096) {
+    		if ($$self.$$.dirty[0] & /*materials*/ 4096) {
     			 if (materials.green) {
     				$$invalidate(13, materialLabels[5] = ["G", "green", "text-green"], materialLabels);
     			} else {
@@ -2847,7 +3064,7 @@ who wished to remain anonymous.`;
     			}
     		}
 
-    		if ($$self.$$.dirty & /*planet*/ 32768) {
+    		if ($$self.$$.dirty[0] & /*planet*/ 65536) {
     			 {
     				if (planet == "earth") {
     					document.title = "worlds • earth";
@@ -2859,13 +3076,13 @@ who wished to remain anonymous.`;
     			}
     		}
 
-    		if ($$self.$$.dirty & /*territory, userIndex, tiletypes, greenhouses*/ 327700) {
+    		if ($$self.$$.dirty[0] & /*territory, userIndex, tiletypes, greenhouses*/ 655380) {
     			 {
-    				$$invalidate(18, greenhouses = 0);
+    				$$invalidate(19, greenhouses = 0);
 
     				for (let i = 0; i < territory.length; i++) {
     					if (territory[i] == userIndex & tiletypes[i] == "greenhouse") {
-    						$$invalidate(18, greenhouses += 1);
+    						$$invalidate(19, greenhouses += 1);
     					}
     				}
     			}
@@ -2888,6 +3105,7 @@ who wished to remain anonymous.`;
     		materials,
     		materialLabels,
     		stats,
+    		playerStats,
     		planet,
     		userIndex,
     		tileInfos,
@@ -2910,7 +3128,7 @@ who wished to remain anonymous.`;
     class App extends SvelteComponent {
     	constructor(options) {
     		super();
-    		init(this, options, instance$7, create_fragment$7, safe_not_equal, {});
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, {}, [-1, -1]);
     	}
     }
 
