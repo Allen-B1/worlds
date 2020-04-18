@@ -71,14 +71,15 @@ var TileInfos = map[TileType]TileInfo{
 	MineV2: TileInfo{
 		Name: "Mine v2",
 		Cost: map[Material]uint{
-			Copper: 200,
+			Brick:  100,
+			Copper: 100,
 		},
 	},
 	MineV3: TileInfo{
 		Name: "Mine v3",
 		Cost: map[Material]uint{
-			Copper: 200,
-			Iron:   200,
+			Copper: 100,
+			Iron:   100,
 		},
 	},
 	CopperWall: TileInfo{

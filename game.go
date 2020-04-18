@@ -307,11 +307,11 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 	if tileType == MineV1 && g.Deposits[tile] != Copper {
 		return errors.New("mine v1 can only mine copper")
 	}
-	if tileType == MineV2 && g.Deposits[tile] != Copper && g.Deposits[tile] != Iron && g.Deposits[tile] != Uranium && g.Deposits[tile] != Green {
-		return errors.New("mine v2 can only mine copper, iron, and uranium")
+	if tileType == MineV2 && g.Deposits[tile] != Copper && g.Deposits[tile] != Iron {
+		return errors.New("mine v2 can only mine copper and iron")
 	}
-	if tileType == MineV3 && g.Deposits[tile] != Gold {
-		return errors.New("mine v3 can only mine gold")
+	if tileType == MineV3 && g.Deposits[tile] == "" {
+		return errors.New("mine v3 must be placed over a deposit")
 	}
 
 	if tileType == Camp || tileType == Kiln {

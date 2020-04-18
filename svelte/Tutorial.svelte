@@ -35,7 +35,7 @@ $: {
 		5: "After you build up an army, use it to explore your island a bit.",
 		6: "See those little brown squares? Those are copper deposits. Copper is an important resource that is required for many buildings. A <b>Mine v1</b> can be used to get copper.<br><br>Go to a copper deposit and build a Mine on top of it by pressing <kbd>4</kbd>.",
 		7: "Build 3 more copper mines.",
-		8: "Good! Our next step is to build a Mine v2 over an iron deposit (the little silver squares). While you're waiting, it might be a good idea to build some more copper mines.<br><br>Gather copper and build a Mine v2 over an iron deposit by pressing <kbd>5</kbd>.",
+		8: "Good! Our next step is to build a Mine v2 over an iron deposit the little silver squares). While you're waiting, it might be a good idea to build some more copper mines.<br><br>Gather copper and build a Mine v2 over an iron deposit by pressing <kbd>5</kbd>.",
 		9: "In addition to iron, Mine v2 can also mine copper and uranium.<br><br>Build some more iron & copper mines.",
 		10: "Next, we have to mine some gold, which we need to build a Launcher to get to Mars. Only the Mine v3 can mine gold.<br><br>Find a gold deposit (small yellow squares). You'll have to cross the ocean. Build a Mine v3 on top of the deposit by pressing <kbd>6</kbd>.",
 		11: "Hooray! Now it's time to build a Launcher, which will get us to Mars. Launchers can be located anywhere on land.",

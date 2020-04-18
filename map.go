@@ -257,7 +257,7 @@ func NewRandomMap() *Map {
 	}
 
 	// Gold Islands
-	for i := 0; i < 4; i++ {
+	for i := 0; i < 6; i++ {
 		var x, y uint
 		for {
 			x = uint(rand.Intn(EarthSize-2)) + 1
