@@ -1162,8 +1162,34 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (112:2) {#if !minimized}
-    function create_if_block_4(ctx) {
+    // (111:2) {#if players.length != 1}
+    function create_if_block_6(ctx) {
+    	let th;
+    	let t_value = (/*minimized*/ ctx[5] ? "Rel." : "Relationship") + "";
+    	let t;
+
+    	return {
+    		c() {
+    			th = element("th");
+    			t = text(t_value);
+    			attr(th, "class", "large svelte-8a858p");
+    			attr(th, "colspan", "3");
+    		},
+    		m(target, anchor) {
+    			insert(target, th, anchor);
+    			append(th, t);
+    		},
+    		p(ctx, dirty) {
+    			if (dirty & /*minimized*/ 32 && t_value !== (t_value = (/*minimized*/ ctx[5] ? "Rel." : "Relationship") + "")) set_data(t, t_value);
+    		},
+    		d(detaching) {
+    			if (detaching) detach(th);
+    		}
+    	};
+    }
+
+    // (114:2) {#if !minimized}
+    function create_if_block_5(ctx) {
     	let th;
 
     	return {
@@ -1181,7 +1207,48 @@ var app = (function () {
     	};
     }
 
-    // (130:2) {:else}
+    // (122:2) {#if players.length != 1}
+    function create_if_block_1$1(ctx) {
+    	let if_block_anchor;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*player*/ ctx[11] != /*userIndex*/ ctx[3]) return create_if_block_2;
+    		return create_else_block_1;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	return {
+    		c() {
+    			if_block.c();
+    			if_block_anchor = empty();
+    		},
+    		m(target, anchor) {
+    			if_block.m(target, anchor);
+    			insert(target, if_block_anchor, anchor);
+    		},
+    		p(ctx, dirty) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(if_block_anchor.parentNode, if_block_anchor);
+    				}
+    			}
+    		},
+    		d(detaching) {
+    			if_block.d(detaching);
+    			if (detaching) detach(if_block_anchor);
+    		}
+    	};
+    }
+
+    // (133:2) {:else}
     function create_else_block_1(ctx) {
     	let td;
     	let td_colspan_value;
@@ -1206,14 +1273,14 @@ var app = (function () {
     	};
     }
 
-    // (120:2) {#if player != userIndex}
-    function create_if_block_1$1(ctx) {
+    // (123:2) {#if player != userIndex}
+    function create_if_block_2(ctx) {
     	let td;
     	let t0_value = /*RELATIONSHIP_SYMBOLS*/ ctx[7][/*relationships*/ ctx[2][/*player*/ ctx[11]]] + "";
     	let t0;
     	let t1;
     	let if_block_anchor;
-    	let if_block = !/*minimized*/ ctx[5] && create_if_block_2(ctx);
+    	let if_block = !/*minimized*/ ctx[5] && create_if_block_3(ctx);
 
     	return {
     		c() {
@@ -1238,7 +1305,7 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(ctx, dirty);
     				} else {
-    					if_block = create_if_block_2(ctx);
+    					if_block = create_if_block_3(ctx);
     					if_block.c();
     					if_block.m(if_block_anchor.parentNode, if_block_anchor);
     				}
@@ -1256,14 +1323,14 @@ var app = (function () {
     	};
     }
 
-    // (122:2) {#if !minimized}
-    function create_if_block_2(ctx) {
+    // (125:2) {#if !minimized}
+    function create_if_block_3(ctx) {
     	let show_if;
     	let if_block_anchor;
 
     	function select_block_type_1(ctx, dirty) {
     		if (show_if == null || dirty & /*losers, playerOrder*/ 65) show_if = !!(/*losers*/ ctx[0].indexOf(/*player*/ ctx[11]) == -1);
-    		if (show_if) return create_if_block_3;
+    		if (show_if) return create_if_block_4;
     		return create_else_block;
     	}
 
@@ -1299,7 +1366,7 @@ var app = (function () {
     	};
     }
 
-    // (126:2) {:else}
+    // (129:2) {:else}
     function create_else_block(ctx) {
     	let td;
 
@@ -1319,8 +1386,8 @@ var app = (function () {
     	};
     }
 
-    // (123:2) {#if losers.indexOf(player) == -1}
-    function create_if_block_3(ctx) {
+    // (126:2) {#if losers.indexOf(player) == -1}
+    function create_if_block_4(ctx) {
     	let td0;
     	let t1;
     	let td1;
@@ -1353,7 +1420,7 @@ var app = (function () {
     	};
     }
 
-    // (134:2) {#if stats[player] && !minimized}
+    // (138:2) {#if stats[player] && !minimized}
     function create_if_block$1(ctx) {
     	let td;
     	let t_value = sign(/*stats*/ ctx[4][/*player*/ ctx[11]].pollution) + "";
@@ -1378,7 +1445,7 @@ var app = (function () {
     	};
     }
 
-    // (116:1) {#each playerOrder as player}
+    // (118:1) {#each playerOrder as player}
     function create_each_block$3(ctx) {
     	let tr;
     	let td;
@@ -1388,14 +1455,7 @@ var app = (function () {
     	let t2;
     	let t3;
     	let tr_class_value;
-
-    	function select_block_type(ctx, dirty) {
-    		if (/*player*/ ctx[11] != /*userIndex*/ ctx[3]) return create_if_block_1$1;
-    		return create_else_block_1;
-    	}
-
-    	let current_block_type = select_block_type(ctx);
-    	let if_block0 = current_block_type(ctx);
+    	let if_block0 = /*players*/ ctx[1].length != 1 && create_if_block_1$1(ctx);
     	let if_block1 = /*stats*/ ctx[4][/*player*/ ctx[11]] && !/*minimized*/ ctx[5] && create_if_block$1(ctx);
 
     	return {
@@ -1404,7 +1464,7 @@ var app = (function () {
     			td = element("td");
     			t0 = text(t0_value);
     			t1 = space();
-    			if_block0.c();
+    			if (if_block0) if_block0.c();
     			t2 = space();
     			if (if_block1) if_block1.c();
     			t3 = space();
@@ -1421,7 +1481,7 @@ var app = (function () {
     			append(tr, td);
     			append(td, t0);
     			append(tr, t1);
-    			if_block0.m(tr, null);
+    			if (if_block0) if_block0.m(tr, null);
     			append(tr, t2);
     			if (if_block1) if_block1.m(tr, null);
     			append(tr, t3);
@@ -1429,16 +1489,17 @@ var app = (function () {
     		p(ctx, dirty) {
     			if (dirty & /*players, playerOrder*/ 66 && t0_value !== (t0_value = /*players*/ ctx[1][/*player*/ ctx[11]] + "")) set_data(t0, t0_value);
 
-    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block0) {
-    				if_block0.p(ctx, dirty);
-    			} else {
-    				if_block0.d(1);
-    				if_block0 = current_block_type(ctx);
-
+    			if (/*players*/ ctx[1].length != 1) {
     				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_1$1(ctx);
     					if_block0.c();
     					if_block0.m(tr, t2);
     				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
     			}
 
     			if (/*stats*/ ctx[4][/*player*/ ctx[11]] && !/*minimized*/ ctx[5]) {
@@ -1464,7 +1525,7 @@ var app = (function () {
     		},
     		d(detaching) {
     			if (detaching) detach(tr);
-    			if_block0.d();
+    			if (if_block0) if_block0.d();
     			if (if_block1) if_block1.d();
     		}
     	};
@@ -1473,14 +1534,12 @@ var app = (function () {
     function create_fragment$4(ctx) {
     	let table;
     	let tr;
-    	let th0;
+    	let th;
     	let t1;
-    	let th1;
-    	let t2_value = (/*minimized*/ ctx[5] ? "Rel." : "Relationship") + "";
     	let t2;
     	let t3;
-    	let t4;
-    	let if_block = !/*minimized*/ ctx[5] && create_if_block_4();
+    	let if_block0 = /*players*/ ctx[1].length != 1 && create_if_block_6(ctx);
+    	let if_block1 = !/*minimized*/ ctx[5] && create_if_block_5();
     	let each_value = /*playerOrder*/ ctx[6];
     	let each_blocks = [];
 
@@ -1492,51 +1551,58 @@ var app = (function () {
     		c() {
     			table = element("table");
     			tr = element("tr");
-    			th0 = element("th");
-    			th0.textContent = "Player";
+    			th = element("th");
+    			th.textContent = "Player";
     			t1 = space();
-    			th1 = element("th");
-    			t2 = text(t2_value);
+    			if (if_block0) if_block0.c();
+    			t2 = space();
+    			if (if_block1) if_block1.c();
     			t3 = space();
-    			if (if_block) if_block.c();
-    			t4 = space();
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			attr(th0, "class", "large svelte-8a858p");
-    			attr(th1, "class", "large svelte-8a858p");
-    			attr(th1, "colspan", "3");
+    			attr(th, "class", "large svelte-8a858p");
     			attr(table, "class", "svelte-8a858p");
     		},
     		m(target, anchor) {
     			insert(target, table, anchor);
     			append(table, tr);
-    			append(tr, th0);
+    			append(tr, th);
     			append(tr, t1);
-    			append(tr, th1);
-    			append(th1, t2);
-    			append(tr, t3);
-    			if (if_block) if_block.m(tr, null);
-    			append(table, t4);
+    			if (if_block0) if_block0.m(tr, null);
+    			append(tr, t2);
+    			if (if_block1) if_block1.m(tr, null);
+    			append(table, t3);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(table, null);
     			}
     		},
     		p(ctx, [dirty]) {
-    			if (dirty & /*minimized*/ 32 && t2_value !== (t2_value = (/*minimized*/ ctx[5] ? "Rel." : "Relationship") + "")) set_data(t2, t2_value);
+    			if (/*players*/ ctx[1].length != 1) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_6(ctx);
+    					if_block0.c();
+    					if_block0.m(tr, t2);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
+    			}
 
     			if (!/*minimized*/ ctx[5]) {
-    				if (!if_block) {
-    					if_block = create_if_block_4();
-    					if_block.c();
-    					if_block.m(tr, null);
+    				if (!if_block1) {
+    					if_block1 = create_if_block_5();
+    					if_block1.c();
+    					if_block1.m(tr, null);
     				}
-    			} else if (if_block) {
-    				if_block.d(1);
-    				if_block = null;
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
     			}
 
     			if (dirty & /*playerOrder, losers, userIndex, sign, stats, minimized, dec, inc, RELATIONSHIP_SYMBOLS, relationships, players*/ 1023) {
@@ -1566,7 +1632,8 @@ var app = (function () {
     		o: noop,
     		d(detaching) {
     			if (detaching) detach(table);
-    			if (if_block) if_block.d();
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
     			destroy_each(each_blocks, detaching);
     		}
     	};
@@ -2082,7 +2149,7 @@ spokesperson said.`;
     }
 
     // (103:25) 
-    function create_if_block_6(ctx) {
+    function create_if_block_6$1(ctx) {
     	let h3;
     	let t1;
     	let h4;
@@ -2138,7 +2205,7 @@ unnecessary panic.`;
     }
 
     // (94:25) 
-    function create_if_block_5(ctx) {
+    function create_if_block_5$1(ctx) {
     	let h3;
     	let t1;
     	let h4;
@@ -2385,8 +2452,8 @@ who wished to remain anonymous.`;
     		if (/*document*/ ctx[2] === 1) return create_if_block_2$1;
     		if (/*document*/ ctx[2] === 2) return create_if_block_3$1;
     		if (/*document*/ ctx[2] === 3) return create_if_block_4$1;
-    		if (/*document*/ ctx[2] === 4) return create_if_block_5;
-    		if (/*document*/ ctx[2] === 5) return create_if_block_6;
+    		if (/*document*/ ctx[2] === 4) return create_if_block_5$1;
+    		if (/*document*/ ctx[2] === 5) return create_if_block_6$1;
     		if (/*document*/ ctx[2] == 6) return create_if_block_7;
     		if (/*document*/ ctx[2] == 7) return create_if_block_8;
     		if (/*document*/ ctx[2] === 15) return create_if_block_9;

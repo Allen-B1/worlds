@@ -108,7 +108,9 @@ th.large {
 <table>
 	<tr>
 		<th class="large">Player</th>
+		{#if players.length != 1}
 		<th class="large" colspan="3">{minimized?"Rel.":"Relationship"}</th>
+		{/if}
 		{#if !minimized}
 		<th>❋</th>
 		{/if}
@@ -117,6 +119,7 @@ th.large {
 	<tr class={"player-" + player + " " + (losers.indexOf(player) != -1 ? "loser ": "") + (userIndex === player ? "self " : "")}>
 		<td class="name">{players[player]}</td>
 
+		{#if players.length != 1}
 		{#if player != userIndex}
 		<td class="relationship">{RELATIONSHIP_SYMBOLS[relationships[player]]}</td>
 		{#if !minimized}
@@ -129,6 +132,7 @@ th.large {
 		{/if}
 		{:else}
 		<td colspan="{minimized?1:3}"></td>
+		{/if}
 		{/if}
 
 		{#if stats[player] && !minimized}
