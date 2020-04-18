@@ -180,7 +180,7 @@ func (g *Game) NextTurn() {
 	}
 	// calculate stats
 	for tile, tileType := range g.TileTypes {
-		if g.Territory[tile] != -1 {
+		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] != -1 {
 			g.Stats[g.Territory[tile]].Pollution += int(TileInfos[tileType].Pollution)
 			if tileType == Cleaner {
 				g.Stats[g.Territory[tile]].Pollution -= 1
