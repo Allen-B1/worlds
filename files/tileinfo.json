@@ -1,0 +1,109 @@
+{
+	"bridge": {
+		"name": "Bridge",
+		"pollution": 0,
+		"cost": {
+			"copper": 10,
+			"iron": 10
+		},
+		"category": "military"
+	},
+	"camp": {
+		"name": "Camp",
+		"pollution": 0,
+		"cost": {
+			"brick": 50
+		},
+		"category": "military"
+	},
+	"cleaner": {
+		"name": "Cleaner",
+		"pollution": 0,
+		"cost": {
+			"iron": 50,
+			"uranium": 50
+		},
+		"category": "environment"
+	},
+	"copper-wall": {
+		"name": "Copper Wall",
+		"pollution": 0,
+		"cost": {
+			"copper": 10
+		},
+		"category": "military"
+	},
+	"core": {
+		"name": "Core",
+		"pollution": 0,
+		"cost": {
+			"brick": 500,
+			"copper": 1000,
+			"gold": 500,
+			"iron": 1000
+		},
+		"category": "core"
+	},
+	"greenhouse": {
+		"name": "Greenhouse",
+		"pollution": 0,
+		"cost": {
+			"green": 50,
+			"iron": 10
+		},
+		"category": "environment"
+	},
+	"iron-wall": {
+		"name": "Iron Wall",
+		"pollution": 0,
+		"cost": {
+			"iron": 10
+		},
+		"category": "military"
+	},
+	"kiln": {
+		"name": "Kiln",
+		"pollution": 1,
+		"cost": {
+			"brick": 20
+		},
+		"category": "resources"
+	},
+	"launcher": {
+		"name": "Launcher",
+		"pollution": 0,
+		"cost": {
+			"brick": 300,
+			"copper": 800,
+			"gold": 200,
+			"iron": 500
+		},
+		"category": "environment"
+	},
+	"mine1": {
+		"name": "Mine v1",
+		"pollution": 1,
+		"cost": {
+			"brick": 100
+		},
+		"category": "resources"
+	},
+	"mine2": {
+		"name": "Mine v2",
+		"pollution": 0,
+		"cost": {
+			"brick": 100,
+			"copper": 100
+		},
+		"category": "resources"
+	},
+	"mine3": {
+		"name": "Mine v3",
+		"pollution": 0,
+		"cost": {
+			"copper": 100,
+			"iron": 100
+		},
+		"category": "resources"
+	}
+}

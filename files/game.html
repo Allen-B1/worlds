@@ -4,12 +4,13 @@
 		<title>worlds &#8226; earth</title>
 		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="/style.css">
-		<script defer src="/game/tile.js"></script>
+		<script defer src="/game/tileinfo.js"></script>
 		<script defer src="/game/map.js"></script>
 	</head>
 	<body>
 		<w-map id="earth" width="48" height="48"></w-map> 
 		<w-map style="display:none" id="mars" width="24" height="24"></w-map> 
+		<w-tileinfo style="position:fixed;left:32px;bottom:32px;width:250px;height:150px;z-index:3"></w-tileinfo>
 
 		<script>
 function tileAt(i) {
@@ -56,6 +57,20 @@ document.getElementById("earth").addEventListener("move", function(e) {
 });
 document.getElementById("mars").addEventListener("move", function(e) {
 	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from+48*48, to: e.detail.to+48*48}]));
+});
+
+let activeMap;
+(function() {
+	let func = function() {
+		activeMap = this;
+	}
+	document.getElementById("earth").addEventListener("click", func);
+	document.getElementById("mars").addEventListener("click", func);
+})();
+document.querySelector("w-tileinfo").addEventListener("make", function(e) {
+	let tile = activeMap.selected();
+	if (document.activeElement.id == "mars") tile += 48*48;
+	ws.send(JSON.stringify(["make", {id: roomId, tile: tile, type: e.detail}]));
 });
 		</script>
 	</body>

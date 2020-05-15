@@ -1,5 +1,10 @@
 package main
 
+import (
+	"encoding/json"
+	"io/ioutil"
+)
+
 type Planet string
 
 const (
@@ -36,94 +41,7 @@ type TileInfo struct {
 	Name      string            `json:"name"`
 	Pollution uint              `json:"pollution"`
 	Cost      map[Material]uint `json:"cost"`
-}
-
-var TileInfos = map[TileType]TileInfo{
-	Core: TileInfo{
-		Name: "Core",
-		Cost: map[Material]uint{
-			Brick:  500,
-			Copper: 1000,
-			Iron:   1000,
-			Gold:   500,
-		},
-	},
-	Camp: TileInfo{
-		Name: "Camp",
-		Cost: map[Material]uint{
-			Brick: 50,
-		},
-	},
-	Kiln: TileInfo{
-		Name: "Kiln",
-		Cost: map[Material]uint{
-			Brick: 20,
-		},
-		Pollution: 1,
-	},
-	MineV1: TileInfo{
-		Name: "Mine v1",
-		Cost: map[Material]uint{
-			Brick: 100,
-		},
-		Pollution: 1,
-	},
-	MineV2: TileInfo{
-		Name: "Mine v2",
-		Cost: map[Material]uint{
-			Brick:  100,
-			Copper: 100,
-		},
-	},
-	MineV3: TileInfo{
-		Name: "Mine v3",
-		Cost: map[Material]uint{
-			Copper: 100,
-			Iron:   100,
-		},
-	},
-	CopperWall: TileInfo{
-		Name: "Copper Wall",
-		Cost: map[Material]uint{
-			Copper: 10,
-		},
-	},
-	IronWall: TileInfo{
-		Name: "Iron Wall",
-		Cost: map[Material]uint{
-			Iron: 10,
-		},
-	},
-	Bridge: TileInfo{
-		Name: "Bridge",
-		Cost: map[Material]uint{
-			Iron:   10,
-			Copper: 10,
-		},
-	},
-	Launcher: TileInfo{
-		Name: "Launcher",
-		Cost: map[Material]uint{
-			Brick:  300,
-			Copper: 800,
-			Iron:   500,
-			Gold:   200,
-		},
-	},
-	Cleaner: TileInfo{
-		Name: "Cleaner",
-		Cost: map[Material]uint{
-			Iron:    50,
-			Uranium: 50,
-		},
-	},
-	GreenHouse: TileInfo{
-		Name: "Greenhouse",
-		Cost: map[Material]uint{
-			Green: 50,
-			Iron:  10,
-		},
-	},
+	Category  string            `json:"category"`
 }
 
 type Material string
@@ -165,5 +83,18 @@ func tileFromCoord(planet Planet, x uint, y uint) int {
 			return -1
 		}
 		return int(y*EarthSize + x)
+	}
+}
+
+var TileInfos = make(map[TileType]TileInfo)
+
+func init() {
+	bytes, err := ioutil.ReadFile("files/tileinfo.json")
+	if err != nil {
+		panic(err)
+	}
+	err = json.Unmarshal(bytes, &TileInfos)
+	if err != nil {
+		panic(err)
 	}
 }

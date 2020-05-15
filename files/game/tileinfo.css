@@ -1,0 +1,44 @@
+.root {
+	display: flex;
+	flex-direction: row;
+	background: #444;
+	border: 2px solid #222;
+	position: absolute;
+	bottom: 0; left: 0; right: 0;
+}
+
+.category {
+	padding: 8px;
+	color: #bbb;
+	cursor: pointer;
+}
+
+.category.selected {
+	color: #eee;
+}
+
+.items {
+	flex-grow: 1;
+	padding: 16px;
+}
+
+.item {
+	width: 14px;
+	height: 14px;
+	border: 9px solid #444;
+	display: inline-block;
+	font-size: 12px;
+	text-align: center;
+	background: #fafafa;
+	color: #111;
+	cursor: pointer;
+	text-align: center;
+}
+.item span {
+	background: #eee;
+	position: relative;
+	top: -8px; left: -8px;
+	width: 16px; height: 16px;
+	padding: 8px;
+	display: inline-block;
+}

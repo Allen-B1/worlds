@@ -9,7 +9,7 @@
 			this.style.width = width * 32 + "px";
 			this.style.height = height * 32 + "px";
 
-			this.shadow = this.attachShadow({mode:"open"});
+			this.shadow = this.attachShadow({mode:"closed"});
 
 			const linkElem = document.createElement('link');
 			linkElem.setAttribute('rel', 'stylesheet');

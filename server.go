@@ -314,16 +314,8 @@ func main() {
 
 	m.Handle("/api/gamews", gamearb)
 
-	m.HandleFunc("/api/tileinfo", func(w http.ResponseWriter, r *http.Request) {
-		tileType := TileType(r.FormValue("type"))
-		body, err := json.Marshal(TileInfos[tileType])
-		if err != nil {
-			w.WriteHeader(500)
-			return
-		}
-
-		w.Header().Set("Content-Type", "application/json")
-		w.Write(body)
+	m.HandleFunc("/api/tileinfo.json", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "files/tileinfo.json")
 	}).Methods("GET")
 
 	m.HandleFunc("/{object}/game", func(w http.ResponseWriter, r *http.Request) {
@@ -342,7 +334,7 @@ func main() {
 		"tiles/brick-wall.svg", "tiles/copper-wall.svg", "tiles/iron-wall.svg", "tiles/launcher.svg", "tiles/cleaner.svg", "tiles/ocean.svg",
 		"tiles/greenhouse.svg", "tiles/bridge.svg",
 		"earth.ogg", "mars.ogg",
-		"game/tile.js", "game/map.js", "game/tile.css", "game/map.css"}
+		"game/tileinfo.js", "game/map.js", "game/tileinfo.css", "game/map.css"}
 	for _, file := range files {
 		file2 := file
 		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {
