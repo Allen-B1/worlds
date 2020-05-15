@@ -28,45 +28,45 @@
 }
 
 [terrain=ocean] .inner {
-	background: url(/ocean.svg); }
+	background: url(/tiles/ocean.svg); }
 [terrain=ocean][territory="-1"] {
 	--territory: #3F6ABF; }
 
 [tiletype=core] .inner {
-	background: url(/core.svg); }
+	background: url(/tiles/core.svg); }
 [tiletype=camp] .inner {
-	background: url(/camp.svg); }
+	background: url(/tiles/camp.svg); }
 [tiletype=kiln] .inner {
-	background: url(/kiln.svg); }
+	background: url(/tiles/kiln.svg); }
 [tiletype=mine1] .inner {
-	background: url(/mine1.svg); }
+	background: url(/tiles/mine1.svg); }
 [tiletype=mine2] .inner {
-	background: url(/mine2.svg); }
+	background: url(/tiles/mine2.svg); }
 [tiletype=mine3] .inner {
-	background: url(/mine3.svg); }
+	background: url(/tiles/mine3.svg); }
 [tiletype=bridge] .inner {
-	background: url(/bridge.svg); }
+	background: url(/tiles/bridge.svg); }
 [tiletype=copper-wall] .inner {
-	background: url(/copper-wall.svg); }
+	background: url(/tiles/copper-wall.svg); }
 [tiletype=iron-wall] .inner {
-	background: url(/iron-wall.svg); }
+	background: url(/tiles/iron-wall.svg); }
 [tiletype=launcher] .inner {
-	background: url(/launcher.svg); }
+	background: url(/tiles/launcher.svg); }
 [tiletype=cleaner] .inner {
-	background: url(/cleaner.svg); }
+	background: url(/tiles/cleaner.svg); }
 [tiletype=greenhouse] .inner {
-	background: url(/greenhouse.svg); }
+	background: url(/tiles/greenhouse.svg); }
 
 [deposit=iron] {
-	background: url(/iron.svg) var(--territory); }
+	background: url(/tiles/iron.svg) var(--territory); }
 [deposit=copper] {
-	background: url(/copper.svg) var(--territory); }
+	background: url(/tiles/copper.svg) var(--territory); }
 [deposit=gold] {
-	background: url(/gold.svg) var(--territory); }
+	background: url(/tiles/gold.svg) var(--territory); }
 [deposit=uranium] {
-	background: url(/uranium.svg) var(--territory); }
+	background: url(/tiles/uranium.svg) var(--territory); }
 [deposit=green] {
-	background: url(/green.svg) var(--territory); }
+	background: url(/tiles/green.svg) var(--territory); }
 [territory="-1"] {
 	--territory: transparent; }
 [territory="0"] {

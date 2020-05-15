@@ -337,8 +337,11 @@ func main() {
 	}).Methods("GET")
 
 	files := []string{"style.css", "game.css",
-		"iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg", "ocean.svg", "uranium.svg", "earth.ogg", "mars.ogg",
-		"green.svg", "greenhouse.svg", "bridge.svg",
+		"tiles/iron.svg", "tiles/copper.svg", "tiles/gold.svg", "tiles/green.svg", "tiles/uranium.svg",
+		"tiles/core.svg", "tiles/camp.svg", "tiles/mine1.svg", "tiles/mine2.svg", "tiles/mine3.svg", "tiles/kiln.svg",
+		"tiles/brick-wall.svg", "tiles/copper-wall.svg", "tiles/iron-wall.svg", "tiles/launcher.svg", "tiles/cleaner.svg", "tiles/ocean.svg",
+		"tiles/greenhouse.svg", "tiles/bridge.svg",
+		"earth.ogg", "mars.ogg",
 		"game/tile.js", "game/map.js", "game/tile.css", "game/map.css"}
 	for _, file := range files {
 		file2 := file
