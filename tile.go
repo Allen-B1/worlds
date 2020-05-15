@@ -42,6 +42,7 @@ type TileInfo struct {
 	Pollution uint              `json:"pollution"`
 	Cost      map[Material]uint `json:"cost"`
 	Category  string            `json:"category"`
+	Strength  uint32            `json:"strength"`
 }
 
 type Material string

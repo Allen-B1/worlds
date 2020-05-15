@@ -56,7 +56,7 @@
 							let itemElem = document.createElement("div");
 							itemElem.className = "item";
 							let inner = document.createElement("span");
-							inner.innerHTML = "1";
+							inner.innerHTML = this.tileinfos[item].strength || "1";
 							inner.style.background = "url(/tiles/" + item + ".svg)";
 							itemElem.appendChild(inner);
 

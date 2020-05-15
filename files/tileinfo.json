@@ -31,6 +31,7 @@
 		"cost": {
 			"copper": 10
 		},
+		"strength": 500,
 		"category": "military"
 	},
 	"core": {
@@ -59,7 +60,8 @@
 		"cost": {
 			"iron": 10
 		},
-		"category": "military"
+		"category": "military",
+		"strength": 2000
 	},
 	"kiln": {
 		"name": "Kiln",

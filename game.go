@@ -357,13 +357,9 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		}
 	}
 
-	if tileType == CopperWall {
+	if TileInfos[tileType].Strength != 0 {
 		g.Territory[tile] = -1
-		g.Armies[tile] = 500
-	}
-	if tileType == IronWall {
-		g.Territory[tile] = -1
-		g.Armies[tile] = 2000
+		g.Armies[tile] = TileInfos[tileType].Strength
 	}
 
 	for material, cost := range TileInfos[tileType].Cost {
