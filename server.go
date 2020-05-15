@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bitbucket.org/allenb123/arbit"
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -14,9 +15,16 @@ import (
 )
 
 type Object struct {
-	Data       interface{}
+	Data interface{}
+
+	// Socket  => key
+	// May only contain valid keys
+	Sockets map[*arbit.Client]string
+
+	// Room keys => index
 	Transition map[string]int
-	Delete     bool
+
+	Delete bool
 	sync.Mutex
 }
 
@@ -35,17 +43,26 @@ func gameThread() {
 			if obj.Delete {
 				objects.Delete(key)
 			}
+
 			if game, ok := obj.Data.(*Game); ok {
 				game.NextTurn()
+
+				for cl, key := range obj.Sockets {
+					// TODO: Create custom update function
+					// Separate game update vs player update
+					cl.Send("update", game.MarshalFor(obj.Transition[key]))
+				}
 
 				if len(game.Losers) == len(game.Players) {
 					obj.Delete = true
 				}
 			}
+
 			if room, ok := obj.Data.(*Room); ok {
 				if room.Full() {
 					arr, keymap := room.PlayersAsArray()
 					obj.Transition = keymap
+					obj.Sockets = make(map[*arbit.Client]string)
 					obj.Data = NewGame(NewRandomMap(), arr, room.Fog)
 				}
 			}
@@ -57,6 +74,43 @@ func gameThread() {
 	}
 }
 
+// returns another function with executes given function
+//
+// assumes m["id"] is id
+// also locks&unlocks the object for you :)
+func playerAction(f func(cl *arbit.Client, m map[string]interface{}, game *Game, index int)) func(cl *arbit.Client, data interface{}) {
+	return func(cl *arbit.Client, data interface{}) {
+		m, ok := data.(map[string]interface{})
+		if !ok {
+			return
+		}
+
+		raw, _ := objects.Load(m["id"])
+		obj, ok := raw.(*Object)
+		if !ok {
+			cl.Send("error", "invalid id")
+			return
+		}
+
+		obj.Lock()
+		defer obj.Unlock()
+
+		game, ok := obj.Data.(*Game)
+		if !ok {
+			cl.Send("error", "invalid id")
+			return
+		}
+
+		index, ok := obj.Transition[obj.Sockets[cl]]
+		if !ok {
+			cl.Send("error", "invalid key")
+			return
+		}
+
+		f(cl, m, game, index)
+	}
+}
+
 func main() {
 	go gameThread()
 
@@ -64,6 +118,104 @@ func main() {
 
 	m := mux.NewRouter()
 	http.Handle("/", m)
+
+	gamearb := arbit.NewServer()
+
+	gamearb.On("join", func(cl *arbit.Client, data interface{}) {
+		m, ok := data.(map[string]interface{})
+		if !ok {
+			return
+		}
+
+		raw, _ := objects.Load(m["id"])
+		obj, ok := raw.(*Object)
+		if !ok {
+			cl.Send("error", "invalid id")
+			return
+		}
+
+		obj.Lock()
+		defer obj.Unlock()
+
+		// Check game
+		game, ok := obj.Data.(*Game)
+		if !ok {
+			cl.Send("error", "invalid id")
+			return
+		}
+
+		// Check key
+		key := fmt.Sprint(m["key"])
+		if _, ok := obj.Transition[key]; !ok {
+			cl.Send("error", "invalid key")
+			return
+		}
+
+		cl.Send("start", map[string]interface{}{
+			"players": game.Players,
+		})
+
+		obj.Sockets[cl] = key
+	})
+
+	gamearb.OnClose(func(cl *arbit.Client, code int) {
+		// TODO
+	})
+
+	gamearb.On("move", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+		// screw error handling
+		// nothing wrong with wrong type = 0
+		from, _ := m["from"].(float64)
+		to, _ := m["to"].(float64)
+
+		err := game.Move(index, int(from), int(to))
+		if err != nil {
+			cl.Send("error", err.Error())
+		}
+	}))
+
+	gamearb.On("make", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+		// screw error handling, again
+		tile, _ := m["tile"].(float64)
+		tileType := TileType(fmt.Sprint(m["type"]))
+
+		err := game.Make(index, int(tile), tileType)
+		if err != nil {
+			cl.Send("error", err.Error())
+		}
+	}))
+
+	gamearb.On("launch", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+		// screw error handling, again
+		tile, _ := m["tile"].(float64)
+
+		err := game.Launch(index, int(tile))
+		if err != nil {
+			cl.Send("error", err.Error())
+		}
+	}))
+
+	gamearb.On("nuke", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+		// screw error handling, again
+		tile, _ := m["tile"].(float64)
+
+		err := game.Nuke(index, int(tile))
+		if err != nil {
+			cl.Send("error", err.Error())
+		}
+	}))
+
+	gamearb.On("relationship", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+		// screw error handling, yet again
+		player, _ := m["player"].(float64)
+		upgrade := m["upgrade"] == true
+
+		if upgrade {
+			game.UpgradeRelationship(index, int(player))
+		} else {
+			game.DowngradeRelationship(index, int(player))
+		}
+	}))
 
 	m.HandleFunc("/api/new", func(w http.ResponseWriter, r *http.Request) {
 		max, _ := strconv.Atoi(r.FormValue("max"))
@@ -82,34 +234,25 @@ func main() {
 		io.WriteString(w, id)
 	}).Methods("POST")
 
-	m.HandleFunc("/api/{object}/data.json", func(w http.ResponseWriter, r *http.Request) {
+	m.HandleFunc("/api/{room}/data.json", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		raw, _ := objects.Load(vars["object"])
+		raw, _ := objects.Load(vars["room"])
 		if raw == nil {
 			w.WriteHeader(404)
 			return
 		}
 
 		obj := raw.(*Object)
-		//		fmt.Println("locking /data.json")
 		obj.Lock()
 		defer obj.Unlock()
-		//		fmt.Println("locked /data.json")
-		var body []byte
-		var err error
-		if game, ok := obj.Data.(*Game); ok {
-			key := r.FormValue("key")
-			index, ok := obj.Transition[key]
-			if !ok {
-				fmt.Fprintln(w, `{"type":"game"}`)
-				return
-			}
 
-			body, err = game.MarshalFor(index)
-		} else {
-			body, err = json.Marshal(obj.Data)
+		room, ok := obj.Data.(*Room)
+		if !ok {
+			io.WriteString(w, "{\"type\":\"game\"}")
+			return
 		}
-		//		fmt.Println("unlocked /data.json")
+
+		body, err := json.Marshal(room)
 
 		if err != nil {
 			return
@@ -120,9 +263,9 @@ func main() {
 		w.Write(body)
 	}).Methods("GET")
 
-	m.HandleFunc("/api/{object}/leave", func(w http.ResponseWriter, r *http.Request) {
+	m.HandleFunc("/api/{room}/leave", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		raw, _ := objects.Load(vars["object"])
+		raw, _ := objects.Load(vars["room"])
 		if raw == nil {
 			w.WriteHeader(404)
 			return
@@ -161,8 +304,7 @@ func main() {
 			}
 			output = item.Join(name)
 		case *Game:
-			key := r.FormValue("key")
-			output = fmt.Sprint(obj.Transition[key])
+			output = "unsupported API"
 		}
 		obj.Unlock()
 
@@ -170,201 +312,7 @@ func main() {
 		io.WriteString(w, output)
 	}).Methods("POST")
 
-	m.HandleFunc("/api/{game}/move", func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		raw, _ := objects.Load(vars["game"])
-		if raw == nil {
-			w.WriteHeader(404)
-			return
-		}
-
-		obj := raw.(*Object)
-		obj.Lock()
-		defer obj.Unlock()
-		game, ok := obj.Data.(*Game)
-		if !ok {
-			w.WriteHeader(404)
-			return
-		}
-
-		key := r.FormValue("key")
-		from, err1 := strconv.Atoi(r.FormValue("from"))
-		to, err2 := strconv.Atoi(r.FormValue("to"))
-		if err1 != nil || err2 != nil {
-			w.WriteHeader(400)
-			return
-		}
-
-		index, ok := obj.Transition[key]
-		if !ok {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, "invalid key")
-			return
-		}
-
-		err := game.Move(index, from, to)
-		if err != nil {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, err)
-		}
-	}).Methods("POST")
-
-	m.HandleFunc("/api/{game}/make", func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		raw, _ := objects.Load(vars["game"])
-		if raw == nil {
-			w.WriteHeader(404)
-			return
-		}
-
-		obj := raw.(*Object)
-		obj.Lock()
-		defer obj.Unlock()
-		game, ok := obj.Data.(*Game)
-		if !ok {
-			w.WriteHeader(404)
-			return
-		}
-
-		key := r.FormValue("key")
-		tileType := TileType(r.FormValue("type"))
-		tile, err := strconv.Atoi(r.FormValue("tile"))
-		if err != nil {
-			w.WriteHeader(400)
-			return
-		}
-
-		index, ok := obj.Transition[key]
-		if !ok {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, "invalid key")
-			return
-		}
-
-		err = game.Make(index, tile, tileType)
-		if err != nil {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, err)
-		}
-	}).Methods("POST")
-
-	m.HandleFunc("/api/{game}/launch", func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		raw, _ := objects.Load(vars["game"])
-		if raw == nil {
-			w.WriteHeader(404)
-			return
-		}
-
-		obj := raw.(*Object)
-		obj.Lock()
-		defer obj.Unlock()
-		game, ok := obj.Data.(*Game)
-		if !ok {
-			w.WriteHeader(404)
-			return
-		}
-
-		key := r.FormValue("key")
-		tile, err := strconv.Atoi(r.FormValue("tile"))
-		if err != nil {
-			w.WriteHeader(400)
-			return
-		}
-
-		index, ok := obj.Transition[key]
-		if !ok {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, "invalid key")
-			return
-		}
-
-		err = game.Launch(index, tile)
-		if err != nil {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, err)
-		}
-	}).Methods("POST")
-
-	m.HandleFunc("/api/{game}/nuke", func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		raw, _ := objects.Load(vars["game"])
-		if raw == nil {
-			w.WriteHeader(404)
-			return
-		}
-
-		obj := raw.(*Object)
-		obj.Lock()
-		defer obj.Unlock()
-		game, ok := obj.Data.(*Game)
-		if !ok {
-			w.WriteHeader(404)
-			return
-		}
-
-		key := r.FormValue("key")
-		tile, err := strconv.Atoi(r.FormValue("tile"))
-		if err != nil {
-			w.WriteHeader(400)
-			return
-		}
-
-		index, ok := obj.Transition[key]
-		if !ok {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, "invalid key")
-			return
-		}
-
-		err = game.Nuke(index, tile)
-		if err != nil {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, err)
-		}
-	}).Methods("POST")
-
-	m.HandleFunc("/api/{game}/relationship", func(w http.ResponseWriter, r *http.Request) {
-		vars := mux.Vars(r)
-		raw, _ := objects.Load(vars["game"])
-		if raw == nil {
-			w.WriteHeader(404)
-			return
-		}
-
-		obj := raw.(*Object)
-		obj.Lock()
-		defer obj.Unlock()
-		game, ok := obj.Data.(*Game)
-		if !ok {
-			w.WriteHeader(404)
-			return
-		}
-
-		key := r.FormValue("key")
-		player, err := strconv.Atoi(r.FormValue("player"))
-		action := r.FormValue("action")
-		if err != nil {
-			w.WriteHeader(400)
-			return
-		}
-
-		index, ok := obj.Transition[key]
-		if !ok {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, "invalid key")
-			return
-		}
-
-		if action == "upgrade" {
-			game.UpgradeRelationship(index, player)
-		} else if action == "downgrade" {
-			game.DowngradeRelationship(index, player)
-		} else {
-			w.WriteHeader(400)
-			fmt.Fprintln(w, "invalid action: '"+action+"'")
-		}
-	}).Methods("POST")
+	m.Handle("/api/gamews", gamearb)
 
 	m.HandleFunc("/api/tileinfo", func(w http.ResponseWriter, r *http.Request) {
 		tileType := TileType(r.FormValue("type"))
@@ -388,7 +336,10 @@ func main() {
 		http.ServeFile(w, r, "files/index.html")
 	}).Methods("GET")
 
-	files := []string{"style.css", "iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg", "ocean.svg", "uranium.svg", "earth.ogg", "mars.ogg", "game.js", "game.js.map", "game.css", "green.svg", "greenhouse.svg", "bridge.svg"}
+	files := []string{"style.css", "game.css",
+		"iron.svg", "copper.svg", "gold.svg", "core.svg", "camp.svg", "mine1.svg", "mine2.svg", "mine3.svg", "kiln.svg", "brick-wall.svg", "copper-wall.svg", "iron-wall.svg", "launcher.svg", "cleaner.svg", "ocean.svg", "uranium.svg", "earth.ogg", "mars.ogg",
+		"green.svg", "greenhouse.svg", "bridge.svg",
+		"game/tile.js", "game/map.js", "game/tile.css", "game/map.css"}
 	for _, file := range files {
 		file2 := file
 		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {

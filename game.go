@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -39,13 +38,15 @@ type Game struct {
 	Turn      uint
 	Pollution uint
 
+	// TODO: Create a Config struct
+	// that encapsulates configuration options
 	Fog bool
 
 	// Dependent on above fields
 	Stats []Stats
 }
 
-func (g *Game) MarshalFor(player int) ([]byte, error) {
+func (g *Game) MarshalFor(player int) map[string]interface{} {
 	armies := g.Armies
 	territory := g.Territory
 	tiletypes := g.TileTypes
@@ -95,13 +96,12 @@ func (g *Game) MarshalFor(player int) ([]byte, error) {
 		relationships[player2] = g.Relationships[g.association(player, player2)]
 	}
 
-	return json.Marshal(map[string]interface{}{
+	return map[string]interface{}{
 		"armies":    armies,
 		"territory": territory,
 		"tiletypes": tiletypes,
-		"deposits":  deposits,
 		"terrain":   terrain,
-		"players":   g.Players,
+		"deposits":  deposits,
 		"losers":    g.Losers,
 		"amounts":   g.Amounts,
 		"turn":      g.Turn,
@@ -109,9 +109,7 @@ func (g *Game) MarshalFor(player int) ([]byte, error) {
 		"stats":     g.Stats,
 
 		"relationships": relationships,
-
-		"type": "game",
-	})
+	}
 }
 
 func (g *Game) NextTurn() {

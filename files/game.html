@@ -4,427 +4,59 @@
 		<title>worlds &#8226; earth</title>
 		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="/style.css">
-		<link rel="stylesheet" href="/game.css">
-		<script defer src="/game.js"></script>
+		<script defer src="/game/tile.js"></script>
+		<script defer src="/game/map.js"></script>
 	</head>
 	<body>
-<!--
-	<body style="background:#44b200">
-		<table class="stats" id="stats-game">
-			<tr>
-				<td>Turn</td>
-				<td id="stat-turn">0</td>
-			</tr>
-			<tr>
-				<td>Pollution</td>
-				<td id="stat-pollution">0</td>
-			</tr>
-		</table>
-		<table class="stats" style="top:92px" id="stats-materials">
-			<tr class="text-brick">
-				<td>Brk</td>
-				<td id="stat-brick">0</td>
-			</tr>
-			<tr class="text-copper">
-				<td>Cu</td>
-				<td id="stat-copper">0</td>
-			</tr>
-			<tr class="text-iron">
-				<td>Fe</td>
-				<td id="stat-iron">0</td>
-			</tr>
-			<tr class="text-gold">
-				<td>Au</td>
-				<td id="stat-gold">0</td>
-			</tr>
-			<tr class="text-uranium">
-				<td>U</td>
-				<td id="stat-uranium">0</td>
-			</tr>
-		</table>
-		<table class="stats right" id="players"></table>
-		<table class="stats bottom" id="tileinfos"></table>
-		<table class="map" id="earth-map" style="border-color:#3a9900"></table>
-		<table class="map" style="display:none;border-color:#7f0059" id="mars-map"></table>
-
-		<button id="launcher" style="display:none">To Mars</button>
-
-		<div id="notification-box"></div>
+		<w-map id="earth" width="48" height="48"></w-map> 
+		<w-map style="display:none" id="mars" width="24" height="24"></w-map> 
 
 		<script>
-const earthSize = 40;
-const marsSize = 24;
+function tileAt(i) {
+	if (i >= 48*48) {
+		return document.getElementById("mars").tileAt(i - 48*48);
+	}
+	return document.getElementById("earth").tileAt(i);
+}
+
+let ws = new WebSocket(
+	(location.protocl == "https:" ? "wss" : "ws") + "://" + location.host + "/api/gamews");
 
 const roomId = location.pathname.split("/")[1];
-const userKey = location.hash.slice(1);
-var userIndex;
+const userKey = location.hash.slice(1).split(":")[0];
+let players = [];
 
-// join
-{
-	let xhr = new XMLHttpRequest();
-	xhr.onload = function() {
-		userIndex = xhr.responseText | 0;
-	};
-	xhr.open("POST", "/api/" + roomId + "/join?key=" + userKey);
-	xhr.send();
-}
-
-// create maps
-function tileify(cell) {
-	cell.classList.add("tile");
-	let inner = document.createElement("div");
-	inner.classList.add("inner");
-	cell.appendChild(inner);
-	cell.addEventListener("click", function() {
-		var tiles = document.querySelectorAll(".tile-selected");
-		for (var tile of tiles) {
-			tile.classList.remove("tile-selected");
-		}
-
-		cell.classList.toggle("tile-selected");
-	});
-}
-
-{
-	let map = document.getElementById("earth-map");
-	for (let i = 0; i < earthSize; i++) {
-		let row = map.insertRow();
-		for (let j = 0; j < earthSize; j++) {
-			let cell = row.insertCell();
-			cell.id = "tile-" + (i*earthSize+j);
-			tileify(cell);
+ws.onmessage = function(msg) {
+	let data = JSON.parse(msg.data);
+	switch (data[0]) {
+	case "error":
+		console.error(data[1]);
+		break;
+	case "start":
+		players = data[1].players;
+		break;
+	case "update":
+		for (let i = 0; i < 48*48+24*24; i++) {
+			const tile = tileAt(i);
+			tile.setAttribute("tiletype", data[1].tiletypes[i]);
+			tile.setAttribute("territory", data[1].territory[i]);
+			tile.setAttribute("terrain", data[1].terrain[i]);
+			tile.setAttribute("deposit", data[1].deposits[i]);
+			tile.setAttribute("army", data[1].armies[i]);
 		}
 	}
 }
 
-{
-	let map = document.getElementById("mars-map");
-	for (let i = 0; i < marsSize; i++) {
-		let row = map.insertRow();
-		for (let j = 0; j < marsSize; j++) {
-			let cell = row.insertCell();
-			cell.id = "tile-" + (earthSize*earthSize+i*marsSize+j);
-			tileify(cell);
-		}
-	}
+ws.onopen = function() {
+	ws.send(JSON.stringify(["join", {id: roomId, key: userKey}]));
 }
 
-{
-	// load deposits & load players
-	let xhr = new XMLHttpRequest();
-	xhr.onload = function() {
-		var json = JSON.parse(xhr.responseText);
-
-		for (var i = 0; i < json.deposits.length; i++) {
-			if (json.deposits[i] != "") {
-				var cell = document.getElementById("tile-" + i);
-				cell.classList.add("deposit-" + json.deposits[i]);
-			}
-		}
-
-		var playersElem = document.getElementById("players");
-		for (var i = 0; i < json.players.length; i++) {
-			let row = players.insertRow();
-			row.insertCell().innerHTML = json.players[i];
-			row.setAttribute("data-territory", i);
-			if (i == userIndex) {
-				row.style.fontWeight = "bold";
-			}
-			row.id = "player-" + i;
-		}
-	};
-	xhr.open("GET", "/api/" + roomId + "/data.json");
-	xhr.send();
-}
-
-const statTurn = document.getElementById("stat-turn");
-const statPollution = document.getElementById("stat-pollution");
-const statBrick = document.getElementById("stat-brick");
-const statCopper = document.getElementById("stat-copper");
-const statIron = document.getElementById("stat-iron");
-const statGold = document.getElementById("stat-gold");
-const statUranium = document.getElementById("stat-uranium");
-
-var userWon = false;
-setInterval(function(){
-	var xhr = new XMLHttpRequest();
-	xhr.onload = function() {
-		var json = JSON.parse(xhr.responseText);
-
-		for (var i = 0; i < json.territory.length; i++) {
-			var cell = document.getElementById("tile-" + i);
-			cell.setAttribute("data-territory", json.territory[i]);
-			cell.setAttribute("data-tiletype", json.tiletypes[i]);
-			cell.setAttribute("data-terrain", json.terrain[i]);
-			if (json.territory[i] >= 0 || json.armies[i] > 0) {
-				cell.querySelector(".inner").innerHTML = json.armies[i];
-			} else {
-				cell.querySelector(".inner").innerHTML = "";
-			}
-		}
-
-		statTurn.innerHTML = json.turn;
-		statPollution.innerHTML = json.pollution;
-		statBrick.innerHTML = json.stats[userIndex].materials.brick | 0;
-		statCopper.innerHTML = json.stats[userIndex].materials.copper | 0;
-		statIron.innerHTML = json.stats[userIndex].materials.iron | 0;
-		statGold.innerHTML = json.stats[userIndex].materials.gold | 0;
-		statUranium.innerHTML = json.stats[userIndex].materials.uranium | 0;
-
-		if (json.losers != null) {
-			for (let loser of json.losers) {
-				if (loser == userIndex && document.getElementById("player-" + loser).style.textDecoration != "line-through") {
-					showNotification("You Lost :(", true, true);
-				}
-	 			document.getElementById("player-" + loser).style.textDecoration = "line-through";
-			}
-
-			if (!userWon && json.players.length - json.losers.length === 1 && json.players.length > 1 && json.losers.indexOf(userIndex) === -1) {
-				showNotification("You Won :)", true, true);
-				userWon = true;
-			}
-		}
-	};
-	xhr.open("GET", "/api/" + roomId + "/data.json");
-	xhr.send();
-}, 500);
-
-function move(from, to) {
-	var xhr = new XMLHttpRequest();
-	xhr.onerror = function() {
-		showNotification(xhr.responseText, false);
-	};
-	xhr.open("POST", "/api/" + roomId + "/move?from=" + from + "&to=" + to + "&key=" + userKey);
-	xhr.send();
-}
-
-function make(tile, tiletype) {
-	var xhr = new XMLHttpRequest();
-	xhr.onerror = function() {
-		showNotification("Failed to make " + tiletype + ": " + tilexhr.responseText, false);
-	};
-	xhr.open("POST", "/api/" + roomId + "/make?tile=" + tile + "&type=" + tiletype + "&key=" + userKey);
-	xhr.send();
-}
-
-function launch(tile) {
-	var xhr = new XMLHttpRequest();
-	xhr.onload = function() {
-		if (xhr.status == 200) {
-			showNotification("Launched!");
-			document.getElementById("launcher").style.display = "block";
-			toMars();
-		} else if (xhr.responseText != "") {
-			showNotification("Failed to launch: " + xhr.responseText, false);
-		}
-	};
-	xhr.open("POST", "/api/" + roomId + "/launch?tile=" + tile + "&key=" + userKey);
-	xhr.send();
-}
-
-function nuke(tile) {
-	var xhr = new XMLHttpRequest();
-	xhr.onload = function() {
-		if (xhr.status != 200 && xhr.responseText != "") {
-			showNotification("Failed to nuke: " + xhr.responseText, false);
-		}
-	};
-	xhr.open("POST", "/api/" + roomId + "/nuke?tile=" + tile + "&key=" + userKey);
-	xhr.send();
-}
-
-function toMars() {
-	var launchElem = document.getElementById("launcher");
-	launchElem.innerHTML = "To Earth";
-
-	document.getElementById("earth-map").style.display = "none";
-	document.getElementById("mars-map").style.display = "table";
-	document.body.style.background = "#b2007c";
-	document.title = "worlds • mars";
-
-	earthAudio.pause();
-	setTimeout(function() {
-		marsAudio.currentTime = 0;
-		marsAudio.play();
-	}, 2000);
-}
-
-function toEarth() {
-	var launchElem = document.getElementById("launcher");
-	launchElem.innerHTML = "To Mars";
-
-	document.getElementById("earth-map").style.display = "table";
-	document.getElementById("mars-map").style.display = "none";
-
-	document.body.style.background = "#44b200";
-	document.title = "worlds • earth";
-
-	marsAudio.pause();
-	setTimeout(function() {
-		earthAudio.currentTime = 0;
-		earthAudio.play();
-	}, 500);
-}
-
-document.getElementById("launcher").addEventListener("click", function() {
-	if (this.innerHTML == "To Mars") {
-		toMars();
-	} else {
-		toEarth();
-	}
+document.getElementById("earth").addEventListener("move", function(e) {
+	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from, to: e.detail.to}]));
 });
-
-const tileTypes = {
-	"1": "core",
-	"2": "camp",
-	"3": "kiln",
-	"4": "mine1",
-	"5": "mine2",
-	"6": "mine3",
-	"7": "brick-wall",
-	"8": "copper-wall",
-	"9": "iron-wall",
-	"0": "launcher",
-	"-": "cleaner"
-};
-
-const materialInfos = {
-	copper: "Cu",
-	uranium: "U",
-	brick: "Brk",
-	iron: "Fe",
-	gold: "Au",
-};
-
-const tileInfoElem = document.getElementById("tileinfos")
-for (let key of ["1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-"]) {
-	let tileType = tileTypes[key];
-	let xhr = new XMLHttpRequest();
-	let row = tileInfoElem.insertRow();
-	xhr.onload = function() {
-		var json = JSON.parse(xhr.responseText);
-		row.insertCell().innerHTML = "<kbd>" + key + "</kbd>";
-		row.insertCell().innerHTML = json.name;
-
-		var str = "";
-		for (var material in json.cost) {
-			str += '<span class="text-' + material + '">' + json.cost[material] + " " + materialInfos[material] + "</span> ";
-		}
-		row.insertCell().innerHTML = str;
-	};
-	xhr.open("GET", "/api/tileinfo?type=" + tileType);
-	xhr.send();
-}
-
-document.addEventListener("keydown", function(e) {
-	if (e.key == "a" || e.key == "s" || e.key == "w" || e.key == "d") {
-		var isEarth = document.getElementById("mars-map").style.display == "none";
-		var planetSize = isEarth ? earthSize : marsSize;
-
-		var fromElem = document.querySelector(".tile-selected");
-		var from = fromElem.id.slice(5) |0;
-		var to = from;
-		if (e.key == "w") to = from - planetSize;
-		else if (e.key == "a") to = from - 1;
-		else if (e.key == "s") to = from + planetSize;
-		else if (e.key == "d") to = from + 1;
-
-		for (var elem of document.querySelectorAll(".tile-selected")) {
-			elem.classList.remove("tile-selected");
-		}
-
-		move(from, to);
-
-		document.getElementById("tile-" + to).classList.add("tile-selected");
-	}
-
-	if (e.key in tileTypes) {
-		var tileElem = document.querySelector(".tile-selected");
-		var tile = tileElem.id.slice(5);
-		make(tile, tileTypes[e.key]);
-	}
-
-	if (e.key == "l") {
-		var tileElem = document.querySelector(".tile-selected");
-		var tile = tileElem.id.slice(5);
-		launch(tile);
-	}
-
-	if (e.key == "n") {
-		var tileElem = document.querySelector(".tile-selected");
-		var tile = tileElem.id.slice(5);
-		nuke(tile);
-	}
-
-	if (e.code == "Backspace") {
-		var tileElem = document.querySelector(".tile-selected");
-		var tile = tileElem.id.slice(5);
-		make(tile, "");
-	}
-
-	if (e.key == "h") {
-		var elems = ["stats-game", "stats-materials", "players", "tileinfos"];
-		var style = document.getElementById(elems[0]).style.display == "none" ? "table" : "none";
-		for (var id of elems) {
-			var elem = document.getElementById(id);
-			elem.style.display = style;
-		}
-	}
-
-	if (e.key == "m") {
-		var elems = document.querySelectorAll("#tileinfos tr > *:nth-child(3)");
-		var display = elems[0].style.display == "none" ? "block" : "none";
-		for (var elem of elems) {
-			elem.style.display = display;
-		}
-	}
+document.getElementById("mars").addEventListener("move", function(e) {
+	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from+48*48, to: e.detail.to+48*48}]));
 });
-
-// Audio
-var earthAudio = new Audio("/earth.ogg");
-earthAudio.addEventListener("timeupdate", function() {
-	if (earthAudio.currentTime >= 27.2) {
-		earthAudio.currentTime = 0;
-	}
-});
-setTimeout(function() {
-	earthAudio.play();
-}, 1000);
-
-var marsAudio = new Audio("/mars.ogg");
-marsAudio.addEventListener("ended", function() {
-	setTimeout(function() {
-		marsAudio.currentTime = 0;
-		marsAudio.play();
-	}, 1000);
-});
-
-function showNotification(text, big, persistent) {
-	var notification = document.createElement("div");
-	notification.className = "notification";
-	if (big) {
-		notification.classList.add("big");
-
-		if (!persistent)
-			setTimeout(function() {
-			notification.remove();
-		}, 2000);
-	}
-	notification.innerHTML = text;
-
-	if (!big) {
-		var closeButton = document.createElement("div");
-		closeButton.classList.add("close");
-		closeButton.innerHTML = "&times;";
-		closeButton.addEventListener("click", function() {
-			this.parentNode.remove();
-		});
-		notification.appendChild(closeButton);
-	}
-
-	document.getElementById("notification-box").appendChild(notification);
-}
-	</script>
--->
+		</script>
 	</body>
 </html>

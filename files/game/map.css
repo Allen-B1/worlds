@@ -1,0 +1,100 @@
+.root {
+	position: relative;
+	display: block;
+	background: #fafafa;
+}
+
+.tile {
+	position: absolute;
+	width: 32px;
+	height: 32px;
+	text-align: center;
+	background: var(--territory);
+	display: inline-block;
+	font-size: 12px;
+}
+
+.tile .inner {
+	font-size: 12px;
+	display: inline-block;
+
+	width: 32px;
+	height: 24px;
+	padding-top: 8px;
+
+	position: relative;
+	z-index: 2;
+	color: #000;
+}
+
+[terrain=ocean] .inner {
+	background: url(/ocean.svg); }
+[terrain=ocean][territory="-1"] {
+	--territory: #3F6ABF; }
+
+[tiletype=core] .inner {
+	background: url(/core.svg); }
+[tiletype=camp] .inner {
+	background: url(/camp.svg); }
+[tiletype=kiln] .inner {
+	background: url(/kiln.svg); }
+[tiletype=mine1] .inner {
+	background: url(/mine1.svg); }
+[tiletype=mine2] .inner {
+	background: url(/mine2.svg); }
+[tiletype=mine3] .inner {
+	background: url(/mine3.svg); }
+[tiletype=bridge] .inner {
+	background: url(/bridge.svg); }
+[tiletype=copper-wall] .inner {
+	background: url(/copper-wall.svg); }
+[tiletype=iron-wall] .inner {
+	background: url(/iron-wall.svg); }
+[tiletype=launcher] .inner {
+	background: url(/launcher.svg); }
+[tiletype=cleaner] .inner {
+	background: url(/cleaner.svg); }
+[tiletype=greenhouse] .inner {
+	background: url(/greenhouse.svg); }
+
+[deposit=iron] {
+	background: url(/iron.svg) var(--territory); }
+[deposit=copper] {
+	background: url(/copper.svg) var(--territory); }
+[deposit=gold] {
+	background: url(/gold.svg) var(--territory); }
+[deposit=uranium] {
+	background: url(/uranium.svg) var(--territory); }
+[deposit=green] {
+	background: url(/green.svg) var(--territory); }
+[territory="-1"] {
+	--territory: transparent; }
+[territory="0"] {
+	--territory: hsl(0, 50%, 75%); }
+[territory="1"] {
+	--territory: hsl(100, 50%, 75%); }
+[territory="2"] {
+	--territory: hsl(200, 50%, 75%); }
+[territory="3"] {
+	--territory: hsl(300, 50%, 75%); }
+[territory="4"] {
+	--territory: hsl(40, 50%, 75%); }
+[territory="5"] {
+	--territory: hsl(250, 50%, 75%); }
+
+[terrain=fog] {
+	background: #aaa; }
+[terrain=fog] .inner::before {
+	content: "?"; }
+
+.tile[selected] {
+	outline: 2px solid #555;
+	z-index: 2;
+}
+
+.tile:not([army="0"])::before {
+	position: absolute;
+	top: 8px;
+	width: 32px;
+	content: attr(army);
+}
