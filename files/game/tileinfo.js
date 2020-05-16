@@ -29,19 +29,19 @@
 		constructor() {
 			super();
 
+			let shadow = this.attachShadow({mode:"closed"});
+
+			let link = document.createElement("link");
+			link.setAttribute("rel", "stylesheet");
+			link.setAttribute("href", "/game/tileinfo.css");
+			shadow.appendChild(link);
+
+			link = document.createElement("link");
+			link.setAttribute("rel", "stylesheet");
+			link.setAttribute("href", "/style.css");
+			shadow.appendChild(link);
+
 			this.init().then(() => {
-				let shadow = this.attachShadow({mode:"closed"});
-
-				let link = document.createElement("link");
-				link.setAttribute("rel", "stylesheet");
-				link.setAttribute("href", "/game/tileinfo.css");
-				shadow.appendChild(link);
-
-				link = document.createElement("link");
-				link.setAttribute("rel", "stylesheet");
-				link.setAttribute("href", "/style.css");
-				shadow.appendChild(link);
-
 				const root = document.createElement("div");
 				root.className = "root";
 				shadow.appendChild(root);

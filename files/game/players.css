@@ -1,0 +1,30 @@
+.players {
+	border: 2px solid #222;
+	background: #444;
+	color: #eee;
+	min-width: 150px;
+}
+
+.player {
+	display: flex;
+	flex-direction: row;
+}
+
+.player > * {
+	padding: 4px 8px;
+}
+
+.player .name {
+	text-align: center;
+	color: #444;
+	flex-grow: 1;
+}
+
+.loser .name {
+	text-decoration: line-through;
+}
+
+.pollution, .relationship {
+	width: 16px;
+	text-align: center;
+}
