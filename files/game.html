@@ -62,7 +62,7 @@ ws.onmessage = function(msg) {
 		materials.add("Au", "text-gold");
 		materials.add("U", "text-uranium");
 
-		playersElem.setPlayers(players);
+		playersElem.setPlayers(players, playerIndex);
 		break;
 	case "update":
 		for (let i = 0; i < 48*48+24*24; i++) {
@@ -146,6 +146,10 @@ document.querySelector("w-tileinfo").addEventListener("make", function(e) {
 	ws.send(JSON.stringify(["make", {id: roomId, tile: tile, type: e.detail}]));
 
 	activeMap.focus();
+});
+
+playersElem.addEventListener("relationship", function(e) {
+	ws.send(JSON.stringify(["relationship", {id:roomId,upgrade:e.detail.action == "increase", player:e.detail.player}]));
 });
 		</script>
 	</body>

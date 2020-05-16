@@ -24,12 +24,14 @@
 			this._shadow = shadow;
 		}
 
-		setPlayers(players) {
+		setPlayers(players, index) {
 			this.root.innerHTML = "";
 			for (let i = 0; i < players.length; i++) {
 				let playerElem = document.createElement('div');
 				playerElem.id = "player-" + i;
 				playerElem.className = "player";
+
+				if (i == index) playerElem.classList.add("me");
 
 				let nameElem = document.createElement("div");
 				nameElem.innerHTML = players[i];
@@ -42,9 +44,26 @@
 				let relElem = document.createElement("div");
 				relElem.className = "relationship";
 
+				let incElem = document.createElement("div");
+				incElem.className = "rel-action";
+				incElem.innerHTML = "+";
+
+				let decElem = document.createElement("div");
+				decElem.className = "rel-action";
+				decElem.innerHTML = "-";
+
 				playerElem.appendChild(nameElem);
-				playerElem.appendChild(relElem);
 				playerElem.appendChild(pollElem);
+				playerElem.appendChild(relElem);
+				playerElem.appendChild(incElem);
+				playerElem.appendChild(decElem);
+
+				incElem.onclick = () => {
+					this.dispatchEvent(new CustomEvent("relationship", {detail:{action:"increase",player:i}}));
+				};
+				decElem.onclick = () => {
+					this.dispatchEvent(new CustomEvent("relationship", {detail:{action:"decrease",player:i}}));
+				};
 
 				this.root.appendChild(playerElem);
 			}

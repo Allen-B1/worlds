@@ -2,7 +2,7 @@
 	border: 2px solid #222;
 	background: #444;
 	color: #eee;
-	min-width: 150px;
+	min-width: 256px;
 }
 
 .player {
@@ -20,6 +20,10 @@
 	flex-grow: 1;
 }
 
+.me .name {
+	font-weight: bold;
+}
+
 .loser .name {
 	text-decoration: line-through;
 }
@@ -27,4 +31,19 @@
 .pollution, .relationship {
 	width: 16px;
 	text-align: center;
+}
+
+.relationship {
+	border-left: 2px solid #222;
+}
+
+.rel-action {
+	font-size: 20px;
+	text-align: center;
+	width: 12px;
+	cursor: pointer;
+}
+
+.rel-action:hover {
+	background: #333;
 }
