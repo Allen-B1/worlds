@@ -1,0 +1,15 @@
+table {
+	border: 2px solid #222;
+	background: #444;
+	color: #eee;
+}
+
+td, th {
+	padding: 4px 8px;
+	border: none;
+}
+
+.text-iron {
+	color: #aaa !important;
+}
+
