@@ -69,7 +69,7 @@ kbd {
 	color: #eee;
 	background: #b74933;
 	border: 2px solid #7f3323; }
-.icon-brick::before { content: "Br"; }
+.icon-brick::before { content: "Brk"; }
 .icon-copper {
 	color: #eee;
 	background: #b87333;
@@ -95,9 +95,9 @@ kbd {
 .icon-green::before { content: "G"; }
 
 button, .button {
-	color: #000;
+	color: #222;
 	text-decoration: none;
-	border: 2px solid #999;
+	border: 2px solid #bbb;
 	background: #ddd;
 	cursor: pointer;
     font-family: 'VT323', monospace;

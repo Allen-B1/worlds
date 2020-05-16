@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>worlds &#8226; earth</title>
+		<title>worlds</title>
 		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="/style.css">
 		<script defer src="/game/tileinfo.js"></script>
@@ -9,8 +9,11 @@
 		<script defer src="/game/stats.js"></script>
 	</head>
 	<body>
-		<w-map id="earth" width="48" height="48"></w-map> 
-		<w-map style="display:none" id="mars" width="24" height="24"></w-map> 
+		<w-map id="earth" width="48" height="48" style="display:block;margin:64px auto"></w-map> 
+		<w-map style="display:none;margin:64px auto;" id="mars" width="24" height="24"></w-map> 
+
+		<button style="position:fixed;top:32px;left:0;right:0;margin:auto;width:100px;z-index:4;display:none" id="switch">To Mars</button>
+
 		<w-tileinfo style="position:fixed;left:32px;bottom:32px;width:250px;height:150px;z-index:3"></w-tileinfo>
 		<w-stats id="stats" style="position:fixed;left:32px;top:32px;z-index:3;"></w-stats>
 		<w-stats id="materials" style="position:fixed;left:32px;top:128px;z-index:3;"></w-stats>
@@ -86,6 +89,11 @@ document.getElementById("earth").addEventListener("nuke", function(e) {
 	ws.send(JSON.stringify(["nuke", {id: roomId, tile: e.detail}]));
 });
 document.getElementById("earth").addEventListener("launch", function(e) {
+	if (tileAt(e.detail).getAttribute("tiletype") == "launcher") {
+		document.getElementById("switch").style.display = "inline-block";
+		document.getElementById("switch").click();
+	}
+
 	ws.send(JSON.stringify(["launch", {id: roomId, tile: e.detail}]));
 });
 document.getElementById("earth").addEventListener("delete", function(e) {
@@ -104,18 +112,27 @@ document.getElementById("mars").addEventListener("delete", function(e) {
 	ws.send(JSON.stringify(["make", {id: roomId, tile: e.detail+48*48, type: ""}]));
 });
 
-let activeMap;
-(function() {
-	let func = function() {
-		activeMap = this;
+let activeMap = document.getElementById("earth");
+document.getElementById("switch").addEventListener("click", function() {
+	activeMap.style.display = "none";
+	if (activeMap.id == "earth") {
+		this.innerHTML = "To Earth";
+		activeMap = document.getElementById("mars");
+		document.body.style.background = "#993354";
+	} else {
+		this.innerHTML = "To Mars";
+		activeMap = document.getElementById("earth");
+		document.body.style.background = "#3F6ABF";
 	}
-	document.getElementById("earth").addEventListener("click", func);
-	document.getElementById("mars").addEventListener("click", func);
-})();
+	activeMap.style.display = "block";
+});
+
 document.querySelector("w-tileinfo").addEventListener("make", function(e) {
 	let tile = activeMap.selected();
 	if (document.activeElement.id == "mars") tile += 48*48;
 	ws.send(JSON.stringify(["make", {id: roomId, tile: tile, type: e.detail}]));
+
+	activeMap.focus();
 });
 		</script>
 	</body>
