@@ -23,7 +23,7 @@
 			"iron": 50,
 			"uranium": 50
 		},
-		"category": "environment"
+		"category": "miscellaneous"
 	},
 	"copper-wall": {
 		"name": "Copper Wall",
@@ -43,7 +43,7 @@
 			"gold": 500,
 			"iron": 1000
 		},
-		"category": "core"
+		"category": "miscellaneous"
 	},
 	"greenhouse": {
 		"name": "Greenhouse",
@@ -52,7 +52,8 @@
 			"green": 50,
 			"iron": 10
 		},
-		"category": "environment"
+		"category": "miscellaneous",
+		"hidden": true
 	},
 	"iron-wall": {
 		"name": "Iron Wall",
@@ -80,7 +81,7 @@
 			"gold": 200,
 			"iron": 500
 		},
-		"category": "environment"
+		"category": "miscellaneous"
 	},
 	"mine1": {
 		"name": "Mine v1",

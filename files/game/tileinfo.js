@@ -7,6 +7,8 @@
 				this.tileinfos = json;
 				this.categories = new Map();
 				for (let type in this.tileinfos) {
+					if (this.tileinfos[type].hidden) continue;
+
 					let set = this.categories.get(this.tileinfos[type].category);
 					if (!set) set = [];
 					set.push(type);
