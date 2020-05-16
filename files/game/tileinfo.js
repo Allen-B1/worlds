@@ -1,4 +1,12 @@
 (function() {
+	function costToHTML(cost) {
+		let html = "";
+		for (let material in cost) {
+			html += '<span style="display:inline-block;padding-right:4px;">' + cost[material] + '&nbsp;<span class="icon icon-' + material + '"></span></span> ';
+		}
+		return html;
+	}
+
 	class TileInfo extends HTMLElement {
 		init() {
 			return fetch("/api/tileinfo.json").then((res) => {
@@ -29,6 +37,11 @@
 				link.setAttribute("href", "/game/tileinfo.css");
 				shadow.appendChild(link);
 
+				link = document.createElement("link");
+				link.setAttribute("rel", "stylesheet");
+				link.setAttribute("href", "/style.css");
+				shadow.appendChild(link);
+
 				const root = document.createElement("div");
 				root.className = "root";
 				shadow.appendChild(root);
@@ -57,6 +70,7 @@
 						for (let item of items) {
 							let itemElem = document.createElement("div");
 							itemElem.className = "item";
+
 							let inner = document.createElement("span");
 							inner.innerHTML = this.tileinfos[item].strength || "1";
 							inner.style.background = "url(/tiles/" + item + ".svg)";
@@ -67,6 +81,23 @@
 							};
 
 							itemsElem.appendChild(itemElem);
+
+							{
+								let info = this.tileinfos[item];
+								let infoElem = document.createElement("div");
+								infoElem.className = "info";
+
+								let nameElem = document.createElement("h4");
+								nameElem.innerHTML = info.name;
+
+								let costElem = document.createElement("div");
+								costElem.innerHTML = costToHTML(info.cost);
+
+								infoElem.appendChild(nameElem);
+								infoElem.appendChild(costElem);
+
+								itemsElem.appendChild(infoElem);
+							}
 						}
 					});
 

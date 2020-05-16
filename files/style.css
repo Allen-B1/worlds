@@ -53,12 +53,46 @@ kbd {
 .text-brick {
 	color: #b74933; }
 .text-iron {
-	color: #666; }
+	color: #aaa; }
 .text-gold {
 	color: #b7b033; }
 .text-uranium {
 	color: #8239cc; }
-.text-green {color: #559933; }
+.text-green {color: #6ABF3F; }
+
+.icon {
+	font-size: 12px;
+	display: inline-block;
+	padding: 2px 4px;
+}
+.icon-brick {
+	color: #eee;
+	background: #b74933;
+	border: 2px solid #7f3323; }
+.icon-brick::before { content: "Br"; }
+.icon-copper {
+	color: #eee;
+	background: #b87333;
+	border: 2px solid #7f5023; }
+.icon-copper::before { content: "Cu"; }
+.icon-iron {
+	background: #aaa;
+	border: 2px solid #666; }
+.icon-iron::before { content: "Fe"; }
+.icon-gold {
+	background: #b7b033;
+	border: 2px solid #7f7a23; }
+.icon-gold::before { content: "Au"; }
+.icon-uranium {
+	color: #eee;
+	background: #8239cc;
+	border: 2px solid #51237f; }
+.icon-uranium::before { content: "U"; }
+.icon-green {
+	color: #eee;
+	background: #6ABF3F;
+	border: 2px solid #559933; }
+.icon-green::before { content: "G"; }
 
 button, .button {
 	color: #000;

@@ -33,8 +33,9 @@
 	color: #111;
 	cursor: pointer;
 	text-align: center;
+	position: relative;
 }
-.item span {
+.item > span {
 	background: #eee;
 	position: relative;
 	top: -8px; left: -9px;
@@ -42,3 +43,30 @@
 	padding-top: 8px;
 	display: inline-block;
 }
+
+.info {
+	display: none;
+
+	background: #777;
+	border: 2px solid #555;
+	padding: 8px;
+	z-index: 4;
+	color: #fff;
+
+	position: absolute;
+	bottom: 96px;
+	left: 0;
+	width: 128px;
+	font-size: 14px;
+
+	text-align: center;
+}
+
+.item:hover + .info {
+	display: block;
+}
+
+.info h4 {
+	font-size: 14px;
+	margin: 0;
+	margin-bottom: 8px; }
