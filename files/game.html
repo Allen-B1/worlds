@@ -6,11 +6,14 @@
 		<link rel="stylesheet" href="/style.css">
 		<script defer src="/game/tileinfo.js"></script>
 		<script defer src="/game/map.js"></script>
+		<script defer src="/game/stats.js"></script>
 	</head>
 	<body>
 		<w-map id="earth" width="48" height="48"></w-map> 
 		<w-map style="display:none" id="mars" width="24" height="24"></w-map> 
 		<w-tileinfo style="position:fixed;left:32px;bottom:32px;width:250px;height:150px;z-index:3"></w-tileinfo>
+		<w-stats id="stats" style="position:fixed;left:32px;top:32px;z-index:3;"></w-stats>
+		<w-stats id="materials" style="position:fixed;left:32px;top:128px;z-index:3;"></w-stats>
 
 		<script>
 function tileAt(i) {
@@ -25,7 +28,11 @@ let ws = new WebSocket(
 
 const roomId = location.pathname.split("/")[1];
 const userKey = location.hash.slice(1).split(":")[0];
+let playerIndex;
 let players = [];
+
+const stats = document.getElementById("stats");
+const materials = document.getElementById("materials");
 
 ws.onmessage = function(msg) {
 	let data = JSON.parse(msg.data);
@@ -35,6 +42,15 @@ ws.onmessage = function(msg) {
 		break;
 	case "start":
 		players = data[1].players;
+		playerIndex = data[1].playerIndex;
+		stats.add("Turn");
+		stats.add("P");
+
+		materials.add("Brk", "text-brick");
+		materials.add("Cu", "text-copper");
+		materials.add("Fe", "text-iron");
+		materials.add("Au", "text-gold");
+		materials.add("U", "text-uranium");
 		break;
 	case "update":
 		for (let i = 0; i < 48*48+24*24; i++) {
@@ -44,6 +60,17 @@ ws.onmessage = function(msg) {
 			tile.setAttribute("terrain", data[1].terrain[i]);
 			tile.setAttribute("deposit", data[1].deposits[i]);
 			tile.setAttribute("army", data[1].armies[i]);
+		}
+		stats.set("Turn", data[1].turn);
+		stats.set("P", data[1].pollution);
+		materials.set("Brk", data[1].amounts[playerIndex].brick | 0);
+		materials.set("Cu", data[1].amounts[playerIndex].copper | 0);
+		materials.set("Fe", data[1].amounts[playerIndex].iron | 0);
+		materials.set("Au", data[1].amounts[playerIndex].gold | 0);
+		materials.set("U", data[1].amounts[playerIndex].uranium | 0);
+		if (data[1].amounts.green > 0) {
+			materials.add("G", "text-green");
+			materials.set("G", data[1].amounts[playerIndex].green | 0);
 		}
 	}
 }
@@ -55,8 +82,26 @@ ws.onopen = function() {
 document.getElementById("earth").addEventListener("move", function(e) {
 	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from, to: e.detail.to}]));
 });
+document.getElementById("earth").addEventListener("nuke", function(e) {
+	ws.send(JSON.stringify(["nuke", {id: roomId, tile: e.detail}]));
+});
+document.getElementById("earth").addEventListener("launch", function(e) {
+	ws.send(JSON.stringify(["launch", {id: roomId, tile: e.detail}]));
+});
+document.getElementById("earth").addEventListener("delete", function(e) {
+	ws.send(JSON.stringify(["make", {id: roomId, tile: e.detail, type: ""}]));
+});
 document.getElementById("mars").addEventListener("move", function(e) {
 	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from+48*48, to: e.detail.to+48*48}]));
+});
+document.getElementById("mars").addEventListener("nuke", function(e) {
+	ws.send(JSON.stringify(["nuke", {id: roomId, tile: e.detail+48*48}]));
+});
+document.getElementById("mars").addEventListener("launch", function(e) {
+	ws.send(JSON.stringify(["launch", {id: roomId, tile: e.detail+48*48}]));
+});
+document.getElementById("mars").addEventListener("delete", function(e) {
+	ws.send(JSON.stringify(["make", {id: roomId, tile: e.detail+48*48, type: ""}]));
 });
 
 let activeMap;

@@ -146,13 +146,15 @@ func main() {
 
 		// Check key
 		key := fmt.Sprint(m["key"])
-		if _, ok := obj.Transition[key]; !ok {
+		index, ok := obj.Transition[key]
+		if !ok {
 			cl.Send("error", "invalid key")
 			return
 		}
 
 		cl.Send("start", map[string]interface{}{
-			"players": game.Players,
+			"players":     game.Players,
+			"playerIndex": index,
 		})
 
 		obj.Sockets[cl] = key
@@ -334,7 +336,7 @@ func main() {
 		"tiles/brick-wall.svg", "tiles/copper-wall.svg", "tiles/iron-wall.svg", "tiles/launcher.svg", "tiles/cleaner.svg", "tiles/ocean.svg",
 		"tiles/greenhouse.svg", "tiles/bridge.svg",
 		"earth.ogg", "mars.ogg",
-		"game/tileinfo.js", "game/map.js", "game/tileinfo.css", "game/map.css"}
+		"game/tileinfo.js", "game/map.js", "game/tileinfo.css", "game/map.css", "game/stats.js", "game/stats.css"}
 	for _, file := range files {
 		file2 := file
 		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {

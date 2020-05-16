@@ -55,7 +55,7 @@
 				case "KeyW":
 				case "KeyA":
 				case "KeyS":
-				case "KeyD":
+				case "KeyD": {
 					let tile = self.selected();
 					let toTile;
 					if (e.code == "KeyW") toTile = tile - width;
@@ -71,7 +71,23 @@
 					self.tileAt(toTile).setAttribute("selected", "");
 
 					self.dispatchEvent(new CustomEvent("move", {detail:{from:tile,to:toTile}}));
-					break;
+				}
+				break;
+				case "KeyL": {
+					let tile = self.selected();
+					self.dispatchEvent(new CustomEvent("launch", {detail:tile}));
+				}
+				break;
+				case "KeyN": {
+					let tile = self.selected();
+					self.dispatchEvent(new CustomEvent("nuke", {detail:tile}));
+				}
+				break;
+				case "Backspace": {
+					let tile = self.selected();
+					self.dispatchEvent(new CustomEvent("delete", {detail:tile}));
+				}
+				break;
 				}
 			})
 		}
