@@ -320,7 +320,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		return errors.New("mine v3 must be placed over a deposit")
 	}
 
-	if tileType == Camp || tileType == Kiln {
+	if TileInfos[tileType].Village {
 		planet, x, y := tileToCoord(tile)
 		tiles := []int{
 			tileFromCoord(planet, x-1, y+1),
