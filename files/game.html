@@ -38,7 +38,7 @@ function tileAt(i) {
 }
 
 let ws = new WebSocket(
-	(location.protocl == "https:" ? "wss" : "ws") + "://" + location.host + "/api/gamews");
+	(location.protocol == "https:" ? "wss" : "ws") + "://" + location.host + "/api/gamews");
 
 const roomId = location.pathname.split("/")[1];
 const userKey = location.hash.slice(1).split(":")[0];
