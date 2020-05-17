@@ -9,12 +9,12 @@
 	width: 32px;
 	height: 32px;
 	text-align: center;
-	background: var(--territory);
 	display: inline-block;
 	font-size: 12px;
+	background: var(--territory);
 }
 
-.tile .inner {
+.inner {
 	font-size: 12px;
 	display: inline-block;
 
@@ -94,17 +94,19 @@
 
 [terrain=fog] {
 	background: #aaa; }
-[terrain=fog] .inner::before {
-	content: "?"; }
-
 .tile[selected] {
 	outline: 2px solid #555;
 	z-index: 2;
 }
 
-.tile:not([army="0"])::before {
+.tile::before {
 	position: absolute;
 	top: 8px;
 	width: 32px;
+	z-index: 2;
+}
+.tile:not([army="0"])::before {
 	content: attr(army);
 }
+[terrain=fog]::before {
+	content: "?"; }
