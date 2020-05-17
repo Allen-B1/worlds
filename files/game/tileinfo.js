@@ -89,11 +89,17 @@
 
 								let nameElem = document.createElement("h4");
 								nameElem.innerHTML = info.name;
+								infoElem.appendChild(nameElem);
+
+								if (info.description) {
+									let descElem = document.createElement("div");
+									descElem.innerHTML = info.description;
+									descElem.className = "description";
+									infoElem.appendChild(descElem);
+								}
 
 								let costElem = document.createElement("div");
 								costElem.innerHTML = costToHTML(info.cost);
-
-								infoElem.appendChild(nameElem);
 								infoElem.appendChild(costElem);
 
 								itemsElem.appendChild(infoElem);

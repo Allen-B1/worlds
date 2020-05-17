@@ -1,4 +1,13 @@
 {
+	"camp": {
+		"name": "Camp",
+		"pollution": 0,
+		"cost": {
+			"brick": 50
+		},
+		"category": "military",
+		"description": "Produces 0.5 army/turn"
+	},
 	"bridge": {
 		"name": "Bridge",
 		"pollution": 0,
@@ -6,15 +15,8 @@
 			"copper": 10,
 			"iron": 10
 		},
-		"category": "military"
-	},
-	"camp": {
-		"name": "Camp",
-		"pollution": 0,
-		"cost": {
-			"brick": 50
-		},
-		"category": "military"
+		"category": "miscellaneous",
+		"description": "Walk on water"
 	},
 	"cleaner": {
 		"name": "Cleaner",
@@ -23,7 +25,8 @@
 			"iron": 50,
 			"uranium": 50
 		},
-		"category": "miscellaneous"
+		"category": "miscellaneous",
+		"description": "Removes 1 pollution/turn"
 	},
 	"copper-wall": {
 		"name": "Copper Wall",
@@ -43,7 +46,8 @@
 			"gold": 500,
 			"iron": 1000
 		},
-		"category": "miscellaneous"
+		"category": "miscellaneous",
+		"description": "Hub of civilization"
 	},
 	"greenhouse": {
 		"name": "Greenhouse",
@@ -70,7 +74,8 @@
 		"cost": {
 			"brick": 20
 		},
-		"category": "resources"
+		"category": "resources",
+		"description": "Generates 1 brick/turn"
 	},
 	"launcher": {
 		"name": "Launcher",
@@ -81,7 +86,8 @@
 			"gold": 200,
 			"iron": 500
 		},
-		"category": "miscellaneous"
+		"category": "miscellaneous",
+		"description": "Provides rockets to Mars" 
 	},
 	"mine1": {
 		"name": "Mine v1",
@@ -89,7 +95,8 @@
 		"cost": {
 			"brick": 100
 		},
-		"category": "resources"
+		"category": "resources",
+		"description": "Mines copper"
 	},
 	"mine2": {
 		"name": "Mine v2",
@@ -98,7 +105,8 @@
 			"brick": 100,
 			"copper": 100
 		},
-		"category": "resources"
+		"category": "resources",
+		"description": "Mines copper, iron, uranium"
 	},
 	"mine3": {
 		"name": "Mine v3",
@@ -107,6 +115,7 @@
 			"copper": 100,
 			"iron": 100
 		},
-		"category": "resources"
+		"category": "resources",
+		"description": "Mines gold"
 	}
 }
