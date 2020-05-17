@@ -125,7 +125,7 @@ func (g *Game) MarshalFor(player int) map[string]interface{} {
 func (g *Game) NextTurn() {
 	cleaning := uint(0)
 	for tile, tileType := range g.TileTypes {
-		if planet, _, _ := tileToCoord(tile); planet == Earth {
+		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] >= 0 {
 			g.Pollution += TileInfos[tileType].Pollution
 		}
 
@@ -136,30 +136,32 @@ func (g *Game) NextTurn() {
 			}
 		}
 
-		switch tileType {
-		case Camp:
-			if g.Turn%5 == 0 {
-				if g.Amounts[g.Territory[tile]][Brick] >= 2 {
-					g.Amounts[g.Territory[tile]][Brick] -= 2
-					g.Armies[tile] += 1
+		if g.Territory[tile] >= 0 {
+			switch tileType {
+			case Camp:
+				if g.Turn%5 == 0 {
+					if g.Amounts[g.Territory[tile]][Brick] >= 2 {
+						g.Amounts[g.Territory[tile]][Brick] -= 2
+						g.Armies[tile] += 1
+					}
 				}
-			}
-		case Kiln:
-			player := g.Territory[tile]
-			if player < 0 {
-				break
-			}
-			g.Amounts[player][Brick] += 1
-		case MineV1, MineV2, MineV3:
-			player := g.Territory[tile]
-			if player < 0 {
-				break
-			}
-			material := g.Deposits[tile]
-			g.Amounts[player][material] += 1
-		case Cleaner:
-			if planet, _, _ := tileToCoord(tile); planet == Earth {
-				cleaning += 1
+			case Kiln:
+				player := g.Territory[tile]
+				if player < 0 {
+					break
+				}
+				g.Amounts[player][Brick] += 1
+			case MineV1, MineV2, MineV3:
+				player := g.Territory[tile]
+				if player < 0 {
+					break
+				}
+				material := g.Deposits[tile]
+				g.Amounts[player][material] += 1
+			case Cleaner:
+				if planet, _, _ := tileToCoord(tile); planet == Earth {
+					cleaning += 1
+				}
 			}
 		}
 	}
@@ -549,41 +551,55 @@ func (g *Game) Launch(player int, tile int) error {
 		return errors.New("launcher required to launch")
 	}
 
+	planet, _, _ := tileToCoord(tile)
+
 	core := -1
-	for i := EarthSize * EarthSize; i < len(g.TileTypes); i++ {
-		if g.TileTypes[i] == Core && g.Territory[i] == player {
-			core = i
+	if planet == Earth {
+		// Find core on Mars
+		for i := EarthSize * EarthSize; i < len(g.TileTypes); i++ {
+			if g.TileTypes[i] == Core && g.Territory[i] == player {
+				core = i
+			}
+		}
+		if core == -1 {
+			x := uint(rand.Intn(MarsSize-2) + 1)
+			y := uint(rand.Intn(MarsSize-2) + 1)
+
+			tiles := []int{
+				tileFromCoord(Mars, x, y),
+				tileFromCoord(Mars, x+1, y),
+				tileFromCoord(Mars, x, y+1),
+				tileFromCoord(Mars, x+1, y+1),
+				tileFromCoord(Mars, x-1, y),
+				tileFromCoord(Mars, x, y-1),
+				tileFromCoord(Mars, x-1, y-1),
+				tileFromCoord(Mars, x-1, y+1),
+				tileFromCoord(Mars, x+1, y-1),
+			}
+
+			for _, tile := range tiles {
+				g.Territory[tile] = player
+				g.Armies[tile] = 1
+				g.TileTypes[tile] = ""
+			}
+
+			core = tiles[0]
+			g.TileTypes[core] = Core
+		}
+	} else {
+		// Launch to earth
+		for i := 0; i < EarthSize*EarthSize; i++ {
+			if g.TileTypes[i] == Core && g.Territory[i] == player {
+				core = i
+			}
 		}
 	}
 
-	if core == -1 {
-		x := uint(rand.Intn(MarsSize-2) + 1)
-		y := uint(rand.Intn(MarsSize-2) + 1)
-
-		tiles := []int{
-			tileFromCoord(Mars, x, y),
-			tileFromCoord(Mars, x+1, y),
-			tileFromCoord(Mars, x, y+1),
-			tileFromCoord(Mars, x+1, y+1),
-			tileFromCoord(Mars, x-1, y),
-			tileFromCoord(Mars, x, y-1),
-			tileFromCoord(Mars, x-1, y-1),
-			tileFromCoord(Mars, x-1, y+1),
-			tileFromCoord(Mars, x+1, y-1),
-		}
-
-		for _, tile := range tiles {
-			g.Territory[tile] = player
-			g.Armies[tile] = 1
-			g.TileTypes[tile] = ""
-		}
-
-		core = tiles[0]
-		g.TileTypes[core] = Core
+	if core != -1 {
+		transfer := g.Armies[tile] - 1
+		g.Armies[core] += transfer
+		g.Armies[tile] -= transfer
 	}
-	transfer := g.Armies[tile] - 1
-	g.Armies[core] += transfer
-	g.Armies[tile] -= transfer
 	return nil
 }
 

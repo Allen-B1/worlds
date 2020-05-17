@@ -136,6 +136,10 @@ marsElem.addEventListener("nuke", function(e) {
 	ws.send(JSON.stringify(["nuke", {id: roomId, tile: e.detail+48*48}]));
 });
 marsElem.addEventListener("launch", function(e) {
+	if (tileAt(e.detail+48*48).getAttribute("tiletype") == "launcher") {
+		document.getElementById("switch").click();
+	}
+
 	ws.send(JSON.stringify(["launch", {id: roomId, tile: e.detail+48*48}]));
 });
 marsElem.addEventListener("delete", function(e) {
