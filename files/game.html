@@ -157,7 +157,8 @@ document.getElementById("switch").addEventListener("click", function() {
 
 document.querySelector("w-tileinfo").addEventListener("make", function(e) {
 	let tile = activeMap.selected();
-	if (document.activeElement.id == "mars") tile += 48*48;
+	if (activeMap.id == "mars")
+		tile += 48*48;
 	ws.send(JSON.stringify(["make", {id: roomId, tile: tile, type: e.detail}]));
 
 	activeMap.focus();
