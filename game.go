@@ -282,22 +282,42 @@ func (g *Game) checkLoser(player int, winner int) {
 		}
 	}
 
-	hasCore := false
-	for tile, tileType := range g.TileTypes {
-		if tileType == Core && g.Territory[tile] == player {
-			hasCore = true
+	hasCoreEarth := false
+	for tile := 0; tile < EarthSize*EarthSize; tile++ {
+		if g.TileTypes[tile] == Core && g.Territory[tile] == player {
+			hasCoreEarth = true
 		}
 	}
-	if !hasCore {
-		g.Losers = append(g.Losers, player)
-		for tile, territory := range g.Territory {
-			if territory == player {
+	if !hasCoreEarth {
+		for tile := 0; tile < EarthSize*EarthSize; tile++ {
+			if g.Territory[tile] == player {
 				g.Territory[tile] = winner
 				if winner == -1 {
 					g.Armies[tile] = 0
 				}
 			}
 		}
+	}
+
+	hasCoreMars := false
+	for tile := EarthSize * EarthSize; tile < EarthSize*EarthSize+MarsSize*MarsSize; tile++ {
+		if g.TileTypes[tile] == Core && g.Territory[tile] == player {
+			hasCoreMars = true
+		}
+	}
+	if !hasCoreMars {
+		for tile := EarthSize * EarthSize; tile < EarthSize*EarthSize+MarsSize*MarsSize; tile++ {
+			if g.Territory[tile] == player {
+				g.Territory[tile] = winner
+				if winner == -1 {
+					g.Armies[tile] = 0
+				}
+			}
+		}
+	}
+
+	if !hasCoreMars && !hasCoreEarth {
+		g.Losers = append(g.Losers, player)
 	}
 }
 
