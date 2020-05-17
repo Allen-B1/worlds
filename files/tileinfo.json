@@ -42,10 +42,10 @@
 		"name": "Core",
 		"pollution": 0,
 		"cost": {
-			"brick": 500,
+			"brick": 1000,
 			"copper": 1000,
-			"gold": 500,
-			"iron": 1000
+			"iron": 1000,
+			"gold": 500
 		},
 		"category": "miscellaneous",
 		"description": "Hub of civilization",
@@ -80,10 +80,10 @@
 		"name": "Launcher",
 		"pollution": 0,
 		"cost": {
-			"brick": 300,
-			"copper": 800,
-			"gold": 200,
-			"iron": 500
+			"brick": 500,
+			"copper": 500,
+			"iron": 500,
+			"gold": 200
 		},
 		"category": "miscellaneous",
 		"description": "Provides rockets to Mars" 
@@ -132,40 +132,40 @@
 		"name": "Brick Store",
 		"cost": {
 			"copper": 100,
-			"iron": 100
+			"brick": 100
 		},
 		"capacity": {
-			"brick": 200
+			"brick": 500
 		},
 		"category": "resources",
 		"village": true,
-		"description": "Stores 200 brick"
+		"description": "Stores 500 brick"
 	},
 	"store-copper": {
 		"name": "Copper Store",
 		"cost": {
 			"copper": 100,
-			"iron": 100
+			"brick": 100
 		},
 		"capacity": {
-			"copper": 200
+			"copper": 500
 		},
 		"category": "resources",
 		"village": true,
-		"description": "Stores 200 copper"
+		"description": "Stores 500 copper"
 	},
 	"store-iron": {
 		"name": "Iron Store",
 		"cost": {
 			"copper": 100,
-			"iron": 100
+			"brick": 100
 		},
 		"capacity": {
-			"iron": 200
+			"iron": 500
 		},
 		"category": "resources",
 		"village": true,
-		"description": "Stores 200 iron"
+		"description": "Stores 500 iron"
 	},
 	"store-gold": {
 		"name": "Gold Store",
@@ -187,10 +187,10 @@
 			"gold": 50
 		},
 		"capacity": {
-			"uranium": 200
+			"uranium": 100
 		},
 		"category": "resources",
 		"village": true,
-		"description": "Stores 200 uranium"
+		"description": "Stores 100 uranium"
 	}
 }
