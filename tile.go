@@ -44,6 +44,7 @@ type TileInfo struct {
 	Category  string            `json:"category"`
 	Strength  uint32            `json:"strength"`
 	Village   bool              `json:"village"`
+	Capacity  map[Material]uint `json:"capacity"`
 }
 
 type Material string

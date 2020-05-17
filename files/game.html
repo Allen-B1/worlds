@@ -81,14 +81,14 @@ ws.onmessage = function(msg) {
 		}
 		stats.set("Turn", data[1].turn);
 		stats.set("P", data[1].pollution);
-		materials.set("Brk", data[1].amounts[playerIndex].brick | 0);
-		materials.set("Cu", data[1].amounts[playerIndex].copper | 0);
-		materials.set("Fe", data[1].amounts[playerIndex].iron | 0);
-		materials.set("Au", data[1].amounts[playerIndex].gold | 0);
-		materials.set("U", data[1].amounts[playerIndex].uranium | 0);
+		materials.set("Brk", (data[1].amounts[playerIndex].brick | 0) + " / " + (data[1].capacity.brick|0));
+		materials.set("Cu", (data[1].amounts[playerIndex].copper | 0) + " / " + (data[1].capacity.copper|0));
+		materials.set("Fe", (data[1].amounts[playerIndex].iron | 0) + " / " + (data[1].capacity.iron|0));
+		materials.set("Au", (data[1].amounts[playerIndex].gold | 0) + " / " + (data[1].capacity.gold|0));
+		materials.set("U", (data[1].amounts[playerIndex].uranium | 0) + " / " + (data[1].capacity.uranium|0));
 		if (data[1].amounts[playerIndex].green > 0) {
 			materials.add("G", "text-green");
-			materials.set("G", data[1].amounts[playerIndex].green | 0);
+			materials.set("G", (data[1].amounts[playerIndex].green | 0) + " / " + (data[1].capacity.green|0));
 		}
 		playersElem.setLosers(data[1].losers || []);
 		playersElem.setStats(data[1].stats);

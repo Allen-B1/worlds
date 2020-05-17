@@ -48,7 +48,14 @@
 			"iron": 1000
 		},
 		"category": "miscellaneous",
-		"description": "Hub of civilization"
+		"description": "Hub of civilization",
+		"capacity": {
+			"brick": 100,
+			"copper": 100,
+			"iron": 100,
+			"gold": 20,
+			"green": 50
+		}
 	},
 	"greenhouse": {
 		"name": "Greenhouse",
@@ -69,15 +76,6 @@
 		"category": "military",
 		"strength": 2000
 	},
-	"kiln": {
-		"name": "Kiln",
-		"pollution": 1,
-		"cost": {
-			"brick": 20
-		},
-		"category": "resources",
-		"description": "Generates 1 brick/turn"
-	},
 	"launcher": {
 		"name": "Launcher",
 		"pollution": 0,
@@ -89,6 +87,16 @@
 		},
 		"category": "miscellaneous",
 		"description": "Provides rockets to Mars" 
+	},
+
+	"kiln": {
+		"name": "Kiln",
+		"pollution": 1,
+		"cost": {
+			"brick": 20
+		},
+		"category": "resources",
+		"description": "Generates 1 brick/turn"
 	},
 	"mine1": {
 		"name": "Mine v1",
@@ -118,5 +126,71 @@
 		},
 		"category": "resources",
 		"description": "Mines gold"
+	},
+
+	"store-brick": {
+		"name": "Brick Store",
+		"cost": {
+			"copper": 100,
+			"iron": 100
+		},
+		"capacity": {
+			"brick": 200
+		},
+		"category": "resources",
+		"village": true,
+		"description": "Stores 200 brick"
+	},
+	"store-copper": {
+		"name": "Copper Store",
+		"cost": {
+			"copper": 100,
+			"iron": 100
+		},
+		"capacity": {
+			"copper": 200
+		},
+		"category": "resources",
+		"village": true,
+		"description": "Stores 200 copper"
+	},
+	"store-iron": {
+		"name": "Iron Store",
+		"cost": {
+			"copper": 100,
+			"iron": 100
+		},
+		"capacity": {
+			"iron": 200
+		},
+		"category": "resources",
+		"village": true,
+		"description": "Stores 200 iron"
+	},
+	"store-gold": {
+		"name": "Gold Store",
+		"cost": {
+			"copper": 100,
+			"iron": 100
+		},
+		"capacity": {
+			"gold": 200
+		},
+		"category": "resources",
+		"village": true,
+		"description": "Stores 200 gold"
+	},
+	"store-uranium": {
+		"name": "Uranium Store",
+		"cost": {
+			"iron": 200,
+			"gold": 50
+		},
+		"capacity": {
+			"uranium": 200
+		},
+		"category": "resources",
+		"village": true,
+		"description": "Stores 200 uranium"
 	}
 }

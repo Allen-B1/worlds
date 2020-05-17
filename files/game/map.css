@@ -56,6 +56,16 @@
 	background: url(/tiles/cleaner.svg); }
 [tiletype=greenhouse] .inner {
 	background: url(/tiles/greenhouse.svg); }
+[tiletype=store-brick] .inner {
+	background: url(/tiles/store-brick.svg); }
+[tiletype=store-copper] .inner {
+	background: url(/tiles/store-copper.svg); }
+[tiletype=store-iron] .inner {
+	background: url(/tiles/store-iron.svg); }
+[tiletype=store-gold] .inner {
+	background: url(/tiles/store-gold.svg); }
+[tiletype=store-uranium] .inner {
+	background: url(/tiles/store-uranium.svg); }
 
 [deposit=iron] {
 	background: url(/tiles/iron.svg) var(--territory); }

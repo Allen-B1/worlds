@@ -43,7 +43,8 @@ type Game struct {
 	Fog bool
 
 	// Dependent on above fields
-	Stats []Stats
+	Stats    []Stats
+	Capacity []map[Material]uint
 }
 
 func (g *Game) MarshalFor(player int) map[string]interface{} {
@@ -114,6 +115,7 @@ func (g *Game) MarshalFor(player int) map[string]interface{} {
 		"turn":      g.Turn,
 		"pollution": g.Pollution,
 		"stats":     g.Stats,
+		"capacity":  g.Capacity[player],
 
 		"requests":      requests,
 		"relationships": relationships,
@@ -181,15 +183,33 @@ func (g *Game) NextTurn() {
 		}
 	}
 
+	// calculate stats & capacity
 	for player, _ := range g.Stats {
 		g.Stats[player].Pollution = 0
 	}
-	// calculate stats
+	for player, _ := range g.Capacity {
+		g.Capacity[player] = make(map[Material]uint)
+	}
 	for tile, tileType := range g.TileTypes {
+		if g.Territory[tile] != -1 {
+			for material, capac := range TileInfos[tileType].Capacity {
+				g.Capacity[g.Territory[tile]][material] += capac
+			}
+		}
+
 		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] != -1 {
 			g.Stats[g.Territory[tile]].Pollution += int(TileInfos[tileType].Pollution)
 			if tileType == Cleaner {
 				g.Stats[g.Territory[tile]].Pollution -= 1
+			}
+		}
+	}
+
+	// enforce capacity
+	for player, caps := range g.Capacity {
+		for material, cap_ := range caps {
+			if cap_ < g.Amounts[player][material] {
+				g.Amounts[player][material] = cap_
 			}
 		}
 	}
@@ -455,6 +475,8 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 	for player, _ := range g.Amounts {
 		g.Amounts[player] = make(MaterialAmounts)
 	}
+
+	g.Capacity = make([]map[Material]uint, len(g.Players))
 
 	g.Relationships = make(map[[2]int]Relationship)
 	g.Requests = make(map[[2]int]int)

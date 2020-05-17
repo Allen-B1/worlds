@@ -109,6 +109,7 @@
 
 					categoriesElem.appendChild(categoryElem);
 				}
+				categoriesElem.children[0].click();
 				categoriesElem.className = "categories";
 				root.appendChild(categoriesElem);
 			});

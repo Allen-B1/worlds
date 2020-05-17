@@ -335,6 +335,7 @@ func main() {
 		"tiles/core.svg", "tiles/camp.svg", "tiles/mine1.svg", "tiles/mine2.svg", "tiles/mine3.svg", "tiles/kiln.svg",
 		"tiles/brick-wall.svg", "tiles/copper-wall.svg", "tiles/iron-wall.svg", "tiles/launcher.svg", "tiles/cleaner.svg", "tiles/ocean.svg",
 		"tiles/greenhouse.svg", "tiles/bridge.svg",
+		"tiles/store-brick.svg", "tiles/store-copper.svg", "tiles/store-gold.svg", "tiles/store-iron.svg", "tiles/store-uranium.svg",
 		"earth.ogg", "mars.ogg",
 		"game/tileinfo.js", "game/map.js", "game/tileinfo.css", "game/map.css", "game/stats.js", "game/stats.css", "game/players.js", "game/players.css", "game/diplomacy.js", "game/diplomacy.css", "game/game.js"}
 	for _, file := range files {
