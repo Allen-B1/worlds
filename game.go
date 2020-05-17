@@ -170,7 +170,7 @@ func (g *Game) NextTurn() {
 	}
 
 	// death from pollution
-	if g.Pollution >= 50000 {
+	if g.Pollution >= 200000 {
 		for i := 0; i < EarthSize*EarthSize; i++ {
 			if g.Territory[i] >= 0 {
 				g.TileTypes[i] = ""
