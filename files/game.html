@@ -139,7 +139,9 @@ marsElem.addEventListener("launch", function(e) {
 	ws.send(JSON.stringify(["launch", {id: roomId, tile: e.detail+48*48}]));
 });
 marsElem.addEventListener("delete", function(e) {
-	ws.send(JSON.stringify(["make", {id: roomId, tile: e.detail+48*48, type: ""}]));
+	for (let tile of e.detail) {
+		ws.send(JSON.stringify(["make", {id: roomId, tile: tile+48*48, type: ""}]));
+	}
 });
 
 let activeMap = earthElem;
