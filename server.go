@@ -336,7 +336,7 @@ func main() {
 		"tiles/brick-wall.svg", "tiles/copper-wall.svg", "tiles/iron-wall.svg", "tiles/launcher.svg", "tiles/cleaner.svg", "tiles/ocean.svg",
 		"tiles/greenhouse.svg", "tiles/bridge.svg",
 		"earth.ogg", "mars.ogg",
-		"game/tileinfo.js", "game/map.js", "game/tileinfo.css", "game/map.css", "game/stats.js", "game/stats.css", "game/players.js", "game/players.css"}
+		"game/tileinfo.js", "game/map.js", "game/tileinfo.css", "game/map.css", "game/stats.js", "game/stats.css", "game/players.js", "game/players.css", "game/diplomacy.js", "game/diplomacy.css", "game/game.js"}
 	for _, file := range files {
 		file2 := file
 		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {

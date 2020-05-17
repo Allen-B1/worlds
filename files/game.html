@@ -1,13 +1,15 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 	<head>
 		<title>worlds</title>
 		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="/style.css">
+		<script src="/game/game.js"></script>
 		<script defer src="/game/tileinfo.js"></script>
 		<script defer src="/game/map.js"></script>
 		<script defer src="/game/stats.js"></script>
 		<script defer src="/game/players.js"></script>
+		<script defer src="/game/diplomacy.js"></script>
 		<meta charset="utf8">
 	</head>
 	<body>
@@ -20,9 +22,11 @@
 		<w-stats id="stats" style="position:fixed;left:32px;top:32px;z-index:3;"></w-stats>
 		<w-stats id="materials" style="position:fixed;left:32px;top:128px;z-index:3;"></w-stats>
 		<w-players id="players" style="position:fixed;right:32px;top:32px;z-index:3"></w-players>
+		<w-diplomacy id="diplomacy" style="position:fixed;right:32px;bottom:32px;z-index:3"></w-diplomacy>
 
 		<script>
 const playersElem = document.getElementById("players");
+const diplomacyElem = document.getElementById("diplomacy");
 const marsElem = document.getElementById("mars");
 const earthElem = document.getElementById("earth");
 
@@ -43,6 +47,8 @@ let players = [];
 
 const stats = document.getElementById("stats");
 const materials = document.getElementById("materials");
+
+let relationships = [];
 
 ws.onmessage = function(msg) {
 	let data = JSON.parse(msg.data);
@@ -87,6 +93,15 @@ ws.onmessage = function(msg) {
 		playersElem.setLosers(data[1].losers || []);
 		playersElem.setStats(data[1].stats);
 		playersElem.setRelationships(data[1].relationships);
+
+		diplomacyElem.setRequests(players, data[1].relationships, data[1].requests);
+		for (let i = 0; i < relationships.length; i++) {
+			if (relationships[i] >= 0 && data[1].relationships[i] < 0) {
+				diplomacyElem.addWar(i, players[i]);
+			}
+		}
+
+		relationships = data[1].relationships;
 		break;
 	}
 }
@@ -150,6 +165,10 @@ document.querySelector("w-tileinfo").addEventListener("make", function(e) {
 
 playersElem.addEventListener("relationship", function(e) {
 	ws.send(JSON.stringify(["relationship", {id:roomId,upgrade:e.detail.action == "increase", player:e.detail.player}]));
+});
+
+diplomacyElem.addEventListener("accept", function(e) {
+	ws.send(JSON.stringify(["relationship", {id:roomId, upgrade:true, player: e.detail}]));
 });
 		</script>
 	</body>

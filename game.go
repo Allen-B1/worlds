@@ -96,6 +96,13 @@ func (g *Game) MarshalFor(player int) map[string]interface{} {
 		relationships[player2] = g.Relationships[g.association(player, player2)]
 	}
 
+	requests := make([]int, 0)
+	for i, _ := range g.Players {
+		if g.Requests[g.association(player, i)] == i {
+			requests = append(requests, i)
+		}
+	}
+
 	return map[string]interface{}{
 		"armies":    armies,
 		"territory": territory,
@@ -108,6 +115,7 @@ func (g *Game) MarshalFor(player int) map[string]interface{} {
 		"pollution": g.Pollution,
 		"stats":     g.Stats,
 
+		"requests":      requests,
 		"relationships": relationships,
 	}
 }
@@ -424,7 +432,7 @@ func (g *Game) Move(player int, from int, to int) error {
 			g.Armies[to] -= fromArmies
 		}
 	} else {
-		return fmt.Errorf("can't attack neutral or cordial player")
+		return fmt.Errorf("can't attack neutral or allied player")
 	}
 
 	return nil
@@ -442,13 +450,18 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 	g.Deposits = append([]Material(nil), m.Deposits...)
 	g.Terrain = append([]Terrain(nil), m.Terrain...)
 
-	g.Relationships = make(map[[2]int]Relationship)
-	g.Requests = make(map[[2]int]int)
-
 	g.Players = players
 	g.Amounts = make([]MaterialAmounts, len(players))
 	for player, _ := range g.Amounts {
 		g.Amounts[player] = make(MaterialAmounts)
+	}
+
+	g.Relationships = make(map[[2]int]Relationship)
+	g.Requests = make(map[[2]int]int)
+	for i := 0; i < len(g.Players); i++ {
+		for j := 0; j <= i; j++ {
+			g.Requests[g.association(i, j)] = -1
+		}
 	}
 
 	g.Stats = make([]Stats, len(players))

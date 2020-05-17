@@ -1,0 +1,40 @@
+.root {
+	background: #444;
+	border: 2px solid #222;
+	color: #eee;
+}
+
+h4 {
+	margin: 0;
+	padding: 8px;
+	text-align: center;
+}
+
+.message {
+	display: flex;
+	flex-direction: row;
+}
+
+.message > * {
+	padding: 4px 8px;
+}
+
+.player {
+	color: #444;
+	width: 80px;
+	text-align: center;
+}
+
+.content {
+	flex-grow: 1;
+}
+
+.action {
+	width: 16px;
+	cursor: pointer;
+	text-align: center;
+}
+
+.action:hover {
+	background: #333;
+}
