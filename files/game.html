@@ -125,7 +125,9 @@ earthElem.addEventListener("launch", function(e) {
 	ws.send(JSON.stringify(["launch", {id: roomId, tile: e.detail}]));
 });
 earthElem.addEventListener("delete", function(e) {
-	ws.send(JSON.stringify(["make", {id: roomId, tile: e.detail, type: ""}]));
+	for (let tile of e.detail) {
+		ws.send(JSON.stringify(["make", {id: roomId, tile: tile, type: ""}]));
+	}
 });
 marsElem.addEventListener("move", function(e) {
 	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from+48*48, to: e.detail.to+48*48}]));
@@ -156,12 +158,13 @@ document.getElementById("switch").addEventListener("click", function() {
 });
 
 document.querySelector("w-tileinfo").addEventListener("make", function(e) {
-	let tile = activeMap.selected();
+	let tiles = activeMap.selected();
 	if (activeMap.id == "mars")
-		tile += 48*48;
-	ws.send(JSON.stringify(["make", {id: roomId, tile: tile, type: e.detail}]));
+		tiles = tiles.map(t => t + 48*48);
 
-	activeMap.focus();
+	for (let tile of tiles) {
+		ws.send(JSON.stringify(["make", {id: roomId, tile: tile, type: e.detail}]));
+	}
 });
 
 playersElem.addEventListener("relationship", function(e) {

@@ -36,10 +36,13 @@
 				inner.className = "inner";
 				tile.appendChild(inner);
 
-				tile.addEventListener("click", function() {
-					for (let elem of root.querySelectorAll("[selected=\"\"]")) {
-						elem.removeAttribute("selected");
+				tile.addEventListener("click", function(e) {
+					if (!e.shiftKey) {
+						for (let elem of root.querySelectorAll("[selected=\"\"]")) {
+							elem.removeAttribute("selected");
+						}
 					}
+
 					if (tile.hasAttribute("selected")) {
 						tile.removeAttribute("selected");
 					} else {
@@ -56,7 +59,7 @@
 				case "KeyA":
 				case "KeyS":
 				case "KeyD": {
-					let tile = self.selected();
+					let tile = self.selected()[0];
 					let toTile;
 					if (e.code == "KeyW") toTile = tile - width;
 					if (e.code == "KeyS") toTile = tile + width;
@@ -74,18 +77,18 @@
 				}
 				break;
 				case "KeyL": {
-					let tile = self.selected();
+					let tile = self.selected()[0];
 					self.dispatchEvent(new CustomEvent("launch", {detail:tile}));
 				}
 				break;
 				case "KeyN": {
-					let tile = self.selected();
+					let tile = self.selected()[0];
 					self.dispatchEvent(new CustomEvent("nuke", {detail:tile}));
 				}
 				break;
 				case "Backspace": {
-					let tile = self.selected();
-					self.dispatchEvent(new CustomEvent("delete", {detail:tile}));
+					let tiles = self.selected();
+					self.dispatchEvent(new CustomEvent("delete", {detail:tiles}));
 				}
 				break;
 				}
@@ -93,7 +96,7 @@
 		}
 
 		selected() {
-			return this.shadow.querySelector("[selected=\"\"]").id.slice(5) | 0;
+			return Array.from(this.shadow.querySelectorAll("[selected=\"\"]")).map(e => e.id.slice(5) | 0);
 		}
 
 		tileAt(index) {
