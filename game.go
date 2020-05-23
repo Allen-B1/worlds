@@ -150,17 +150,14 @@ func (g *Game) NextTurn() {
 					break
 				}
 				g.Amounts[player][Brick] += 1
-			case MineV1, MineV2, MineV3:
-				player := g.Territory[tile]
-				if player < 0 {
-					break
-				}
-				material := g.Deposits[tile]
-				g.Amounts[player][material] += 1
 			case Cleaner:
 				if planet, _, _ := tileToCoord(tile); planet == Earth {
 					cleaning += 1
 				}
+			}
+
+			if len(TileInfos[tileType].Mine) != 0 {
+				g.Amounts[g.Territory[tile]][g.Deposits[tile]] += TileInfos[tileType].Mine[g.Deposits[tile]]
 			}
 		}
 	}
@@ -608,10 +605,9 @@ func (g *Game) Nuke(player int, tile int) error {
 		for nY := y - 2; nY <= y+2; nY++ {
 			nTile := tileFromCoord(planet, nX, nY)
 			if nTile >= 0 {
-				if g.TileTypes[nTile] == CopperWall || g.TileTypes[nTile] == IronWall {
+				if g.TileTypes[nTile] == IronWall {
 					damage := map[TileType]uint32{
-						CopperWall: 30,
-						IronWall:   20,
+						IronWall: 20,
 					}[g.TileTypes[nTile]]
 
 					if g.Armies[nTile] > damage {

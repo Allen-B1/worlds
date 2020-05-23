@@ -32,40 +32,31 @@
 [terrain=ocean][territory="-1"] {
 	--territory: #3F6ABF; }
 
-[tiletype=core] .inner {
-	background: url(/tiles/core.svg); }
 [tiletype=camp] .inner {
 	background: url(/tiles/camp.svg); }
-[tiletype=kiln] .inner {
-	background: url(/tiles/kiln.svg); }
-[tiletype=mine1] .inner {
-	background: url(/tiles/mine1.svg); }
-[tiletype=mine2] .inner {
-	background: url(/tiles/mine2.svg); }
-[tiletype=mine3] .inner {
-	background: url(/tiles/mine3.svg); }
 [tiletype=bridge] .inner {
 	background: url(/tiles/bridge.svg); }
-[tiletype=copper-wall] .inner {
-	background: url(/tiles/copper-wall.svg); }
 [tiletype=iron-wall] .inner {
 	background: url(/tiles/iron-wall.svg); }
+
+[tiletype=core] .inner {
+	background: url(/tiles/core.svg); }
 [tiletype=launcher] .inner {
 	background: url(/tiles/launcher.svg); }
+
 [tiletype=cleaner] .inner {
 	background: url(/tiles/cleaner.svg); }
 [tiletype=greenhouse] .inner {
 	background: url(/tiles/greenhouse.svg); }
-[tiletype=store-brick] .inner {
-	background: url(/tiles/store-brick.svg); }
-[tiletype=store-copper] .inner {
-	background: url(/tiles/store-copper.svg); }
-[tiletype=store-iron] .inner {
-	background: url(/tiles/store-iron.svg); }
-[tiletype=store-gold] .inner {
-	background: url(/tiles/store-gold.svg); }
-[tiletype=store-uranium] .inner {
-	background: url(/tiles/store-uranium.svg); }
+
+[tiletype=kiln] .inner {
+	background: url(/tiles/kiln.svg); }
+[tiletype=mine] .inner {
+	background: url(/tiles/mine.svg); }
+[tiletype=mine_electric] .inner {
+	background: url(/tiles/mine_electric.svg); }
+[tiletype=mine_uranium] .inner {
+	background: url(/tiles/mine_uranium.svg); }
 
 [deposit=iron] {
 	background: url(/tiles/iron.svg) var(--territory); }

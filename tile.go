@@ -23,13 +23,9 @@ const (
 
 	Bridge TileType = "bridge"
 
-	Kiln   TileType = "kiln"
-	MineV1 TileType = "mine1"
-	MineV2 TileType = "mine2"
-	MineV3 TileType = "mine3"
+	Kiln TileType = "kiln"
 
-	IronWall   TileType = "iron-wall"
-	CopperWall TileType = "copper-wall"
+	IronWall TileType = "iron-wall"
 
 	Launcher TileType = "launcher"
 	Cleaner  TileType = "cleaner"

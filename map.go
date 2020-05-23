@@ -265,7 +265,7 @@ func NewRandomMap() *Map {
 	}
 
 	// Tiny Islands
-	for i := 0; i < 12; i++ {
+	for i := 0; i < 8; i++ {
 		var x, y uint
 		for {
 			x = uint(rand.Intn(EarthSize-2)) + 1
@@ -274,7 +274,7 @@ func NewRandomMap() *Map {
 			for _, oldCenter := range islandCenters {
 				_, oldX, oldY := tileToCoord(oldCenter)
 
-				if (x-oldX < 6 || oldX-x < 6) && (y-oldY < 6 || oldY-y < 6) {
+				if (x-oldX < 5 || oldX-x < 5) && (y-oldY < 5 || oldY-y < 5) {
 					tooClose = true
 					break
 				}
@@ -300,7 +300,13 @@ func NewRandomMap() *Map {
 		for _, tile := range tiles {
 			m.Terrain[tile] = Land
 
-			if rand.Intn(64) == 0 {
+			if rand.Intn(8) == 0 {
+				m.Deposits[tile] = Iron
+			}
+			if rand.Intn(8) == 0 {
+				m.Deposits[tile] = Coal
+			}
+			if rand.Intn(32) == 0 {
 				m.Deposits[tile] = Green
 			}
 		}
