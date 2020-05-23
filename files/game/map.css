@@ -11,7 +11,8 @@
 	text-align: center;
 	display: inline-block;
 	font-size: 12px;
-	background: var(--territory);
+	background: var(--electricity) var(--territory);
+	--electricity: url(/tiles/transparent.svg);
 }
 
 .inner {
@@ -67,15 +68,15 @@
 
 
 [deposit=iron] {
-	background: url(/tiles/iron.svg) var(--territory); }
+	background: url(/tiles/iron.svg), var(--electricity) var(--territory); }
 [deposit=coal] {
-	background: url(/tiles/coal.svg) var(--territory); }
+	background: url(/tiles/coal.svg), var(--electricity) var(--territory); }
 [deposit=gold] {
-	background: url(/tiles/gold.svg) var(--territory); }
+	background: url(/tiles/gold.svg), var(--electricity) var(--territory); }
 [deposit=uranium] {
-	background: url(/tiles/uranium.svg) var(--territory); }
+	background: url(/tiles/uranium.svg),  var(--electricity) var(--territory); }
 [deposit=green] {
-	background: url(/tiles/green.svg) var(--territory); }
+	background: url(/tiles/green.svg), var(--electricity) var(--territory); }
 [territory="-1"] {
 	--territory: transparent; }
 [territory="0"] {
@@ -92,14 +93,14 @@
 	--territory: hsl(250, 50%, 75%); }
 
 [electricity] {
-	outline: 2px dashed #b7b033;
-	z-index: 2; }
+	--electricity: url(/tiles/electricity.svg);
+}
 
 [terrain=fog] {
 	background: #aaa; }
 .tile[selected] {
 	outline: 2px solid #555;
-	z-index: 3;
+	z-index: 2;
 }
 
 .tile::before {

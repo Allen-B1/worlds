@@ -437,7 +437,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 			}
 		}
 		if !adj {
-			return errors.New("'" + TileInfos[tileType] + "' must be inside village")
+			return errors.New("'" + TileInfos[tileType].Name + "' must be inside village")
 		}
 	}
 
