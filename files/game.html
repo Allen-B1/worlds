@@ -78,6 +78,11 @@ ws.onmessage = function(msg) {
 			tile.setAttribute("terrain", data[1].terrain[i]);
 			tile.setAttribute("deposit", data[1].deposits[i]);
 			tile.setAttribute("army", data[1].armies[i]);
+			if (data[1].electricity[i] === playerIndex) {
+				tile.setAttribute("electricity", "");
+			} else {
+				tile.removeAttribute("electricity");
+			}
 		}
 		stats.set("Turn", data[1].turn);
 		stats.set("P", data[1].pollution);

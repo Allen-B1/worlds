@@ -80,7 +80,7 @@
 			"brick": 50
 		},
 		"category": "resources",
-		"description": "Generates 1 brick/turn"
+		"description": "Generates brick at +0.1/turn"
 	},
 	"mine": {
 		"name": "General Mine",
@@ -104,7 +104,7 @@
 			"iron": 100,
 			"gold": 100 
 		},
-		"electricity": true,
+		"electric": true,
 		"category": "resources",
 		"mine": {
 			"coal": 5,
@@ -125,5 +125,48 @@
 			"uranium": 1
 		},
 		"description": "Mines U at +0.1/turn"
+	},
+
+	"power_hydro": {
+		"name": "Hydro Power",
+		"pollution": 0,
+		"cost": {
+			"brick": 2500,
+			"iron": 2500,
+			"gold": 500
+		},
+		"category": "electricity",
+		"electricity": 1,
+		"description": "Provides electricity in a 3x3 area"
+	},
+	"power_coal": {
+		"name": "Coal Power",
+		"pollution": 20,
+		"cost": {
+			"brick": 500,
+			"iron": 500,
+			"gold": 100
+		},
+		"requires": {
+			"coal": 1
+		},
+		"category": "electricity",
+		"electricity": 2,
+		"description": "Uses -0.1 coal/turn to provide electricity in a 5x5 area"
+	},
+	"power_nuclear": {
+		"name": "Nuclear Power",
+		"pollution": 1,
+		"cost": {
+			"brick": 1000,
+			"iron": 1000,
+			"gold": 500
+		},
+		"requires": {
+			"uranium": 1
+		},
+		"category": "electricity",
+		"electricity": 2,
+		"description": "Uses -0.1 uranium/turn to provide electricity in a 5x5 area"
 	}
 }

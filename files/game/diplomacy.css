@@ -2,6 +2,7 @@
 	background: #444;
 	border: 2px solid #222;
 	color: #eee;
+	width: 320px;
 }
 
 h4 {
@@ -21,12 +22,12 @@ h4 {
 
 .player {
 	color: #444;
-	width: 80px;
+	flex-grow: 1;
 	text-align: center;
 }
 
 .content {
-	flex-grow: 1;
+	width: 80px;
 }
 
 .action {

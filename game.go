@@ -44,7 +44,8 @@ type Game struct {
 	Fog bool
 
 	// Dependent on above fields
-	Stats []Stats
+	Stats       []Stats
+	Electricity []int
 }
 
 func (g *Game) MarshalFor(player int) map[string]interface{} {
@@ -105,16 +106,17 @@ func (g *Game) MarshalFor(player int) map[string]interface{} {
 	}
 
 	return map[string]interface{}{
-		"armies":    armies,
-		"territory": territory,
-		"tiletypes": tiletypes,
-		"terrain":   terrain,
-		"deposits":  deposits,
-		"losers":    g.Losers,
-		"amounts":   g.Amounts,
-		"turn":      g.Turn,
-		"pollution": g.Pollution,
-		"stats":     g.Stats,
+		"armies":      armies,
+		"territory":   territory,
+		"tiletypes":   tiletypes,
+		"terrain":     terrain,
+		"deposits":    deposits,
+		"losers":      g.Losers,
+		"amounts":     g.Amounts,
+		"turn":        g.Turn,
+		"pollution":   g.Pollution,
+		"stats":       g.Stats,
+		"electricity": g.Electricity,
 
 		"requests":      requests,
 		"relationships": relationships,
@@ -122,8 +124,45 @@ func (g *Game) MarshalFor(player int) map[string]interface{} {
 }
 
 func (g *Game) NextTurn() {
-	cleaning := uint(0)
+	// calculate electricity
+	for tile, _ := range g.TileTypes {
+		g.Electricity[tile] = -1
+	}
+outer:
 	for tile, tileType := range g.TileTypes {
+		// Skip if not enough materials
+		for material, amt := range TileInfos[tileType].Requires {
+			if g.Amounts[g.Territory[tile]][material] < amt {
+				continue outer
+			}
+		}
+
+		if TileInfos[tileType].Electricity != 0 {
+			r := int(TileInfos[tileType].Electricity)
+			planet, x, y := tileToCoord(tile)
+
+			tiles := make([]int, 0)
+			for dx := int(x) - r; dx <= int(x)+r; dx++ {
+				for dy := int(y) - r; dy <= int(y)+r; dy++ {
+					tiles = append(tiles, tileFromCoord(planet, uint(dx), uint(dy)))
+				}
+			}
+
+			for _, tile := range tiles {
+				if tile != -1 {
+					g.Electricity[tile] = g.Territory[tile]
+				}
+			}
+		}
+	}
+
+	cleaning := uint(0)
+outer2:
+	for tile, tileType := range g.TileTypes {
+		if TileInfos[tileType].Electric && g.Electricity[tile] != g.Territory[tile] {
+			continue
+		}
+
 		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] >= 0 {
 			g.Pollution += TileInfos[tileType].Pollution
 		}
@@ -133,6 +172,16 @@ func (g *Game) NextTurn() {
 			if g.Armies[tile] == 0 {
 				g.Territory[tile] = -1
 			}
+		}
+
+		for material, amt := range TileInfos[tileType].Requires {
+			if g.Amounts[g.Territory[tile]][material] < amt {
+				continue outer2
+			}
+		}
+
+		for material, amt := range TileInfos[tileType].Requires {
+			g.Amounts[g.Territory[tile]][material] -= amt
 		}
 
 		if g.Territory[tile] >= 0 {
@@ -344,6 +393,30 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		}
 	}
 
+	if tileType == PowerHydro {
+		planet, x, y := tileToCoord(tile)
+		tiles := []int{
+			tileFromCoord(planet, x-1, y+1),
+			tileFromCoord(planet, x-1, y),
+			tileFromCoord(planet, x-1, y-1),
+			tileFromCoord(planet, x, y+1),
+			tileFromCoord(planet, x, y-1),
+			tileFromCoord(planet, x+1, y+1),
+			tileFromCoord(planet, x+1, y),
+			tileFromCoord(planet, x+1, y-1),
+		}
+
+		adj := false
+		for _, tile := range tiles {
+			if tile > 0 && g.Terrain[tile] == Ocean {
+				adj = true
+			}
+		}
+		if !adj {
+			return errors.New("'Hydro Power' must be next to ocean")
+		}
+	}
+
 	if TileInfos[tileType].Village {
 		planet, x, y := tileToCoord(tile)
 		tiles := []int{
@@ -364,7 +437,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 			}
 		}
 		if !adj {
-			return errors.New("camp and kiln must be inside village")
+			return errors.New("'" + TileInfos[tileType] + "' must be inside village")
 		}
 	}
 
@@ -479,6 +552,8 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 	for player, _ := range g.Amounts {
 		g.Amounts[player] = make(MaterialAmounts)
 	}
+
+	g.Electricity = make([]int, EarthSize*EarthSize+MarsSize*MarsSize)
 
 	g.Relationships = make(map[[2]int]Relationship)
 	g.Requests = make(map[[2]int]int)

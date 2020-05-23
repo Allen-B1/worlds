@@ -31,6 +31,8 @@ const (
 	Cleaner  TileType = "cleaner"
 
 	GreenHouse TileType = "greenhouse"
+
+	PowerHydro TileType = "power_hydro"
 )
 
 type TileInfo struct {
@@ -41,6 +43,11 @@ type TileInfo struct {
 	Strength  uint32            `json:"strength"`
 	Village   bool              `json:"village"`
 	Mine      map[Material]uint `json:"mine"`
+
+	Electric    bool `json:"electric"`
+	Electricity uint `json:"electricity"`
+
+	Requires map[Material]uint `json:"requires"`
 }
 
 type Material string

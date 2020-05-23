@@ -58,6 +58,14 @@
 [tiletype=mine_uranium] .inner {
 	background: url(/tiles/mine_uranium.svg); }
 
+[tiletype=power_nuclear] .inner {
+	background: url(/tiles/power_nuclear.svg); }
+[tiletype=power_coal] .inner {
+	background: url(/tiles/power_coal.svg); }
+[tiletype=power_hydro] .inner {
+	background: url(/tiles/power_hydro.svg); }
+
+
 [deposit=iron] {
 	background: url(/tiles/iron.svg) var(--territory); }
 [deposit=coal] {
@@ -83,11 +91,15 @@
 [territory="5"] {
 	--territory: hsl(250, 50%, 75%); }
 
+[electricity] {
+	outline: 2px dashed #b7b033;
+	z-index: 2; }
+
 [terrain=fog] {
 	background: #aaa; }
 .tile[selected] {
 	outline: 2px solid #555;
-	z-index: 2;
+	z-index: 3;
 }
 
 .tile::before {
