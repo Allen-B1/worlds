@@ -58,6 +58,7 @@
 			"iron": 100,
 			"uranium": 100
 		},
+		"electric": true,
 		"category": "environment",
 		"description": "Removes 1 pollution/turn"
 	},

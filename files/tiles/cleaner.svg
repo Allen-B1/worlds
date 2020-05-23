@@ -4,13 +4,19 @@
 	<rect x="2" y="4" width="2" height="24" fill="#51237f" />
 	<rect x="28" y="4" width="2" height="24" fill="#51237f" />
 
-	<rect x="4" y="4" width="24" height="6" fill="#aaa" />
-	<rect x="4" y="22" width="24" height="6" fill="#aaa" />
-	<rect x="4" y="10" width="6" height="12" fill="#aaa" />
-	<rect x="22" y="10" width="6" height="12" fill="#aaa" />
+	<rect x="10" y="4" width="18" height="6" fill="#8239cc" />
+	<rect x="4" y="22" width="24" height="6" fill="#8239cc" />
+	<rect x="4" y="10" width="6" height="12" fill="#8239cc" />
+	<rect x="22" y="10" width="6" height="12" fill="#8239cc" />
 
-	<polygon points="4 4 12 4 4 12" fill="#8239cc" />
-	<polygon points="28 4 20 4 28 12" fill="#8239cc" />
-	<polygon points="4 28 4 20 12 28" fill="#8239cc" />	
-	<polygon points="28 28 28 20 20 28" fill="#8239cc" />
+	<rect x="4" y="4" width="2" height="2" fill="#8239cc" />
+	<rect x="4" y="8" width="2" height="2" fill="#8239cc" />
+	<rect x="8" y="4" width="2" height="2" fill="#8239cc" />
+	<rect x="8" y="8" width="2" height="2" fill="#8239cc" />
+
+	<polygon points="10 10 16 4 22 10" fill="#aaa" />
+	<polygon points="10 10 4 16 10 22" fill="#aaa" />
+	<polygon points="22 10 28 16 22 22" fill="#aaa" />
+	<polygon points="10 22 16 28 22 22" fill="#aaa" />
 </svg>
+
