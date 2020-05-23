@@ -2,7 +2,7 @@
 	function costToHTML(cost) {
 		let html = "";
 		for (let material in cost) {
-			html += '<span style="display:inline-block;padding-right:4px;">' + cost[material] + '&nbsp;<span class="icon icon-' + material + '"></span></span> ';
+			html += '<span style="display:inline-block;padding-right:4px;">' + cost[material]/10 + '&nbsp;<span class="icon icon-' + material + '"></span></span> ';
 		}
 		return html;
 	}
@@ -51,6 +51,7 @@
 				root.appendChild(itemsElem);
 
 				const categoriesElem = document.createElement("div");
+				categoriesElem.className = "categories";
 				for (let category of this.categories.keys()) {
 					let categoryElem = document.createElement("div");
 					categoryElem.id = "category-" + category;	

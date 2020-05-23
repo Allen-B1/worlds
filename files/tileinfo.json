@@ -1,7 +1,7 @@
 {
 	"camp": {
 		"name": "Camp",
-		"pollution": 0,
+		"pollution": 1,
 		"cost": {
 			"brick": 50
 		},
@@ -13,59 +13,10 @@
 		"name": "Bridge",
 		"pollution": 0,
 		"cost": {
-			"copper": 10,
 			"iron": 10
 		},
-		"category": "miscellaneous",
+		"category": "military",
 		"description": "Walk on water"
-	},
-	"cleaner": {
-		"name": "Cleaner",
-		"pollution": 0,
-		"cost": {
-			"iron": 50,
-			"uranium": 50
-		},
-		"category": "miscellaneous",
-		"description": "Removes 1 pollution/turn"
-	},
-	"copper-wall": {
-		"name": "Copper Wall",
-		"pollution": 0,
-		"cost": {
-			"copper": 10
-		},
-		"strength": 500,
-		"category": "military"
-	},
-	"core": {
-		"name": "Core",
-		"pollution": 0,
-		"cost": {
-			"brick": 1000,
-			"copper": 1000,
-			"iron": 1000,
-			"gold": 500
-		},
-		"category": "miscellaneous",
-		"description": "Hub of civilization",
-		"capacity": {
-			"brick": 100,
-			"copper": 100,
-			"iron": 100,
-			"gold": 20,
-			"green": 50
-		}
-	},
-	"greenhouse": {
-		"name": "Greenhouse",
-		"pollution": 0,
-		"cost": {
-			"green": 50,
-			"iron": 10
-		},
-		"category": "miscellaneous",
-		"hidden": true
 	},
 	"iron-wall": {
 		"name": "Iron Wall",
@@ -76,121 +27,103 @@
 		"category": "military",
 		"strength": 2000
 	},
+
+	"core": {
+		"name": "Core",
+		"pollution": 0,
+		"cost": {
+			"brick": 10000,
+			"iron": 10000,
+			"gold": 1000
+		},
+		"category": "civilization",
+		"description": "Hub of civilization"
+	},
 	"launcher": {
 		"name": "Launcher",
 		"pollution": 0,
 		"cost": {
-			"brick": 500,
-			"copper": 500,
-			"iron": 500,
-			"gold": 200
+			"brick": 5000,
+			"iron": 5000,
+			"gold": 2000
 		},
-		"category": "miscellaneous",
+		"category": "civilization",
 		"description": "Provides rockets to Mars" 
 	},
+
+	"cleaner": {
+		"name": "Cleaner",
+		"pollution": 0,
+		"cost": {
+			"iron": 100,
+			"uranium": 100
+		},
+		"category": "environment",
+		"description": "Removes 1 pollution/turn"
+	},
+	"greenhouse": {
+		"name": "Greenhouse",
+		"pollution": 0,
+		"cost": {
+			"green": 10,
+			"iron": 10
+		},
+		"category": "environment",
+		"hidden": true
+	},
+
 
 	"kiln": {
 		"name": "Kiln",
 		"pollution": 1,
 		"cost": {
-			"brick": 20
+			"brick": 50
 		},
 		"category": "resources",
 		"description": "Generates 1 brick/turn"
 	},
-	"mine1": {
-		"name": "Mine v1",
+	"mine": {
+		"name": "General Mine",
 		"pollution": 1,
 		"cost": {
 			"brick": 100
 		},
 		"category": "resources",
-		"description": "Mines copper"
+		"mine": {
+			"coal": 1,
+			"iron": 1,
+			"gold": 1
+		},
+		"description": "Mines C, Fe, Au at +0.1/turn"
 	},
-	"mine2": {
-		"name": "Mine v2",
+	"mine_electric": {
+		"name": "Electric Mine",
 		"pollution": 0,
 		"cost": {
 			"brick": 100,
-			"copper": 100
+			"iron": 100,
+			"gold": 100 
 		},
+		"electricity": true,
 		"category": "resources",
-		"description": "Mines copper, iron, uranium"
+		"mine": {
+			"coal": 5,
+			"iron": 5,
+			"gold": 5
+		},
+		"description": "Mines C, Fe, Au at +0.5/turn"
 	},
-	"mine3": {
-		"name": "Mine v3",
-		"pollution": 0,
+	"mine_uranium": {
+		"name": "Uranium Mine",
+		"pollution": 1,
 		"cost": {
-			"copper": 100,
-			"iron": 100
-		},
-		"category": "resources",
-		"description": "Mines gold"
-	},
-
-	"store-brick": {
-		"name": "Brick Store",
-		"cost": {
-			"copper": 100,
-			"brick": 100
-		},
-		"capacity": {
-			"brick": 500
-		},
-		"category": "resources",
-		"village": true,
-		"description": "Stores 500 brick"
-	},
-	"store-copper": {
-		"name": "Copper Store",
-		"cost": {
-			"copper": 100,
-			"brick": 100
-		},
-		"capacity": {
-			"copper": 500
-		},
-		"category": "resources",
-		"village": true,
-		"description": "Stores 500 copper"
-	},
-	"store-iron": {
-		"name": "Iron Store",
-		"cost": {
-			"copper": 100,
-			"brick": 100
-		},
-		"capacity": {
+			"brick": 100,
 			"iron": 500
 		},
 		"category": "resources",
-		"village": true,
-		"description": "Stores 500 iron"
-	},
-	"store-gold": {
-		"name": "Gold Store",
-		"cost": {
-			"copper": 100,
-			"iron": 100
+		"mine": {
+			"uranium": 1
 		},
-		"capacity": {
-			"gold": 200
-		},
-		"category": "resources",
-		"village": true,
-		"description": "Stores 200 gold"
-	},
-	"store-uranium": {
-		"name": "Uranium Store",
-		"cost": {
-			"iron": 200,
-			"gold": 50
-		},
-		"capacity": {
-			"uranium": 100
-		},
-		"category": "resources",
-		"village": true,
-		"description": "Stores 100 uranium"
+		"description": "Mines U at +0.1/turn"
 	}
 }

@@ -48,8 +48,6 @@ kbd {
 	padding: 0 4px;
 }
 
-.text-copper {
-	color: #b87333; }
 .text-brick {
 	color: #b74933; }
 .text-iron {
@@ -58,6 +56,8 @@ kbd {
 	color: #b7b033; }
 .text-uranium {
 	color: #8239cc; }
+.text-coal {
+	color: #212121; }
 .text-green {color: #6ABF3F; }
 
 .icon {
@@ -70,11 +70,6 @@ kbd {
 	background: #b74933;
 	border: 2px solid #7f3323; }
 .icon-brick::before { content: "Brk"; }
-.icon-copper {
-	color: #eee;
-	background: #b87333;
-	border: 2px solid #7f5023; }
-.icon-copper::before { content: "Cu"; }
 .icon-iron {
 	background: #aaa;
 	border: 2px solid #666; }
@@ -88,6 +83,11 @@ kbd {
 	background: #8239cc;
 	border: 2px solid #51237f; }
 .icon-uranium::before { content: "U"; }
+.icon-coal {
+	color: #eee;
+	background: #424242;
+	border: 2px solid #212121; }
+.icon-coal::before { content: "C"; }
 .icon-green {
 	color: #eee;
 	background: #6ABF3F;

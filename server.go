@@ -326,24 +326,7 @@ func main() {
 	m.HandleFunc("/{object}/room", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "files/room.html")
 	}).Methods("GET")
-	m.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "files/index.html")
-	}).Methods("GET")
-
-	files := []string{"style.css", "game.css",
-		"tiles/iron.svg", "tiles/copper.svg", "tiles/gold.svg", "tiles/green.svg", "tiles/uranium.svg",
-		"tiles/core.svg", "tiles/camp.svg", "tiles/mine1.svg", "tiles/mine2.svg", "tiles/mine3.svg", "tiles/kiln.svg",
-		"tiles/brick-wall.svg", "tiles/copper-wall.svg", "tiles/iron-wall.svg", "tiles/launcher.svg", "tiles/cleaner.svg", "tiles/ocean.svg",
-		"tiles/greenhouse.svg", "tiles/bridge.svg",
-		"tiles/store-brick.svg", "tiles/store-copper.svg", "tiles/store-gold.svg", "tiles/store-iron.svg", "tiles/store-uranium.svg",
-		"earth.ogg", "mars.ogg",
-		"game/tileinfo.js", "game/map.js", "game/tileinfo.css", "game/map.css", "game/stats.js", "game/stats.css", "game/players.js", "game/players.css", "game/diplomacy.js", "game/diplomacy.css", "game/game.js"}
-	for _, file := range files {
-		file2 := file
-		m.HandleFunc("/"+file2, func(w http.ResponseWriter, r *http.Request) {
-			http.ServeFile(w, r, "files/"+file2)
-		}).Methods("GET")
-	}
+	m.PathPrefix("/").Handler(http.FileServer(http.Dir("files"))).Methods("GET")
 
 	port := os.Getenv("PORT")
 	if port == "" {

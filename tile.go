@@ -44,14 +44,14 @@ type TileInfo struct {
 	Category  string            `json:"category"`
 	Strength  uint32            `json:"strength"`
 	Village   bool              `json:"village"`
-	Capacity  map[Material]uint `json:"capacity"`
+	Mine      map[Material]uint `json:"mine"`
 }
 
 type Material string
 
 const (
 	Brick   Material = "brick"
-	Copper  Material = "copper"
+	Coal    Material = "coal"
 	Iron    Material = "iron"
 	Gold    Material = "gold"
 	Uranium Material = "uranium"

@@ -69,8 +69,8 @@
 
 [deposit=iron] {
 	background: url(/tiles/iron.svg) var(--territory); }
-[deposit=copper] {
-	background: url(/tiles/copper.svg) var(--territory); }
+[deposit=coal] {
+	background: url(/tiles/coal.svg) var(--territory); }
 [deposit=gold] {
 	background: url(/tiles/gold.svg) var(--territory); }
 [deposit=uranium] {

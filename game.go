@@ -29,8 +29,9 @@ type Game struct {
 	Deposits  []Material
 
 	Players []string
-	Amounts []MaterialAmounts
 	Losers  []int
+
+	Amounts []MaterialAmounts
 
 	Relationships map[[2]int]Relationship
 	Requests      map[[2]int]int
@@ -43,8 +44,7 @@ type Game struct {
 	Fog bool
 
 	// Dependent on above fields
-	Stats    []Stats
-	Capacity []map[Material]uint
+	Stats []Stats
 }
 
 func (g *Game) MarshalFor(player int) map[string]interface{} {
@@ -115,7 +115,6 @@ func (g *Game) MarshalFor(player int) map[string]interface{} {
 		"turn":      g.Turn,
 		"pollution": g.Pollution,
 		"stats":     g.Stats,
-		"capacity":  g.Capacity[player],
 
 		"requests":      requests,
 		"relationships": relationships,
@@ -185,33 +184,15 @@ func (g *Game) NextTurn() {
 		}
 	}
 
-	// calculate stats & capacity
+	// calculate stats
 	for player, _ := range g.Stats {
 		g.Stats[player].Pollution = 0
 	}
-	for player, _ := range g.Capacity {
-		g.Capacity[player] = make(map[Material]uint)
-	}
 	for tile, tileType := range g.TileTypes {
-		if g.Territory[tile] != -1 {
-			for material, capac := range TileInfos[tileType].Capacity {
-				g.Capacity[g.Territory[tile]][material] += capac
-			}
-		}
-
 		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] != -1 {
 			g.Stats[g.Territory[tile]].Pollution += int(TileInfos[tileType].Pollution)
 			if tileType == Cleaner {
 				g.Stats[g.Territory[tile]].Pollution -= 1
-			}
-		}
-	}
-
-	// enforce capacity
-	for player, caps := range g.Capacity {
-		for material, cap_ := range caps {
-			if cap_ < g.Amounts[player][material] {
-				g.Amounts[player][material] = cap_
 			}
 		}
 	}
@@ -352,14 +333,18 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		}
 	}
 
-	if tileType == MineV1 && g.Deposits[tile] != Copper {
-		return errors.New("mine v1 can only mine copper")
-	}
-	if tileType == MineV2 && g.Deposits[tile] != Copper && g.Deposits[tile] != Iron {
-		return errors.New("mine v2 can only mine copper and iron")
-	}
-	if tileType == MineV3 && g.Deposits[tile] == "" {
-		return errors.New("mine v3 must be placed over a deposit")
+	if len(TileInfos[tileType].Mine) != 0 {
+		canMine := false
+		for material, _ := range TileInfos[tileType].Mine {
+			if g.Deposits[tile] == material {
+				canMine = true
+				break
+			}
+		}
+
+		if !canMine {
+			return errors.New("'" + TileInfos[tileType].Name + "' not placed on valid deposit")
+		}
 	}
 
 	if TileInfos[tileType].Village {
@@ -497,8 +482,6 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 	for player, _ := range g.Amounts {
 		g.Amounts[player] = make(MaterialAmounts)
 	}
-
-	g.Capacity = make([]map[Material]uint, len(g.Players))
 
 	g.Relationships = make(map[[2]int]Relationship)
 	g.Requests = make(map[[2]int]int)

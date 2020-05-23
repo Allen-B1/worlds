@@ -108,50 +108,6 @@ func NewRandomMap() *Map {
 			}
 		}
 
-		// Copper
-		{
-			_, x, y := tileToCoord(tiles[rand.Intn(len(tiles))])
-			dTiles := []int{
-				tileFromCoord(Earth, x, y),
-				tileFromCoord(Earth, x+1, y),
-				tileFromCoord(Earth, x, y+1),
-				tileFromCoord(Earth, x+1, y+1),
-				tileFromCoord(Earth, x-1, y),
-				tileFromCoord(Earth, x, y-1),
-				tileFromCoord(Earth, x-1, y-1),
-				tileFromCoord(Earth, x-1, y+1),
-				tileFromCoord(Earth, x+1, y-1),
-			}
-
-			for _, tile := range dTiles {
-				if tile >= 0 {
-					m.Deposits[tile] = Copper
-					m.Terrain[tile] = Land
-				}
-			}
-
-			lTiles := []int{
-				tileFromCoord(Earth, x-2, y-1),
-				tileFromCoord(Earth, x-2, y),
-				tileFromCoord(Earth, x-2, y+1),
-				tileFromCoord(Earth, x+2, y-1),
-				tileFromCoord(Earth, x+2, y),
-				tileFromCoord(Earth, x+2, y+1),
-				tileFromCoord(Earth, x-1, y-2),
-				tileFromCoord(Earth, x, y-2),
-				tileFromCoord(Earth, x+1, y-2),
-				tileFromCoord(Earth, x-1, y+2),
-				tileFromCoord(Earth, x, y+2),
-				tileFromCoord(Earth, x+1, y+2),
-			}
-
-			for _, tile := range lTiles {
-				if tile >= 0 {
-					m.Terrain[tile] = Land
-				}
-			}
-		}
-
 		// Iron
 		{
 		outer:
@@ -201,8 +157,8 @@ func NewRandomMap() *Map {
 		}
 	}
 
-	// Iron Islands
-	for i := 0; i < 2; i++ {
+	// Iron / Coal Islands
+	for i := 0; i < 5; i++ {
 		var x, y uint
 		for {
 			x = uint(rand.Intn(EarthSize-2)) + 1
@@ -246,11 +202,16 @@ func NewRandomMap() *Map {
 
 		tiles[rand.Intn(4)+12] = -1
 
+		material := Iron
+		if i >= 2 {
+			material = Coal
+		}
+
 		for i, tile := range tiles {
 			if tile != -1 {
 				m.Terrain[tile] = Land
 				if i < 4 {
-					m.Deposits[tile] = Iron
+					m.Deposits[tile] = material
 				}
 			}
 		}
@@ -339,9 +300,7 @@ func NewRandomMap() *Map {
 		for _, tile := range tiles {
 			m.Terrain[tile] = Land
 
-			if rand.Intn(3) == 0 {
-				m.Deposits[tile] = Copper
-			} else if rand.Intn(16) == 0 {
+			if rand.Intn(64) == 0 {
 				m.Deposits[tile] = Green
 			}
 		}
