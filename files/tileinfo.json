@@ -120,6 +120,7 @@
 			"brick": 100,
 			"iron": 500
 		},
+		"electric": true,
 		"category": "resources",
 		"mine": {
 			"uranium": 1
