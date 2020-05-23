@@ -4,39 +4,35 @@
 		<title>worlds</title>
 		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="/style.css">
+		<style>
+.textfield:focus {
+	border-color: #3F6ABF;
+}
+		</style>
 	</head>
 	<body>
-		<div class="card">
+		<div class="card" id="card-join">
+			<input class="textfield" type="text" id="name-entry" placeholder="country name">
+			<button id="join">Join</button>
+		</div>
+		<div class="card" id="card-room" style="display:none">
 			<p>You are <b id="name">Anonymous</b></p>
 			<p><b id="count">0</b> of <b id="max">0</b></p>
 			<p><b>Fog of War</b>: <span id="fog">On</span></p>
 			<a class="button" href="/">Back</a>
 		</div>
 		<script>
-document.body.style.display = "none";
+const joinCard = document.getElementById("card-join");
+const roomCard = document.getElementById("card-room");
+
+const countElem = document.getElementById("count");
+const maxElem = document.getElementById("max");
+const nameElem = document.getElementById("name");
+const fogElem = document.getElementById("fog");
 
 const roomId = location.pathname.split("/")[1];
 var userId = null;
-var name = prompt("What is your name?");
-if (name == "" || name == null) {
-	location.href = "/";
-}
-{
-	var xhr = new XMLHttpRequest();
-	xhr.addEventListener("load", function() {
-		userId = xhr.responseText;
-		document.body.style.display = "block";
-	});
-	xhr.open("POST", "/api/" + roomId + "/join?name=" + name);
-	xhr.send();
-}
-
-var countElem = document.getElementById("count");
-var maxElem = document.getElementById("max");
-var nameElem = document.getElementById("name");
-var fogElem = document.getElementById("fog");
-
-nameElem.innerHTML = name;
+var name = "";
 
 function req() {
 	var xhr = new XMLHttpRequest();
@@ -54,12 +50,48 @@ function req() {
 	xhr.open("GET", "/api/" + roomId + "/data.json");
 	xhr.send();
 }
-setInterval(req, 500);
-req();
+
+document.getElementById("join").addEventListener("click", function() {
+	name = document.getElementById("name-entry").value;
+
+	var xhr = new XMLHttpRequest();
+	xhr.addEventListener("load", function() {
+		userId = xhr.responseText;
+
+		joinCard.style.display = "none";
+		roomCard.style.display = "block";
+
+		nameElem.innerHTML = name;
+
+		setInterval(req, 500);
+		req();
+	});
+	xhr.open("POST", "/api/" + roomId + "/join?name=" + name);
+	xhr.send();	
+});
 
 window.addEventListener("beforeunload", function() {
-	navigator.sendBeacon("/api/" + roomId + "/leave?key=" + userId, null);
+	if (userId != null) {
+		navigator.sendBeacon("/api/" + roomId + "/leave?key=" + userId, null);
+	}
 });
+
+function generateRandomName() {
+	let a = "ch sh sc b c d f g h j k s w ".split(" ");
+	let b = "a e i o u".split(" ");
+	let c = "t lt m".split(" ");
+	let d = "land ia ia".split(" ");
+	let p = ["Kingdom of ", "Duchy of ", "Empire of "];
+	let str =
+		a[(Math.random()*a.length)|0]+
+		b[(Math.random()*b.length)|0]+
+		c[(Math.random()*c.length)|0]+
+		d[(Math.random()*d.length)|0];
+	str = str[0].toUpperCase() + str.slice(1);
+	return p[(Math.random()*p.length)|0] + str;
+}
+
+document.getElementById("name-entry").value = generateRandomName();
 		</script>
 	</body>
 </html>
