@@ -69,6 +69,7 @@
 				if (newSelected != selected && newSelected != null && newSelected.classList.contains("item")) {
 					selected.classList.remove("selected");
 					newSelected.classList.add("selected");
+					newSelected.scrollIntoView();
 				}
 			};
 
