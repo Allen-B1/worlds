@@ -71,6 +71,7 @@
 						elem.removeAttribute("selected");
 					}
 					self.tileAt(toTile).setAttribute("selected", "");
+					self.tileAt(toTile).scrollIntoView({block:"center",inline:"center"});
 
 					self.dispatchEvent(new CustomEvent("move", {detail:{from:tile,to:toTile}}));
 				}
