@@ -32,8 +32,8 @@
 		"name": "Core",
 		"pollution": 0,
 		"cost": {
-			"brick": 10000,
-			"iron": 10000,
+			"brick": 5000,
+			"iron": 5000,
 			"gold": 1000
 		},
 		"category": "civilization",
@@ -43,8 +43,8 @@
 		"name": "Launcher",
 		"pollution": 0,
 		"cost": {
-			"brick": 5000,
-			"iron": 5000,
+			"brick": 10000,
+			"iron": 10000,
 			"gold": 2000
 		},
 		"category": "civilization",
@@ -56,6 +56,7 @@
 		"pollution": 0,
 		"cost": {
 			"iron": 100,
+			"gold": 100,
 			"uranium": 100
 		},
 		"electric": true,
@@ -119,7 +120,8 @@
 		"pollution": 1,
 		"cost": {
 			"brick": 100,
-			"iron": 500
+			"iron": 500,
+			"gold": 100
 		},
 		"electric": true,
 		"category": "resources",

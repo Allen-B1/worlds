@@ -11,10 +11,13 @@
 		<script defer src="/game/players.js"></script>
 		<script defer src="/game/diplomacy.js"></script>
 		<meta charset="utf8">
+		<style>
+body { padding: 0; margin: 0; }
+		</style>
 	</head>
 	<body>
-		<w-map id="earth" width="48" height="48" style="display:block;margin:64px auto"></w-map> 
-		<w-map style="display:none;margin:64px auto;" id="mars" width="24" height="24"></w-map> 
+		<w-map id="earth" width="64" height="64" style="display:block;margin:auto;"></w-map> 
+		<w-map style="display:none;margin:auto;" id="mars" width="24" height="24"></w-map> 
 
 		<button style="position:fixed;top:32px;left:0;right:0;margin:auto;width:100px;z-index:4;display:none" id="switch">To Mars</button>
 
@@ -31,8 +34,8 @@ const marsElem = document.getElementById("mars");
 const earthElem = document.getElementById("earth");
 
 function tileAt(i) {
-	if (i >= 48*48) {
-		return marsElem.tileAt(i - 48*48);
+	if (i >= 64*64) {
+		return marsElem.tileAt(i - 64*64);
 	}
 	return earthElem.tileAt(i);
 }
@@ -71,7 +74,7 @@ ws.onmessage = function(msg) {
 		playersElem.setPlayers(players, playerIndex);
 		break;
 	case "update":
-		for (let i = 0; i < 48*48+24*24; i++) {
+		for (let i = 0; i < 64*64+24*24; i++) {
 			const tile = tileAt(i);
 			tile.setAttribute("tiletype", data[1].tiletypes[i]);
 			tile.setAttribute("territory", data[1].territory[i]);
@@ -135,21 +138,21 @@ earthElem.addEventListener("delete", function(e) {
 	}
 });
 marsElem.addEventListener("move", function(e) {
-	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from+48*48, to: e.detail.to+48*48}]));
+	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from+64*64, to: e.detail.to+64*64}]));
 });
 marsElem.addEventListener("nuke", function(e) {
-	ws.send(JSON.stringify(["nuke", {id: roomId, tile: e.detail+48*48}]));
+	ws.send(JSON.stringify(["nuke", {id: roomId, tile: e.detail+64*64}]));
 });
 marsElem.addEventListener("launch", function(e) {
-	if (tileAt(e.detail+48*48).getAttribute("tiletype") == "launcher") {
+	if (tileAt(e.detail+64*64).getAttribute("tiletype") == "launcher") {
 		document.getElementById("switch").click();
 	}
 
-	ws.send(JSON.stringify(["launch", {id: roomId, tile: e.detail+48*48}]));
+	ws.send(JSON.stringify(["launch", {id: roomId, tile: e.detail+64*64}]));
 });
 marsElem.addEventListener("delete", function(e) {
 	for (let tile of e.detail) {
-		ws.send(JSON.stringify(["make", {id: roomId, tile: tile+48*48, type: ""}]));
+		ws.send(JSON.stringify(["make", {id: roomId, tile: tile+64*64, type: ""}]));
 	}
 });
 
@@ -171,7 +174,7 @@ document.getElementById("switch").addEventListener("click", function() {
 document.querySelector("w-tileinfo").addEventListener("make", function(e) {
 	let tiles = activeMap.selected();
 	if (activeMap.id == "mars")
-		tiles = tiles.map(t => t + 48*48);
+		tiles = tiles.map(t => t + 64*64);
 
 	for (let tile of tiles) {
 		ws.send(JSON.stringify(["make", {id: roomId, tile: tile, type: e.detail}]));

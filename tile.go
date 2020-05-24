@@ -12,7 +12,7 @@ const (
 	Earth Planet = "earth"
 
 	MarsSize  = 24 // 24*24
-	EarthSize = 48 // 48*48
+	EarthSize = 64 // 64*64
 )
 
 type TileType string

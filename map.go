@@ -158,7 +158,7 @@ func NewRandomMap() *Map {
 	}
 
 	// Iron / Coal Islands
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 12; i++ {
 		var x, y uint
 		for {
 			x = uint(rand.Intn(EarthSize-2)) + 1
@@ -203,7 +203,7 @@ func NewRandomMap() *Map {
 		tiles[rand.Intn(4)+12] = -1
 
 		material := Iron
-		if i >= 2 {
+		if i >= 5 {
 			material = Coal
 		}
 
@@ -265,7 +265,7 @@ func NewRandomMap() *Map {
 	}
 
 	// Tiny Islands
-	for i := 0; i < 8; i++ {
+	for i := 0; i < 24; i++ {
 		var x, y uint
 		for {
 			x = uint(rand.Intn(EarthSize-2)) + 1

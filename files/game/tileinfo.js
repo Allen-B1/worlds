@@ -67,7 +67,11 @@
 					break;
 				}
 				if (newSelected != selected && newSelected != null && newSelected.classList.contains("item")) {
-					selected.classList.remove("selected");
+					let selected = shadow.querySelectorAll(".selected");
+					for (let item of selected) {
+						item.classList.remove("selected");
+					}
+
 					newSelected.classList.add("selected");
 					newSelected.scrollIntoView();
 				}
@@ -90,11 +94,6 @@
 					nameElem.innerHTML = category[0].toUpperCase() + category.slice(1);
 					categoryElem.appendChild(nameElem);
 
-					let selected = shadow.querySelectorAll(".selected");
-					for (let item of selected) {
-						item.classList.remove("selected");
-					}
-
 					let items = this.categories.get(category);
 					for (let item of items) {
 						let itemElem = document.createElement("div");
@@ -106,6 +105,11 @@
 						itemElem.appendChild(inner);
 
 						itemElem.onclick = () => {
+							let selected = shadow.querySelectorAll(".selected");
+							for (let item of selected) {
+								item.classList.remove("selected");
+							}
+							itemElem.classList.add("selected");							
 							this.dispatchEvent(new CustomEvent("make", {detail:item}));
 						};
 

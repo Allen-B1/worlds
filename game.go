@@ -217,7 +217,7 @@ outer2:
 	}
 
 	// death from pollution
-	if g.Pollution >= 200000 {
+	if g.Pollution >= 500000 {
 		for i := 0; i < EarthSize*EarthSize; i++ {
 			if g.Territory[i] >= 0 {
 				g.TileTypes[i] = ""
@@ -660,8 +660,8 @@ func (g *Game) Launch(player int, tile int) error {
 
 func (g *Game) Nuke(player int, tile int) error {
 	cost := map[Material]uint{
-		Uranium: 1000,
-		Iron:    1000,
+		Uranium: 50000,
+		Iron:    50000,
 	}
 
 	for material, amt := range cost {
@@ -707,7 +707,7 @@ func (g *Game) Nuke(player int, tile int) error {
 	}
 
 	if planet == Earth {
-		g.Pollution += 5000
+		g.Pollution += 100000
 	}
 
 	return nil
