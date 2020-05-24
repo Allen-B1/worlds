@@ -41,13 +41,41 @@
 			link.setAttribute("href", "/style.css");
 			shadow.appendChild(link);
 
-			this.init().then(() => {
-				const root = document.createElement("div");
-				root.className = "root";
-				shadow.appendChild(root);
+			const root = document.createElement("div");
+			root.className = "root";
+			shadow.appendChild(root);
 
+			this.onkeydown = function(e) {
+				let selected = shadow.querySelector(".selected");
+
+				let newSelected = null;
+				switch(e.code) {
+				case "KeyD":
+					newSelected = selected.nextElementSibling.nextElementSibling;
+					break;
+				case "KeyA":
+					newSelected = selected.previousElementSibling.previousElementSibling;
+					break;
+				case "KeyW":
+					newSelected = selected.parentNode.previousElementSibling.children[1];
+					break;
+				case "KeyS":
+					newSelected = selected.parentNode.nextElementSibling.children[1];
+					break;
+				case "Enter":
+					selected.click();
+					break;
+				}
+				if (newSelected != selected && newSelected != null && newSelected.classList.contains("item")) {
+					selected.classList.remove("selected");
+					newSelected.classList.add("selected");
+				}
+			};
+
+			this.init().then(() => {
 				const itemsElem = document.createElement("div");
 				itemsElem.className = "items";
+
 				root.appendChild(itemsElem);
 
 				const categoriesElem = document.createElement("div");
@@ -56,63 +84,60 @@
 					let categoryElem = document.createElement("div");
 					categoryElem.id = "category-" + category;	
 					categoryElem.className = "category";
-					categoryElem.innerHTML = category[0].toUpperCase() + category.slice(1);
 
-					categoryElem.addEventListener("click", () => {
-						let selected = shadow.querySelectorAll(".selected");
-						for (let item of selected) {
-							item.classList.remove("selected");
-						}
+					let nameElem = document.createElement("h3");
+					nameElem.innerHTML = category[0].toUpperCase() + category.slice(1);
+					categoryElem.appendChild(nameElem);
 
-						itemsElem.innerHTML = "";
-						categoryElem.classList.add("selected");
+					let selected = shadow.querySelectorAll(".selected");
+					for (let item of selected) {
+						item.classList.remove("selected");
+					}
 
-						let items = this.categories.get(category);
-						for (let item of items) {
-							let itemElem = document.createElement("div");
-							itemElem.className = "item";
+					let items = this.categories.get(category);
+					for (let item of items) {
+						let itemElem = document.createElement("div");
+						itemElem.className = "item";
 
-							let inner = document.createElement("span");
-							inner.innerHTML = this.tileinfos[item].strength || "1";
-							inner.style.background = "url(/tiles/" + item + ".svg)";
-							itemElem.appendChild(inner);
+						let inner = document.createElement("span");
+						inner.innerHTML = this.tileinfos[item].strength || "1";
+						inner.style.background = "url(/tiles/" + item + ".svg)";
+						itemElem.appendChild(inner);
 
-							itemElem.onclick = () => {
-								this.dispatchEvent(new CustomEvent("make", {detail:item}));
-							};
+						itemElem.onclick = () => {
+							this.dispatchEvent(new CustomEvent("make", {detail:item}));
+						};
 
-							itemsElem.appendChild(itemElem);
+						categoryElem.appendChild(itemElem);
 
-							{
-								let info = this.tileinfos[item];
-								let infoElem = document.createElement("div");
-								infoElem.className = "info";
+						{
+							let info = this.tileinfos[item];
+							let infoElem = document.createElement("div");
+							infoElem.className = "info";
 
-								let nameElem = document.createElement("h4");
-								nameElem.innerHTML = info.name;
-								infoElem.appendChild(nameElem);
+							let nameElem = document.createElement("h4");
+							nameElem.innerHTML = info.name;
+							infoElem.appendChild(nameElem);
 
-								if (info.description) {
-									let descElem = document.createElement("div");
-									descElem.innerHTML = info.description;
-									descElem.className = "description";
-									infoElem.appendChild(descElem);
-								}
-
-								let costElem = document.createElement("div");
-								costElem.innerHTML = costToHTML(info.cost);
-								infoElem.appendChild(costElem);
-
-								itemsElem.appendChild(infoElem);
+							if (info.description) {
+								let descElem = document.createElement("div");
+								descElem.innerHTML = info.description;
+								descElem.className = "description";
+								infoElem.appendChild(descElem);
 							}
-						}
-					});
 
-					categoriesElem.appendChild(categoryElem);
+							let costElem = document.createElement("div");
+							costElem.innerHTML = costToHTML(info.cost);
+							infoElem.appendChild(costElem);
+
+							categoryElem.appendChild(infoElem);
+						}
+					}
+
+					itemsElem.appendChild(categoryElem);
 				}
-				categoriesElem.children[0].click();
-				categoriesElem.className = "categories";
-				root.appendChild(categoriesElem);
+
+				shadow.querySelector(".item").classList.add("selected");
 			});
 		}
 	}

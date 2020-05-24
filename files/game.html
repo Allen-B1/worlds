@@ -185,6 +185,28 @@ playersElem.addEventListener("relationship", function(e) {
 diplomacyElem.addEventListener("accept", function(e) {
 	ws.send(JSON.stringify(["relationship", {id:roomId, upgrade:true, player: e.detail}]));
 });
+
+document.addEventListener("keydown", function(e) {
+	switch(e.code) {
+	case "KeyW":
+	case "KeyS":
+	case "KeyA":
+	case "KeyD":
+	case "Enter":
+		document.querySelector("w-tileinfo").dispatchEvent(new KeyboardEvent("keydown", {code:e.code}));
+		break;
+	case "ArrowUp":
+	case "ArrowDown":
+	case "ArrowLeft":
+	case "ArrowRight":
+	case "KeyL":
+	case "KeyN":
+	case "Backspace":
+		activeMap.dispatchEvent(new KeyboardEvent("keydown", {code:e.code}));
+		e.preventDefault();
+		return false;
+	}
+});
 		</script>
 	</body>
 </html>

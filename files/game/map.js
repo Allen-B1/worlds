@@ -19,7 +19,6 @@
 
 			var root = document.createElement("div");
 			root.className = "root";
-			root.setAttribute("tabIndex", -1);
 			this.shadow.appendChild(root);
 
 			root.style.width = width * 32 + "px";
@@ -53,18 +52,18 @@
 			}
 
 			let self = this;
-			root.addEventListener("keydown", function(e) {
+			this.addEventListener("keydown", function(e) {
 				switch(e.code) {
-				case "KeyW":
-				case "KeyA":
-				case "KeyS":
-				case "KeyD": {
+				case "ArrowUp":
+				case "ArrowDown":
+				case "ArrowLeft":
+				case "ArrowRight": {
 					let tile = self.selected()[0];
 					let toTile;
-					if (e.code == "KeyW") toTile = tile - width;
-					if (e.code == "KeyS") toTile = tile + width;
-					if (e.code == "KeyA") toTile = tile - 1;
-					if (e.code == "KeyD") toTile = tile + 1;
+					if (e.code == "ArrowUp") toTile = tile - width;
+					if (e.code == "ArrowDown") toTile = tile + width;
+					if (e.code == "ArrowLeft") toTile = tile - 1;
+					if (e.code == "ArrowRight") toTile = tile + 1;
 
 					console.log(tile + " => " + toTile);
 
