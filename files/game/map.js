@@ -54,6 +54,9 @@
 			let self = this;
 			this.addEventListener("keydown", function(e) {
 				switch(e.code) {
+				case "Backslash":
+					root.classList.toggle("half");
+					break;
 				case "ArrowUp":
 				case "ArrowDown":
 				case "ArrowLeft":
@@ -76,14 +79,14 @@
 					root.appendChild(queueElem);
 					console.log(tile + " => " + toTile);
 
-
 					for (let elem of root.querySelectorAll("[selected=\"\"]")) {
 						elem.removeAttribute("selected");
 					}
 					self.tileAt(toTile).setAttribute("selected", "");
 					self.tileAt(toTile).scrollIntoView({block:"center",inline:"center"});
 
-					self.dispatchEvent(new CustomEvent("move", {detail:{from:tile,to:toTile}}));
+					self.dispatchEvent(new CustomEvent("move", {detail:{from:tile,to:toTile,half:root.classList.contains("half")}}));
+					root.classList.remove("half");
 				}
 				break;
 				case "KeyL": {

@@ -18,15 +18,20 @@ func NewPatcher(g *Game, playerIndex int) *Patcher {
 }
 
 func (p *Patcher) applyFog() (armies []uint32, territory []int, terrain []Terrain, tiletypes []TileType, deposits []Material) {
-	if !p.g.Fog {
-		return p.g.Armies, p.g.Territory, p.g.Terrain, p.g.TileTypes, p.g.Deposits
-	}
-
 	armies = make([]uint32, len(p.g.Armies))
 	territory = make([]int, len(p.g.Territory))
 	tiletypes = make([]TileType, len(p.g.TileTypes))
 	deposits = make([]Material, len(p.g.Deposits))
 	terrain = make([]Terrain, len(p.g.Terrain))
+
+	if !p.g.Fog {
+		copy(armies, p.g.Armies)
+		copy(territory, p.g.Territory)
+		copy(tiletypes, p.g.TileTypes)
+		copy(deposits, p.g.Deposits)
+		copy(terrain, p.g.Terrain)
+		return
+	}
 
 	for tile, _ := range territory {
 		territory[tile] = -1

@@ -23,7 +23,7 @@ type Object struct {
 
 	Patchers map[*arbit.Client]*Patcher
 
-	Move []chan [2]int
+	Move []chan [3]interface{}
 
 	// Room keys => index
 	Transition map[string]int
@@ -50,7 +50,8 @@ func gameThread() {
 				for i := 0; i < len(game.Players); i++ {
 					select {
 					case move := <-obj.Move[i]:
-						_ = game.Move(i, move[0], move[1])
+						_ = game.Move(i, move[0].(int), move[1].(int), move[2].(bool))
+						fmt.Println("move")
 					default:
 						break
 					}
@@ -74,9 +75,9 @@ func gameThread() {
 					obj.Sockets = make(map[*arbit.Client]string)
 					obj.Data = NewGame(NewRandomMap(), arr, room.Fog)
 					obj.Patchers = make(map[*arbit.Client]*Patcher)
-					obj.Move = make([]chan [2]int, len(arr))
+					obj.Move = make([]chan [3]interface{}, len(arr))
 					for i, _ := range obj.Move {
-						obj.Move[i] = make(chan [2]int)
+						obj.Move[i] = make(chan [3]interface{})
 					}
 				}
 			}
@@ -197,8 +198,9 @@ func main() {
 		// nothing wrong with wrong type = 0
 		from, _ := m["from"].(float64)
 		to, _ := m["to"].(float64)
+		half := m["half"] == true
 
-		obj.Move[index] <- [2]int{int(from), int(to)}
+		obj.Move[index] <- [3]interface{}{int(from), int(to), half}
 	})
 
 	gamearb.On("make", playerAction(func(cl *arbit.Client, m map[string]interface{}, obj *Object, game *Game, index int) {

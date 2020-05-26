@@ -140,3 +140,16 @@
 	left: 12px;
 	top: 28px;
 }
+
+.half .tile[selected]::after {
+	content: '50%';
+	background: rgba(0,0,0,0.5);
+	position: absolute;
+	top: 0;
+	display: block;
+	width: 32px;
+	height: 24px;
+	padding-top: 8px;
+	color: #eee;
+	z-index: 3;
+}

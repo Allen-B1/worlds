@@ -145,7 +145,7 @@ ws.onopen = function() {
 }
 
 earthElem.addEventListener("move", function(e) {
-	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from, to: e.detail.to}]));
+	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from, to: e.detail.to, half:e.detail.half}]));
 });
 earthElem.addEventListener("nuke", function(e) {
 	ws.send(JSON.stringify(["nuke", {id: roomId, tile: e.detail}]));
@@ -164,7 +164,7 @@ earthElem.addEventListener("delete", function(e) {
 	}
 });
 marsElem.addEventListener("move", function(e) {
-	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from+64*64, to: e.detail.to+64*64}]));
+	ws.send(JSON.stringify(["move", {id: roomId, from: e.detail.from+64*64, to: e.detail.to+64*64, half:e.detail.half}]));
 });
 marsElem.addEventListener("nuke", function(e) {
 	ws.send(JSON.stringify(["nuke", {id: roomId, tile: e.detail+64*64}]));
@@ -231,6 +231,7 @@ document.addEventListener("keydown", function(e) {
 	case "KeyL":
 	case "KeyN":
 	case "Backspace":
+	case "Backslash":
 		activeMap.dispatchEvent(new KeyboardEvent("keydown", {code:e.code}));
 		e.preventDefault();
 		return false;

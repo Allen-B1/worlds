@@ -400,7 +400,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 	return nil
 }
 
-func (g *Game) Move(player int, from int, to int) error {
+func (g *Game) Move(player int, from int, to int, half bool) error {
 	if g.Territory[from] != player ||
 		g.Armies[from] < 1 ||
 		to >= len(g.Territory) || to < 0 {
@@ -425,6 +425,9 @@ func (g *Game) Move(player int, from int, to int) error {
 
 	fromArmies := g.Armies[from] - 1
 	toArmies := g.Armies[to]
+	if half {
+		fromArmies = g.Armies[from] / 2
+	}
 
 	assoc := g.association(player, g.Territory[to])
 	if player == g.Territory[to] || g.Relationships[assoc] == Allies {
