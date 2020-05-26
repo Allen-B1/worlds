@@ -47,16 +47,6 @@ func gameThread() {
 			}
 
 			if game, ok := obj.Data.(*Game); ok {
-				game.NextTurn()
-
-				for cl, patcher := range obj.Patchers {
-					cl.Send("update", patcher.Update())
-				}
-
-				if len(game.Losers) == len(game.Players) {
-					obj.Delete = true
-				}
-
 				for i := 0; i < len(game.Players); i++ {
 					select {
 					case move := <-obj.Move[i]:
@@ -64,6 +54,16 @@ func gameThread() {
 					default:
 						break
 					}
+				}
+
+				game.NextTurn()
+
+				if len(game.Losers) == len(game.Players) {
+					obj.Delete = true
+				}
+
+				for cl, patcher := range obj.Patchers {
+					cl.Send("update", patcher.Update())
 				}
 			}
 

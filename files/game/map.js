@@ -59,13 +59,23 @@
 				case "ArrowLeft":
 				case "ArrowRight": {
 					let tile = self.selected()[0];
+
 					let toTile;
 					if (e.code == "ArrowUp") toTile = tile - width;
 					if (e.code == "ArrowDown") toTile = tile + width;
 					if (e.code == "ArrowLeft") toTile = tile - 1;
 					if (e.code == "ArrowRight") toTile = tile + 1;
 
+					let queueElem = document.createElement("div");
+					queueElem.innerHTML = "&nbsp;";
+					queueElem.className = "queue";
+					queueElem.style.left = (tile % width) * 32 + "px";
+					queueElem.style.top = ((tile / width)|0) * 32 + "px";
+					queueElem.classList.add("queue-" + e.code.slice(5).toLowerCase());
+
+					root.appendChild(queueElem);
 					console.log(tile + " => " + toTile);
+
 
 					for (let elem of root.querySelectorAll("[selected=\"\"]")) {
 						elem.removeAttribute("selected");
@@ -96,10 +106,16 @@
 		}
 
 		electricity() {
-			let res = this.querySelectorAll("[electricity]");
+			let res = this.shadow.querySelectorAll("[electricity]");
 			if (res)
 				return res;
 			return [];
+		}
+
+		popQueue() {
+			let res = this.shadow.querySelectorAll(".queue");	
+			if (res.length > 0)
+				res[0].remove();
 		}
 
 		selected() {

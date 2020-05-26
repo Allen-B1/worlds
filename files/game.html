@@ -85,6 +85,9 @@ ws.onmessage = function(msg) {
 		}
 		break;
 	case "update":
+		earthElem.popQueue();
+		marsElem.popQueue();
+
 		for (let i in mdata.armies_diff) {
 			tileAt(i).setAttribute("army", mdata.armies_diff[i]);
 		}

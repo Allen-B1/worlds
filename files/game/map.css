@@ -66,7 +66,6 @@
 [tiletype=power_hydro] .inner {
 	background: url(/tiles/power_hydro.svg); }
 
-
 [deposit=iron] {
 	background: url(/tiles/iron.svg), var(--electricity) var(--territory); }
 [deposit=coal] {
@@ -93,15 +92,13 @@
 	--territory: hsl(250, 50%, 75%); }
 
 [electricity] {
-	--electricity: url(/tiles/electricity.svg);
-}
+	--electricity: url(/tiles/electricity.svg); }
 
 [terrain=fog] {
 	background: #aaa; }
 .tile[selected] {
 	outline: 2px solid #555;
-	z-index: 2;
-}
+	z-index: 2; }
 
 .tile::before {
 	position: absolute;
@@ -109,8 +106,37 @@
 	width: 32px;
 	z-index: 2;
 }
+
 .tile:not([army="0"])::before {
-	content: attr(army);
-}
+	content: attr(army); }
 [terrain=fog]::before {
 	content: "?"; }
+.queue {
+	display: block;
+	position: absolute;
+}
+.queue::before {
+	display: block;
+	position: relative;
+	background: #ccc;
+	width: 8px;
+	height: 8px;
+	content: " ";
+	z-index: 3;
+}
+.queue-up::before {
+	left: 12px;
+	top: -4px;
+}
+.queue-left::before {
+	left: -4px;
+	top: 12px;
+}
+.queue-right::before {
+	left: 28px;
+	top: 12px;
+}
+.queue-down::before {
+	left: 12px;
+	top: 28px;
+}
