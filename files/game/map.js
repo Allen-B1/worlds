@@ -95,6 +95,13 @@
 			})
 		}
 
+		electricity() {
+			let res = this.querySelectorAll("[electricity]");
+			if (res)
+				return res;
+			return [];
+		}
+
 		selected() {
 			return Array.from(this.shadow.querySelectorAll("[selected=\"\"]")).map(e => e.id.slice(5) | 0);
 		}

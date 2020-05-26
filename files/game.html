@@ -55,13 +55,14 @@ let relationships = [];
 
 ws.onmessage = function(msg) {
 	let data = JSON.parse(msg.data);
+	let mdata = data[1];
 	switch (data[0]) {
 	case "error":
-		console.error(data[1]);
+		console.error(mdata);
 		break;
 	case "start":
-		players = data[1].players;
-		playerIndex = data[1].playerIndex;
+		players = mdata.players;
+		playerIndex = mdata.playerIndex;
 		stats.add("Turn");
 		stats.add("P");
 
@@ -72,44 +73,66 @@ ws.onmessage = function(msg) {
 		materials.add("U", "text-uranium");
 
 		playersElem.setPlayers(players, playerIndex);
-		break;
-	case "update":
+
+		// Init map
 		for (let i = 0; i < 64*64+24*24; i++) {
 			const tile = tileAt(i);
-			tile.setAttribute("tiletype", data[1].tiletypes[i]);
-			tile.setAttribute("territory", data[1].territory[i]);
-			tile.setAttribute("terrain", data[1].terrain[i]);
-			tile.setAttribute("deposit", data[1].deposits[i]);
-			tile.setAttribute("army", data[1].armies[i]);
-			if (data[1].electricity[i] === playerIndex) {
-				tile.setAttribute("electricity", "");
-			} else {
-				tile.removeAttribute("electricity");
-			}
+			tile.setAttribute("tiletype", mdata.tiletypes[i]);
+			tile.setAttribute("territory", mdata.territory[i]);
+			tile.setAttribute("terrain", mdata.terrain[i]);
+			tile.setAttribute("deposit", mdata.deposits[i]);
+			tile.setAttribute("army", mdata.armies[i]);
 		}
-		stats.set("Turn", data[1].turn);
-		stats.set("P", data[1].pollution);
-		materials.set("Brk", (data[1].amounts[playerIndex].brick/10 || 0).toFixed(1));
-		materials.set("C", (data[1].amounts[playerIndex].coal/10 || 0).toFixed(1));
-		materials.set("Fe", (data[1].amounts[playerIndex].iron/10 || 0).toFixed(1));
-		materials.set("Au", (data[1].amounts[playerIndex].gold/10 || 0).toFixed(1));
-		materials.set("U", (data[1].amounts[playerIndex].uranium/10 || 0).toFixed(1));
-		if (data[1].amounts[playerIndex].green > 0) {
-			materials.add("G", "text-green");
-			materials.set("G", (data[1].amounts[playerIndex].green/10 | 0).toFixed(1));
+		break;
+	case "update":
+		for (let i in mdata.armies_diff) {
+			tileAt(i).setAttribute("army", mdata.armies_diff[i]);
 		}
-		playersElem.setLosers(data[1].losers || []);
-		playersElem.setStats(data[1].stats);
-		playersElem.setRelationships(data[1].relationships);
+		for (let i in mdata.territory_diff) {
+			tileAt(i).setAttribute("territory", mdata.territory_diff[i]);
+		}
+		for (let i in mdata.terrain_diff) {
+			tileAt(i).setAttribute("terrain", mdata.terrain_diff[i]);
+		}
+		for (let i in mdata.deposits_diff) {
+			tileAt(i).setAttribute("deposit", mdata.deposits_diff[i]);
+		}
+		for (let i in mdata.tiletypes_diff) {
+			tileAt(i).setAttribute("tiletype", mdata.tiletypes_diff[i]);
+		}
 
-		diplomacyElem.setRequests(players, data[1].relationships, data[1].requests);
+		let eTiles = Array.prototype.slice.call(earthElem.electricity()).concat(Array.prototype.slice.call(marsElem.electricity()));
+		for (let tile of eTiles) {
+			tile.removeAttribute("electricity");
+		}
+		if (mdata.electricity != null)
+			for (let i of mdata.electricity) {
+				tileAt(i).setAttribute("electricity", "");
+			}
+
+		stats.set("Turn", mdata.turn);
+		stats.set("P", mdata.pollution);
+		materials.set("Brk", (mdata.amounts.brick/10 || 0).toFixed(1));
+		materials.set("C", (mdata.amounts.coal/10 || 0).toFixed(1));
+		materials.set("Fe", (mdata.amounts.iron/10 || 0).toFixed(1));
+		materials.set("Au", (mdata.amounts.gold/10 || 0).toFixed(1));
+		materials.set("U", (mdata.amounts.uranium/10 || 0).toFixed(1));
+		if (mdata.amounts.green > 0) {
+			materials.add("G", "text-green");
+			materials.set("G", (mdata.amounts.green/10 | 0).toFixed(1));
+		}
+		playersElem.setLosers(mdata.losers || []);
+		playersElem.setStats(mdata.stats);
+		playersElem.setRelationships(mdata.relationships);
+
+		diplomacyElem.setRequests(players, mdata.relationships, mdata.requests);
 		for (let i = 0; i < relationships.length; i++) {
-			if (relationships[i] >= 0 && data[1].relationships[i] < 0) {
+			if (relationships[i] >= 0 && mdata.relationships[i] < 0) {
 				diplomacyElem.addWar(i, players[i]);
 			}
 		}
 
-		relationships = data[1].relationships;
+		relationships = mdata.relationships;
 		break;
 	}
 }

@@ -21,6 +21,8 @@ type Object struct {
 	// May only contain valid keys
 	Sockets map[*arbit.Client]string
 
+	Patchers map[*arbit.Client]*Patcher
+
 	// Room keys => index
 	Transition map[string]int
 
@@ -37,9 +39,7 @@ func gameThread() {
 		fmt.Println("next turn")
 		objects.Range(func(key, value interface{}) bool {
 			obj := value.(*Object)
-			//			fmt.Println("locking... loop")
 			obj.Lock()
-			//			fmt.Println("locked loop")
 			if obj.Delete {
 				objects.Delete(key)
 			}
@@ -47,10 +47,8 @@ func gameThread() {
 			if game, ok := obj.Data.(*Game); ok {
 				game.NextTurn()
 
-				for cl, key := range obj.Sockets {
-					// TODO: Create custom update function
-					// Separate game update vs player update
-					cl.Send("update", game.MarshalFor(obj.Transition[key]))
+				for cl, patcher := range obj.Patchers {
+					cl.Send("update", patcher.Update())
 				}
 
 				if len(game.Losers) == len(game.Players) {
@@ -64,6 +62,7 @@ func gameThread() {
 					obj.Transition = keymap
 					obj.Sockets = make(map[*arbit.Client]string)
 					obj.Data = NewGame(NewRandomMap(), arr, room.Fog)
+					obj.Patchers = make(map[*arbit.Client]*Patcher)
 				}
 			}
 			obj.Unlock()
@@ -152,16 +151,12 @@ func main() {
 			return
 		}
 
-		cl.Send("start", map[string]interface{}{
-			"players":     game.Players,
-			"playerIndex": index,
-		})
+		patcher := NewPatcher(game, index)
 
 		obj.Sockets[cl] = key
-	})
+		obj.Patchers[cl] = patcher
 
-	gamearb.OnClose(func(cl *arbit.Client, code int) {
-		// TODO
+		cl.Send("start", patcher.Start())
 	})
 
 	gamearb.On("move", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
