@@ -158,7 +158,7 @@ func NewRandomMap() *Map {
 	}
 
 	// Iron / Coal Islands
-	for i := 0; i < 12; i++ {
+	for i := 0; i < 18; i++ {
 		var x, y uint
 		for {
 			x = uint(rand.Intn(EarthSize-2)) + 1
@@ -167,7 +167,7 @@ func NewRandomMap() *Map {
 			for _, oldCenter := range islandCenters {
 				_, oldX, oldY := tileToCoord(oldCenter)
 
-				if (x-oldX < 11 || oldX-x < 11) && (y-oldY < 11 || oldY-y < 11) {
+				if (x-oldX < 9 || oldX-x < 9) && (y-oldY < 9 || oldY-y < 9) {
 					tooClose = true
 				}
 			}
@@ -206,54 +206,9 @@ func NewRandomMap() *Map {
 		if i >= 5 {
 			material = Coal
 		}
-
-		for i, tile := range tiles {
-			if tile != -1 {
-				m.Terrain[tile] = Land
-				if i < 4 {
-					m.Deposits[tile] = material
-				}
-			}
+		if i >= 13 {
+			material = Gold
 		}
-	}
-
-	// Gold Islands
-	for i := 0; i < 6; i++ {
-		var x, y uint
-		for {
-			x = uint(rand.Intn(EarthSize-2)) + 1
-			y = uint(rand.Intn(EarthSize-2)) + 1
-			tooClose := false
-			for _, oldCenter := range islandCenters {
-				_, oldX, oldY := tileToCoord(oldCenter)
-
-				if (x-oldX < 9 || oldX-x < 9) && (y-oldY < 9 || oldY-y < 9) {
-					tooClose = true
-				}
-			}
-
-			if !tooClose {
-				break
-			}
-		}
-		centerTile := tileFromCoord(Earth, x, y)
-		islandCenters = append(islandCenters, centerTile)
-
-		tiles := []int{
-			centerTile,
-			tileFromCoord(Earth, x+1, y+1),
-			tileFromCoord(Earth, x-1, y-1),
-			tileFromCoord(Earth, x-1, y+1),
-			tileFromCoord(Earth, x+1, y-1),
-			tileFromCoord(Earth, x+1, y),
-			tileFromCoord(Earth, x, y+1),
-			tileFromCoord(Earth, x-1, y),
-			tileFromCoord(Earth, x, y-1),
-		}
-
-		// Remove one corner tile randomly
-		// [1,4]
-		tiles[rand.Intn(4)+1] = -1
 
 		for _, tile := range tiles {
 			if tile != -1 {
@@ -261,7 +216,20 @@ func NewRandomMap() *Map {
 			}
 		}
 
-		m.Deposits[centerTile] = Gold
+		if material == Iron || material == Coal {
+			exclude := rand.Intn(4)
+			exclude2 := exclude
+			if rand.Intn(2) == 0 {
+				exclude2 = rand.Intn(4)
+			}
+			for i := 0; i < 4; i++ {
+				if i != exclude && i != exclude2 {
+					m.Deposits[tiles[i]] = material
+				}
+			}
+		} else {
+			m.Deposits[tiles[rand.Intn(4)]] = material
+		}
 	}
 
 	// Tiny Islands
