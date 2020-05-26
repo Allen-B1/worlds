@@ -1,7 +1,5 @@
 package main
 
-import "log"
-
 type Patcher struct {
 	g              *Game
 	playerIndex    int

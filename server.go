@@ -23,6 +23,8 @@ type Object struct {
 
 	Patchers map[*arbit.Client]*Patcher
 
+	Move []chan [2]int
+
 	// Room keys => index
 	Transition map[string]int
 
@@ -54,6 +56,15 @@ func gameThread() {
 				if len(game.Losers) == len(game.Players) {
 					obj.Delete = true
 				}
+
+				for i := 0; i < len(game.Players); i++ {
+					select {
+					case move := <-obj.Move[i]:
+						_ = game.Move(i, move[0], move[1])
+					default:
+						break
+					}
+				}
 			}
 
 			if room, ok := obj.Data.(*Room); ok {
@@ -63,6 +74,10 @@ func gameThread() {
 					obj.Sockets = make(map[*arbit.Client]string)
 					obj.Data = NewGame(NewRandomMap(), arr, room.Fog)
 					obj.Patchers = make(map[*arbit.Client]*Patcher)
+					obj.Move = make([]chan [2]int, len(arr))
+					for i, _ := range obj.Move {
+						obj.Move[i] = make(chan [2]int)
+					}
 				}
 			}
 			obj.Unlock()
@@ -77,7 +92,7 @@ func gameThread() {
 //
 // assumes m["id"] is id
 // also locks&unlocks the object for you :)
-func playerAction(f func(cl *arbit.Client, m map[string]interface{}, game *Game, index int)) func(cl *arbit.Client, data interface{}) {
+func playerAction(f func(cl *arbit.Client, m map[string]interface{}, obj *Object, game *Game, index int)) func(cl *arbit.Client, data interface{}) {
 	return func(cl *arbit.Client, data interface{}) {
 		m, ok := data.(map[string]interface{})
 		if !ok {
@@ -106,7 +121,7 @@ func playerAction(f func(cl *arbit.Client, m map[string]interface{}, game *Game,
 			return
 		}
 
-		f(cl, m, game, index)
+		f(cl, m, obj, game, index)
 	}
 }
 
@@ -159,19 +174,34 @@ func main() {
 		cl.Send("start", patcher.Start())
 	})
 
-	gamearb.On("move", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+	gamearb.On("move", func(cl *arbit.Client, data interface{}) {
+		m, ok := data.(map[string]interface{})
+		if !ok {
+			return
+		}
+
+		raw, _ := objects.Load(m["id"])
+		obj, ok := raw.(*Object)
+		if !ok {
+			cl.Send("error", "invalid id")
+			return
+		}
+
+		index, ok := obj.Transition[obj.Sockets[cl]]
+		if !ok {
+			cl.Send("error", "invalid key")
+			return
+		}
+
 		// screw error handling
 		// nothing wrong with wrong type = 0
 		from, _ := m["from"].(float64)
 		to, _ := m["to"].(float64)
 
-		err := game.Move(index, int(from), int(to))
-		if err != nil {
-			cl.Send("error", err.Error())
-		}
-	}))
+		obj.Move[index] <- [2]int{int(from), int(to)}
+	})
 
-	gamearb.On("make", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+	gamearb.On("make", playerAction(func(cl *arbit.Client, m map[string]interface{}, obj *Object, game *Game, index int) {
 		// screw error handling, again
 		tile, _ := m["tile"].(float64)
 		tileType := TileType(fmt.Sprint(m["type"]))
@@ -182,7 +212,7 @@ func main() {
 		}
 	}))
 
-	gamearb.On("launch", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+	gamearb.On("launch", playerAction(func(cl *arbit.Client, m map[string]interface{}, obj *Object, game *Game, index int) {
 		// screw error handling, again
 		tile, _ := m["tile"].(float64)
 
@@ -192,7 +222,7 @@ func main() {
 		}
 	}))
 
-	gamearb.On("nuke", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+	gamearb.On("nuke", playerAction(func(cl *arbit.Client, m map[string]interface{}, obj *Object, game *Game, index int) {
 		// screw error handling, again
 		tile, _ := m["tile"].(float64)
 
@@ -202,7 +232,7 @@ func main() {
 		}
 	}))
 
-	gamearb.On("relationship", playerAction(func(cl *arbit.Client, m map[string]interface{}, game *Game, index int) {
+	gamearb.On("relationship", playerAction(func(cl *arbit.Client, m map[string]interface{}, obj *Object, game *Game, index int) {
 		// screw error handling, yet again
 		player, _ := m["player"].(float64)
 		upgrade := m["upgrade"] == true
