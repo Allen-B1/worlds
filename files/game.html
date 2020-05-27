@@ -245,6 +245,10 @@ document.addEventListener("keydown", function(e) {
 		break;
 	}
 });
+
+setInterval(function() {
+	fetch("/ping");
+}, 100000);
 		</script>
 	</body>
 </html>
