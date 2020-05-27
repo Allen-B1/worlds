@@ -21,7 +21,7 @@ body { padding: 0; margin: 0; }
 
 		<button style="position:fixed;top:32px;left:0;right:0;margin:auto;width:100px;z-index:4;display:none" id="switch">To Mars</button>
 
-		<w-tileinfo style="position:fixed;left:32px;bottom:32px;width:250px;height:150px;z-index:3"></w-tileinfo>
+		<w-tileinfo id="tileinfo" style="position:fixed;left:32px;bottom:32px;width:250px;height:150px;z-index:3"></w-tileinfo>
 		<w-stats id="stats" style="position:fixed;left:32px;top:32px;z-index:3;"></w-stats>
 		<w-stats id="materials" style="position:fixed;left:32px;top:128px;z-index:3;"></w-stats>
 		<w-players id="players" style="position:fixed;right:32px;top:32px;z-index:3"></w-players>
@@ -228,13 +228,21 @@ document.addEventListener("keydown", function(e) {
 	case "ArrowDown":
 	case "ArrowLeft":
 	case "ArrowRight":
+		e.preventDefault();
 	case "KeyL":
 	case "KeyN":
 	case "Backspace":
 	case "Backslash":
 		activeMap.dispatchEvent(new KeyboardEvent("keydown", {code:e.code}));
-		e.preventDefault();
 		return false;
+	case "KeyH":
+		let tileInfoElem = document.getElementById("tileinfo");
+		tileInfoElem.style.display = tileInfoElem.style.display == "none" ? "block" : "none";
+		playersElem.style.display = playersElem.style.display == "none" ? "block" : "none";
+		diplomacyElem.style.display = diplomacyElem.style.display == "none" ? "block" : "none";
+		stats.style.display = stats.style.display == "none" ? "block" : "none";
+		materials.style.display = materials.style.display == "none" ? "block" : "none";
+		break;
 	}
 });
 		</script>
