@@ -36,9 +36,11 @@ type Object struct {
 var objects sync.Map
 
 func gameThread() {
+	isTurn := false
 	for {
-		turnTimer := time.After(1000 * time.Millisecond)
-		fmt.Println("next turn")
+		isTurn = !isTurn
+
+		turnTimer := time.After(500 * time.Millisecond)
 		objects.Range(func(key, value interface{}) bool {
 			obj := value.(*Object)
 			obj.Lock()
@@ -57,7 +59,9 @@ func gameThread() {
 					}
 				}
 
-				game.NextTurn()
+				if isTurn {
+					game.NextTurn()
+				}
 
 				if len(game.Losers) == len(game.Players) {
 					obj.Delete = true

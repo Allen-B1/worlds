@@ -59,4 +59,4 @@ func NewRoom(max int, fog bool) *Room {
 		Players: make(map[string]string),
 		Fog:     fog,
 	}
-}	
+}
