@@ -137,6 +137,8 @@ ws.onmessage = function(msg) {
 
 		relationships = mdata.relationships;
 		break;
+	case "end":
+		location.href = "/" + roomId + "/results";
 	}
 }
 

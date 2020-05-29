@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>worlds</title>
+		<link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+		<link rel="stylesheet" href="/style.css">
+		<style>
+.result {
+	display: flex;
+	flex-direction: row;
+}
+.name {
+	margin: 0 8px;
+	flex-grow: 1;
+	text-align: left;
+}
+.pollution {
+	width: 24px;
+}
+.place {
+	width: 32px;
+}
+h3 {
+	margin: 0;
+	margin-bottom: 4px;
+}
+p {
+	margin: 0;
+	margin-bottom: 8px;
+}
+#results {
+	margin-bottom: 16px;
+}
+.loser .name {
+	text-decoration: line-through; }
+.loser .place {
+	color: #999; }
+		</style>
+	</head>
+	<body>
+		<div class="card">
+			<h3>Results</h3>
+			<p><span id="turn"></span> Turns</p>
+			<div id="results"></div>
+			<a class="button" href="/">Back</a>
+		</div>
+
+		<script>
+const HUES = [0, 100, 200, 300, 35, 250];
+
+const gameId = location.pathname.split("/")[1];
+fetch("/api/" + gameId + "/data.json").then(resp => resp.json()).then((data) => {
+	document.getElementById("turn").innerHTML = data.turn;
+
+	let results = [];
+	for (let i = 0; i < data.results.length; i++) {
+		results.push({
+			index: i,
+			pollution: data.results[i].pollution,
+			place: data.results[i].place,
+			name: data.results[i].name
+		});
+	}
+	results.sort((a, b) => {
+		if (a.place == b.place) {
+			return a.index - b.index;
+		}
+		if (a.place == 0) return 1;
+		if (b.place == 0) return -1;
+		if (a.place < b.place) return -1;
+		if (a.place > b.place) return 1;
+	});
+
+	let cardElem = document.getElementById("results");
+	for (let result of results) {
+		let resultElem = document.createElement("div");
+		resultElem.className = "result";
+		if (result.place == 0) resultElem.classList.add("loser");
+
+		let placeElem = document.createElement("div");
+		placeElem.className = "place";
+		if (result.place == 1) placeElem.textContent = "1st";
+		else if (result.place == 2) placeElem.textContent = "2nd";
+		else if (result.place == 3) placeElem.textContent = "3rd";
+		else if (result.place == 0) placeElem.textContent = "L";
+		else placeElem.textContent = result.place + "th";
+
+		resultElem.appendChild(placeElem);
+
+		let nameElem = document.createElement("div");
+		nameElem.className = "name";
+		nameElem.textContent = result.name;
+		nameElem.style.color = "hsl(" + HUES[result.index] + ", 50%, 50%)";
+		resultElem.appendChild(nameElem);
+
+		let pollElem = document.createElement("div");
+		pollElem.className = "pollution";
+		pollElem.innerHTML = -result.pollution;
+		resultElem.appendChild(pollElem);
+		cardElem.appendChild(resultElem);
+	}
+});
+		</script>
+	</body>
+</html>
+

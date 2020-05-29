@@ -46,6 +46,8 @@ type Game struct {
 	// Dependent on above fields
 	Stats       []Stats
 	Electricity []int
+
+	TotalRemoved []uint
 }
 
 func (g *Game) NextTurn() {
@@ -127,6 +129,7 @@ outer2:
 			case Cleaner:
 				if planet, _, _ := tileToCoord(tile); planet == Earth {
 					cleaning += 1
+					g.TotalRemoved[g.Territory[tile]] += 1
 				}
 			}
 
@@ -480,6 +483,8 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 	for player, _ := range g.Amounts {
 		g.Amounts[player] = make(MaterialAmounts)
 	}
+
+	g.TotalRemoved = make([]uint, len(players))
 
 	g.Electricity = make([]int, EarthSize*EarthSize+MarsSize*MarsSize)
 

@@ -19,16 +19,16 @@ type Object struct {
 
 	// Socket  => key
 	// May only contain valid keys
-	Sockets map[*arbit.Client]string
-
+	Sockets  map[*arbit.Client]string
 	Patchers map[*arbit.Client]*Patcher
+
+	End *PatcherEnd
 
 	Move []chan [3]interface{}
 
 	// Room keys => index
 	Transition map[string]int
 
-	Delete bool
 	sync.Mutex
 }
 
@@ -44,9 +44,6 @@ func gameThread() {
 		objects.Range(func(key, value interface{}) bool {
 			obj := value.(*Object)
 			obj.Lock()
-			if obj.Delete {
-				objects.Delete(key)
-			}
 
 			if game, ok := obj.Data.(*Game); ok {
 				for i := 0; i < len(game.Players); i++ {
@@ -63,12 +60,18 @@ func gameThread() {
 					game.NextTurn()
 				}
 
-				if len(game.Losers) == len(game.Players) {
-					obj.Delete = true
+				endData := (*PatcherEnd)(nil)
+				for cl, patcher := range obj.Patchers {
+					update := patcher.Update()
+					cl.Send("update", update)
+					if update.End {
+						cl.Send("end", nil)
+						endData = patcher.End()
+					}
 				}
 
-				for cl, patcher := range obj.Patchers {
-					cl.Send("update", patcher.Update())
+				if endData != nil {
+					obj.Data = endData
 				}
 			}
 
@@ -267,9 +270,9 @@ func main() {
 		io.WriteString(w, id)
 	}).Methods("POST")
 
-	m.HandleFunc("/api/{room}/data.json", func(w http.ResponseWriter, r *http.Request) {
+	m.HandleFunc("/api/{obj}/data.json", func(w http.ResponseWriter, r *http.Request) {
 		vars := mux.Vars(r)
-		raw, _ := objects.Load(vars["room"])
+		raw, _ := objects.Load(vars["obj"])
 		if raw == nil {
 			w.WriteHeader(404)
 			return
@@ -279,17 +282,17 @@ func main() {
 		obj.Lock()
 		defer obj.Unlock()
 
-		room, ok := obj.Data.(*Room)
-		if !ok {
+		_, ok := obj.Data.(*Game)
+		if ok {
 			io.WriteString(w, "{\"type\":\"game\"}")
 			return
 		}
 
-		body, err := json.Marshal(room)
+		body, err := json.Marshal(obj.Data)
 
 		if err != nil {
-			return
 			w.WriteHeader(500)
+			return
 		}
 
 		w.Header().Set("Content-Type", "application/json")
@@ -357,6 +360,10 @@ func main() {
 	m.HandleFunc("/{object}/room", func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, "files/room.html")
 	}).Methods("GET")
+	m.HandleFunc("/{object}/results", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "files/results.html")
+	}).Methods("GET")
+
 	m.PathPrefix("/").Handler(http.FileServer(http.Dir("files"))).Methods("GET")
 
 	port := os.Getenv("PORT")

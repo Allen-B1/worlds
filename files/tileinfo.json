@@ -6,7 +6,7 @@
 			"brick": 50
 		},
 		"category": "military",
-		"description": "Produces 0.5 army/turn",
+		"description": "Produces +0.5 army/turn",
 		"village": true
 	},
 	"bridge": {

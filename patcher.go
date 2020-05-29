@@ -1,5 +1,9 @@
 package main
 
+import (
+	"sort"
+)
+
 type Patcher struct {
 	g              *Game
 	playerIndex    int
@@ -151,7 +155,81 @@ func (p *Patcher) Update() *PatcherUpdate {
 	out.Pollution = p.g.Pollution
 	out.Amounts = p.g.Amounts[p.playerIndex]
 
+	if (len(p.g.Losers)+1 == len(p.g.Players) && len(p.g.Players) != 1) || len(p.g.Losers) == len(p.g.Players) || p.g.Pollution == 0 {
+		out.End = true
+	}
+
 	return out
+}
+
+type patcherEndSort struct {
+	results []PatcherResult
+	losers  []int
+	// map place => player
+	order []int
+}
+
+func (p *patcherEndSort) Init() {
+	p.order = make([]int, len(p.results))
+	for i, _ := range p.order {
+		p.order[i] = i
+	}
+}
+
+func (p *patcherEndSort) Len() int {
+	return len(p.results)
+}
+func (p *patcherEndSort) Less(i, j int) bool {
+	ip := p.order[i]
+	jp := p.order[j]
+
+	for _, loser := range p.losers {
+		if loser == jp {
+			return true
+		}
+	}
+	if p.results[ip].Pollution < p.results[jp].Pollution {
+		return true
+	}
+	return false
+}
+func (p *patcherEndSort) Swap(i, j int) {
+	p.order[i], p.order[j] = p.order[j], p.order[i]
+}
+
+func (p *Patcher) End() *PatcherEnd {
+	out := new(PatcherEnd)
+	out.Turn = p.g.Turn
+	out.Results = make([]PatcherResult, len(p.g.Players))
+	for i, name := range p.g.Players {
+		out.Results[i].Name = name
+		out.Results[i].Pollution = p.g.TotalRemoved[i]
+	}
+
+	sorter := patcherEndSort{out.Results, p.g.Losers, nil}
+	sorter.Init()
+	sort.Sort(&sorter)
+
+	for place, player := range sorter.order {
+		out.Results[player].Place = uint(place) + 1
+	}
+
+	for _, loser := range p.g.Losers {
+		out.Results[loser].Place = 0
+	}
+
+	return out
+}
+
+type PatcherResult struct {
+	Name      string `json:"name"`
+	Place     uint   `json:"place"` // 0 = Lost
+	Pollution uint   `json:"pollution"`
+}
+
+type PatcherEnd struct {
+	Results []PatcherResult `json:"results"`
+	Turn    uint            `json:"turn"`
 }
 
 type PatcherStart struct {
@@ -182,4 +260,6 @@ type PatcherUpdate struct {
 	Turn      uint            `json:"turn"`
 	Pollution uint            `json:"pollution"`
 	Amounts   MaterialAmounts `json:"amounts"`
+
+	End bool `json:"end"`
 }
