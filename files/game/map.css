@@ -47,6 +47,8 @@
 
 [tiletype=cleaner] .inner {
 	background: url(/tiles/cleaner.svg); }
+[tiletype=cleaner2] .inner {
+	background: url(/tiles/cleaner2.svg); }
 [tiletype=greenhouse] .inner {
 	background: url(/tiles/greenhouse.svg); }
 

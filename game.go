@@ -37,7 +37,7 @@ type Game struct {
 	Requests      map[[2]int]int
 
 	Turn      uint
-	Pollution uint
+	Pollution int
 
 	// TODO: Create a Config struct
 	// that encapsulates configuration options
@@ -83,7 +83,6 @@ outer:
 		}
 	}
 
-	cleaning := uint(0)
 outer2:
 	for tile, tileType := range g.TileTypes {
 		if TileInfos[tileType].Electric && g.Electricity[tile] != g.Territory[tile] {
@@ -92,6 +91,9 @@ outer2:
 
 		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] >= 0 {
 			g.Pollution += TileInfos[tileType].Pollution
+			if TileInfos[tileType].Pollution < 0 {
+				g.TotalRemoved[g.Territory[tile]] += uint(-TileInfos[tileType].Pollution)
+			}
 		}
 
 		if g.Terrain[tile] == Ocean && g.TileTypes[tile] != Bridge && g.Armies[tile] != 0 {
@@ -126,11 +128,6 @@ outer2:
 					break
 				}
 				g.Amounts[player][Brick] += 1
-			case Cleaner:
-				if planet, _, _ := tileToCoord(tile); planet == Earth {
-					cleaning += 1
-					g.TotalRemoved[g.Territory[tile]] += 1
-				}
 			}
 
 			if len(TileInfos[tileType].Mine) != 0 {
@@ -138,9 +135,7 @@ outer2:
 			}
 		}
 	}
-	if g.Pollution >= cleaning {
-		g.Pollution -= cleaning
-	} else {
+	if g.Pollution < 0 {
 		g.Pollution = 0
 	}
 
@@ -164,10 +159,7 @@ outer2:
 	}
 	for tile, tileType := range g.TileTypes {
 		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] != -1 {
-			g.Stats[g.Territory[tile]].Pollution += int(TileInfos[tileType].Pollution)
-			if tileType == Cleaner {
-				g.Stats[g.Territory[tile]].Pollution -= 1
-			}
+			g.Stats[g.Territory[tile]].Pollution += TileInfos[tileType].Pollution
 		}
 	}
 

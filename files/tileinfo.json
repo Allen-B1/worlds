@@ -61,7 +61,21 @@
 		},
 		"electric": true,
 		"category": "environment",
+		"pollution": -1,
 		"description": "Removes 1 pollution/turn"
+	},
+	"cleaner2": {
+		"name": "Mega Cleaner",
+		"pollution": 0,
+		"cost": {
+			"iron": 1000,
+			"gold": 1000,
+			"uranium": 1000
+		},
+		"electric": true,
+		"category": "environment",
+		"pollution": -100,
+		"description": "Removes 100 pollution/turn"
 	},
 	"greenhouse": {
 		"name": "Greenhouse",

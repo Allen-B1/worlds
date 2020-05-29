@@ -152,7 +152,7 @@ func (p *Patcher) Update() *PatcherUpdate {
 	out.Requests = requests
 
 	out.Turn = p.g.Turn
-	out.Pollution = p.g.Pollution
+	out.Pollution = uint(p.g.Pollution)
 	out.Amounts = p.g.Amounts[p.playerIndex]
 
 	if (len(p.g.Losers)+1 == len(p.g.Players) && len(p.g.Players) != 1) || len(p.g.Losers) == len(p.g.Players) || p.g.Pollution == 0 {
