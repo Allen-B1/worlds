@@ -25,7 +25,7 @@
 			"iron": 10
 		},
 		"category": "military",
-		"strength": 2000
+		"strength": 500
 	},
 
 	"core": {
@@ -131,21 +131,21 @@
 		"description": "Mines U at +0.1/turn"
 	},
 
-	"power_hydro": {
-		"name": "Hydro Power",
+	"power_solar": {
+		"name": "Solar Power",
 		"pollution": 0,
 		"cost": {
-			"brick": 2500,
-			"iron": 2500,
+			"brick": 1000,
+			"iron": 1000,
 			"gold": 500
 		},
 		"category": "electricity",
 		"electricity": 1,
-		"description": "Provides electricity in a 3x3 area"
+		"description": "Provides electricity in a 3x3 area."
 	},
 	"power_coal": {
 		"name": "Coal Power",
-		"pollution": 20,
+		"pollution": 25,
 		"cost": {
 			"brick": 500,
 			"iron": 500,
@@ -160,11 +160,11 @@
 	},
 	"power_nuclear": {
 		"name": "Nuclear Power",
-		"pollution": 1,
+		"pollution": 5,
 		"cost": {
-			"brick": 1000,
-			"iron": 1000,
-			"gold": 500
+			"brick": 750,
+			"iron": 750,
+			"gold": 100
 		},
 		"requires": {
 			"uranium": 1

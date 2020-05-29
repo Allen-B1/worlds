@@ -63,8 +63,8 @@
 	background: url(/tiles/power_nuclear.svg); }
 [tiletype=power_coal] .inner {
 	background: url(/tiles/power_coal.svg); }
-[tiletype=power_hydro] .inner {
-	background: url(/tiles/power_hydro.svg); }
+[tiletype=power_solar] .inner {
+	background: url(/tiles/power_solar.svg); }
 
 [deposit=iron] {
 	background: url(/tiles/iron.svg), var(--electricity) var(--territory); }

@@ -321,30 +321,6 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		}
 	}
 
-	if tileType == PowerHydro {
-		planet, x, y := tileToCoord(tile)
-		tiles := []int{
-			tileFromCoord(planet, x-1, y+1),
-			tileFromCoord(planet, x-1, y),
-			tileFromCoord(planet, x-1, y-1),
-			tileFromCoord(planet, x, y+1),
-			tileFromCoord(planet, x, y-1),
-			tileFromCoord(planet, x+1, y+1),
-			tileFromCoord(planet, x+1, y),
-			tileFromCoord(planet, x+1, y-1),
-		}
-
-		adj := false
-		for _, tile := range tiles {
-			if tile > 0 && g.Terrain[tile] == Ocean {
-				adj = true
-			}
-		}
-		if !adj {
-			return errors.New("'Hydro Power' must be next to ocean")
-		}
-	}
-
 	if TileInfos[tileType].Village {
 		planet, x, y := tileToCoord(tile)
 		tiles := []int{

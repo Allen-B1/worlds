@@ -31,8 +31,6 @@ const (
 	Cleaner  TileType = "cleaner"
 
 	GreenHouse TileType = "greenhouse"
-
-	PowerHydro TileType = "power_hydro"
 )
 
 type TileInfo struct {
