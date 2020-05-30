@@ -35,7 +35,7 @@ const (
 
 type TileInfo struct {
 	Name      string            `json:"name"`
-	Pollution int              `json:"pollution"`
+	Pollution int               `json:"pollution"`
 	Cost      map[Material]uint `json:"cost"`
 	Category  string            `json:"category"`
 	Strength  uint32            `json:"strength"`

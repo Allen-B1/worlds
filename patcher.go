@@ -188,7 +188,7 @@ func (p *patcherEndSort) Less(i, j int) bool {
 			return true
 		}
 	}
-	if p.results[ip].Pollution < p.results[jp].Pollution {
+	if p.results[ip].Pollution > p.results[jp].Pollution {
 		return true
 	}
 	return false
