@@ -57,27 +57,29 @@ func (g *Game) NextTurn() {
 	}
 outer:
 	for tile, tileType := range g.TileTypes {
-		// Skip if not enough materials
-		for material, amt := range TileInfos[tileType].Requires {
-			if g.Amounts[g.Territory[tile]][material] < amt {
-				continue outer
-			}
-		}
-
-		if TileInfos[tileType].Electricity != 0 {
-			r := int(TileInfos[tileType].Electricity)
-			planet, x, y := tileToCoord(tile)
-
-			tiles := make([]int, 0)
-			for dx := int(x) - r; dx <= int(x)+r; dx++ {
-				for dy := int(y) - r; dy <= int(y)+r; dy++ {
-					tiles = append(tiles, tileFromCoord(planet, uint(dx), uint(dy)))
+		if g.Territory[tile] != -1 {
+			// Skip if not enough materials
+			for material, amt := range TileInfos[tileType].Requires {
+				if g.Amounts[g.Territory[tile]][material] < amt {
+					continue outer
 				}
 			}
 
-			for _, tile := range tiles {
-				if tile != -1 {
-					g.Electricity[tile] = g.Territory[tile]
+			if TileInfos[tileType].Electricity != 0 {
+				r := int(TileInfos[tileType].Electricity)
+				planet, x, y := tileToCoord(tile)
+
+				tiles := make([]int, 0)
+				for dx := int(x) - r; dx <= int(x)+r; dx++ {
+					for dy := int(y) - r; dy <= int(y)+r; dy++ {
+						tiles = append(tiles, tileFromCoord(planet, uint(dx), uint(dy)))
+					}
+				}
+
+				for _, tile := range tiles {
+					if tile != -1 {
+						g.Electricity[tile] = g.Territory[tile]
+					}
 				}
 			}
 		}
