@@ -57,7 +57,7 @@ func (g *Game) NextTurn() {
 	}
 outer:
 	for tile, tileType := range g.TileTypes {
-		if g.Territory[tile] != -1 {
+		if g.Territory[tile] >= 0 {
 			// Skip if not enough materials
 			for material, amt := range TileInfos[tileType].Requires {
 				if g.Amounts[g.Territory[tile]][material] < amt {
@@ -105,17 +105,17 @@ outer2:
 			}
 		}
 
-		for material, amt := range TileInfos[tileType].Requires {
-			if g.Amounts[g.Territory[tile]][material] < amt {
-				continue outer2
-			}
-		}
-
-		for material, amt := range TileInfos[tileType].Requires {
-			g.Amounts[g.Territory[tile]][material] -= amt
-		}
-
 		if g.Territory[tile] >= 0 {
+			for material, amt := range TileInfos[tileType].Requires {
+				if g.Amounts[g.Territory[tile]][material] < amt {
+					continue outer2
+				}
+			}
+
+			for material, amt := range TileInfos[tileType].Requires {
+				g.Amounts[g.Territory[tile]][material] -= amt
+			}
+
 			switch tileType {
 			case Camp:
 				if g.Turn%5 == 0 {
@@ -160,7 +160,7 @@ outer2:
 		g.Stats[player].Pollution = 0
 	}
 	for tile, tileType := range g.TileTypes {
-		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] != -1 {
+		if planet, _, _ := tileToCoord(tile); planet == Earth && g.Territory[tile] >= 0 {
 			g.Stats[g.Territory[tile]].Pollution += TileInfos[tileType].Pollution
 		}
 	}
@@ -416,7 +416,7 @@ func (g *Game) Move(player int, from int, to int, half bool) error {
 			toType := g.TileTypes[to]
 			toPlayer := g.Territory[to]
 
-			if g.Territory[to] != -1 {
+			if g.Territory[to] >= 0 {
 				g.TileTypes[to] = ""
 			}
 			g.Armies[to] = fromArmies - toArmies
