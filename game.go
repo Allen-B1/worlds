@@ -563,8 +563,8 @@ func (g *Game) Launch(player int, tile int) error {
 
 func (g *Game) Nuke(player int, tile int) error {
 	cost := map[Material]uint{
-		Uranium: 10000,
-		Iron:    10000,
+		Uranium: 750,
+		Iron:    750,
 	}
 
 	for material, amt := range cost {
