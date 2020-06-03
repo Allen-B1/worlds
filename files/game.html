@@ -13,6 +13,16 @@
 		<meta charset="utf8">
 		<style>
 body { padding: 0; margin: 0; }
+#error {
+	position: fixed;
+	bottom: 16px;
+	left: 0; right: 0; margin: auto;
+	width: 256px;
+	z-index: 4;
+	text-align: center;
+
+	display: none;
+}
 		</style>
 	</head>
 	<body>
@@ -26,12 +36,14 @@ body { padding: 0; margin: 0; }
 		<w-stats id="materials" style="position:fixed;left:32px;top:128px;z-index:3;"></w-stats>
 		<w-players id="players" style="position:fixed;right:32px;top:32px;z-index:3"></w-players>
 		<w-diplomacy id="diplomacy" style="position:fixed;right:32px;bottom:32px;z-index:3"></w-diplomacy>
+		<div class="error" id="error">dead</div>
 
 		<script>
 const playersElem = document.getElementById("players");
 const diplomacyElem = document.getElementById("diplomacy");
 const marsElem = document.getElementById("mars");
 const earthElem = document.getElementById("earth");
+const errorElem = document.getElementById('error');
 
 function tileAt(i) {
 	if (i >= 64*64) {
@@ -53,12 +65,17 @@ const materials = document.getElementById("materials");
 
 let relationships = [];
 
+let turn = 0;
+let errorRemoveTurn = 0;
 ws.onmessage = function(msg) {
 	let data = JSON.parse(msg.data);
 	let mdata = data[1];
 	switch (data[0]) {
 	case "error":
 		console.error(mdata);
+		errorElem.textContent = mdata;
+		errorElem.style.display = "block";
+		errorRemoveTurn = turn + 5;
 		break;
 	case "start":
 		players = mdata.players;
@@ -85,6 +102,11 @@ ws.onmessage = function(msg) {
 		}
 		break;
 	case "update":
+		turn = mdata.turn;
+		if (turn >= errorRemoveTurn) {
+			errorElem.style.display = "none";
+		}
+
 		earthElem.popQueue();
 		marsElem.popQueue();
 
@@ -239,11 +261,12 @@ document.addEventListener("keydown", function(e) {
 		return false;
 	case "KeyH":
 		let tileInfoElem = document.getElementById("tileinfo");
-		tileInfoElem.style.display = tileInfoElem.style.display == "none" ? "block" : "none";
-		playersElem.style.display = playersElem.style.display == "none" ? "block" : "none";
-		diplomacyElem.style.display = diplomacyElem.style.display == "none" ? "block" : "none";
-		stats.style.display = stats.style.display == "none" ? "block" : "none";
-		materials.style.display = materials.style.display == "none" ? "block" : "none";
+		let show = tileInfo.style.display == "none";
+		tileInfoElem.style.display = show ? "block" : "none";
+		playersElem.style.display = show ? "block" : "none";
+		diplomacyElem.style.display = show ? "block" : "none";
+		stats.style.display = show ? "block" : "none";
+		materials.style.display = show ? "block" : "none";
 		break;
 	}
 });

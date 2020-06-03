@@ -94,14 +94,22 @@ kbd {
 	border: 2px solid #559933; }
 .icon-green::before { content: "G"; }
 
+button, .button, .error {
+	padding: 4px 8px;
+    font-family: 'VT323', monospace;
+	font-size: 16px;
+}
+
 button, .button {
 	color: #222;
 	text-decoration: none;
 	border: 2px solid #bbb;
 	background: #ddd;
 	cursor: pointer;
-    font-family: 'VT323', monospace;
-	font-size: 16px;
-	padding: 4px 8px;
 }
 
+.error {
+	background: #e5675b;
+	border: 2px solid #bf564c;
+	color: rgba(0,0,0,0.8);
+}
