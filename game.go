@@ -272,9 +272,19 @@ func (g *Game) checkLoser(player int, winner int) {
 	}
 }
 
-func (g *Game) Make(player int, tile int, tileType TileType) error {
+func (g *Game) Make(player int, tile int, tileType TileType) (err error) {
+	defer func() {
+		if err != nil {
+			if tileType == "" {
+				err = fmt.Errorf("can't delete building: %w", err)
+			} else {
+				err = fmt.Errorf("can't build '"+TileInfos[tileType].Name+"': %w", err)
+			}
+		}
+	}()
+
 	if g.Territory[tile] != player {
-		return errors.New("you must own a territory to build on it")
+		return errors.New("tile not owned by player")
 	}
 
 	if tileType == "" {
@@ -288,11 +298,11 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 	}
 
 	if g.TileTypes[tile] != "" || (g.Terrain[tile] == Ocean && tileType != Bridge) {
-		return errors.New("tile " + fmt.Sprint(tile) + " is not empty")
+		return errors.New("tile " + fmt.Sprint(tile) + " not empty")
 	}
 
 	if tileType == Bridge && g.Terrain[tile] != Ocean {
-		return errors.New("bridges must be built in the ocean")
+		return errors.New("not in ocean")
 	}
 
 	for material, cost := range TileInfos[tileType].Cost {
@@ -311,7 +321,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 		}
 
 		if !canMine {
-			return errors.New("'" + TileInfos[tileType].Name + "' not placed on valid deposit")
+			return errors.New("not placed on valid deposit")
 		}
 	}
 
@@ -335,7 +345,7 @@ func (g *Game) Make(player int, tile int, tileType TileType) error {
 			}
 		}
 		if !adj {
-			return errors.New("'" + TileInfos[tileType].Name + "' must be inside village")
+			return errors.New("must be inside village")
 		}
 	}
 
@@ -506,7 +516,7 @@ func NewGame(m *Map, players []string, fog bool) *Game {
 
 func (g *Game) Launch(player int, tile int) error {
 	if g.TileTypes[tile] != Launcher || g.Territory[tile] != player {
-		return errors.New("launcher required to launch")
+		return errors.New("can't launch: launcher required to launch")
 	}
 
 	planet, _, _ := tileToCoord(tile)
@@ -569,7 +579,7 @@ func (g *Game) Nuke(player int, tile int) error {
 
 	for material, amt := range cost {
 		if g.Amounts[player][material] < amt {
-			return errors.New("not enough " + string(material) + ": " + fmt.Sprint(amt) + " required")
+			return errors.New("can't nuke: not enough " + string(material) + ": " + fmt.Sprint(amt) + " required")
 		}
 	}
 
